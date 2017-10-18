@@ -11,8 +11,7 @@ module systemFile (
 	sdram_ctrl_wire_dq,
 	sdram_ctrl_wire_dqm,
 	sdram_ctrl_wire_ras_n,
-	sdram_ctrl_wire_we_n,
-	mypio_leds_conduit_end_export);	
+	sdram_ctrl_wire_we_n);	
 
 	output		altpll_0_c2_clk;
 	input		clk_clk;
@@ -26,5 +25,4 @@ module systemFile (
 	output	[1:0]	sdram_ctrl_wire_dqm;
 	output		sdram_ctrl_wire_ras_n;
 	output		sdram_ctrl_wire_we_n;
-	inout	[7:0]	mypio_leds_conduit_end_export;
 endmodule
