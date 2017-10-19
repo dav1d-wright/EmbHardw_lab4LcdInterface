@@ -37,7 +37,7 @@ begin
 --------------------------------------------------------------------------------
     nextState: process(Clk_CI, Reset_NRI)
     begin
-        if(Reset_NRI = '1')then
+        if(Reset_NRI = '0')then
             statePres_D <= stateReset;
         elsif(Clk_CI'event and Clk_CI = '1')then
             statePres_D <= stateNext_D;
@@ -45,7 +45,7 @@ begin
     end process nextState;
     
     
-    logic: process(Clk_CI)
+    logic: process(Clk_CI, Push_SI, Pop_SI)
     begin
         stateNext_D <= statePres_D;
         case statePres_D is
@@ -53,11 +53,11 @@ begin
                 Empty_SO <= '1';
                 Full_SO <= '0';
                 Data_DO <= (others => '0');
-                numEl_D <= 1;
+                numEl_D <= 0;
                 head_D <= 0;
                 tail_D <= 0;
                 
-                -- stateNext_D <= stateEmpty;
+                stateNext_D <= stateEmpty;
             when stateEmpty =>
                 Empty_SO <= '1';
                 Full_SO <= '0'; 
@@ -75,7 +75,7 @@ begin
                     end if;
                 end if;
                 
-                if(numEl_D /= to_unsigned(0, 1))then
+                if(numEl_D /= 0)then
                     stateNext_D <= stateFilling;
                 end if;
                 
@@ -112,6 +112,10 @@ begin
                 
                 if(numEl_D = SIZE)then
                     stateNext_D <= stateFull;
+                elsif(numEl_D = 0)then
+                    stateNext_D <= stateEmpty;
+                else
+                    stateNext_D <= statePres_D;
                 end if;
                 
             when stateFull =>
