@@ -8,19 +8,25 @@ use IEEE.numeric_std.all;
 
 entity systemFile is
 	port (
-		altpll_0_c2_clk               : out   std_logic;                                        --            altpll_0_c2.clk
-		clk_clk                       : in    std_logic                     := '0';             --                    clk.clk
-		mypio_leds_conduit_end_export : inout std_logic_vector(7 downto 0)  := (others => '0'); -- mypio_leds_conduit_end.export
-		reset_reset_n                 : in    std_logic                     := '0';             --                  reset.reset_n
-		sdram_ctrl_wire_addr          : out   std_logic_vector(11 downto 0);                    --        sdram_ctrl_wire.addr
-		sdram_ctrl_wire_ba            : out   std_logic_vector(1 downto 0);                     --                       .ba
-		sdram_ctrl_wire_cas_n         : out   std_logic;                                        --                       .cas_n
-		sdram_ctrl_wire_cke           : out   std_logic;                                        --                       .cke
-		sdram_ctrl_wire_cs_n          : out   std_logic;                                        --                       .cs_n
-		sdram_ctrl_wire_dq            : inout std_logic_vector(15 downto 0) := (others => '0'); --                       .dq
-		sdram_ctrl_wire_dqm           : out   std_logic_vector(1 downto 0);                     --                       .dqm
-		sdram_ctrl_wire_ras_n         : out   std_logic;                                        --                       .ras_n
-		sdram_ctrl_wire_we_n          : out   std_logic                                         --                       .we_n
+		altpll_0_c2_clk                 : out   std_logic;                                        --     altpll_0_c2.clk
+		clk_clk                         : in    std_logic                     := '0';             --             clk.clk
+		lcd_conduit_end_chipselect      : out   std_logic;                                        -- lcd_conduit_end.chipselect
+		lcd_conduit_end_lcdreset        : out   std_logic;                                        --                .lcdreset
+		lcd_conduit_end_lcddata         : inout std_logic_vector(15 downto 0) := (others => '0'); --                .lcddata
+		lcd_conduit_end_read            : out   std_logic;                                        --                .read
+		lcd_conduit_end_write           : out   std_logic;                                        --                .write
+		lcd_conduit_end_data_cmd_select : out   std_logic;                                        --                .data_cmd_select
+		lcd_conduit_end_im0             : out   std_logic;                                        --                .im0
+		reset_reset_n                   : in    std_logic                     := '0';             --           reset.reset_n
+		sdram_ctrl_wire_addr            : out   std_logic_vector(11 downto 0);                    -- sdram_ctrl_wire.addr
+		sdram_ctrl_wire_ba              : out   std_logic_vector(1 downto 0);                     --                .ba
+		sdram_ctrl_wire_cas_n           : out   std_logic;                                        --                .cas_n
+		sdram_ctrl_wire_cke             : out   std_logic;                                        --                .cke
+		sdram_ctrl_wire_cs_n            : out   std_logic;                                        --                .cs_n
+		sdram_ctrl_wire_dq              : inout std_logic_vector(15 downto 0) := (others => '0'); --                .dq
+		sdram_ctrl_wire_dqm             : out   std_logic_vector(1 downto 0);                     --                .dqm
+		sdram_ctrl_wire_ras_n           : out   std_logic;                                        --                .ras_n
+		sdram_ctrl_wire_we_n            : out   std_logic                                         --                .we_n
 	);
 end entity systemFile;
 
@@ -68,6 +74,30 @@ architecture rtl of systemFile is
 			dummy_ci_port                       : out std_logic                                         -- readra
 		);
 	end component systemFile_CPU;
+
+	component LcdDriver is
+		port (
+			Clk_CI                : in    std_logic                     := 'X';             -- clk
+			Reset_NRI             : in    std_logic                     := 'X';             -- reset_n
+			Cs_NSO                : out   std_logic;                                        -- chipselect
+			LcdReset_NRO          : out   std_logic;                                        -- lcdreset
+			DB_DIO                : inout std_logic_vector(15 downto 0) := (others => 'X'); -- lcddata
+			Rd_NSO                : out   std_logic;                                        -- read
+			Wr_NSO                : out   std_logic;                                        -- write
+			DC_NSO                : out   std_logic;                                        -- data_cmd_select
+			IM0_SO                : out   std_logic;                                        -- im0
+			WaitReq_SO            : out   std_logic;                                        -- waitrequest
+			Read_SI               : in    std_logic                     := 'X';             -- read
+			Write_SI              : in    std_logic                     := 'X';             -- write
+			ReadData_DO           : out   std_logic_vector(15 downto 0);                    -- readdata
+			Address_DI            : in    std_logic_vector(1 downto 0)  := (others => 'X'); -- address
+			WriteData_DI          : in    std_logic_vector(15 downto 0) := (others => 'X'); -- writedata
+			ByteEnable_DI         : in    std_logic_vector(1 downto 0)  := (others => 'X'); -- byteenable
+			BeginBurstTransfer_DI : in    std_logic                     := 'X';             -- beginbursttransfer
+			BurstCount_DI         : in    std_logic_vector(7 downto 0)  := (others => 'X'); -- burstcount
+			ReadDataValid_SO      : out   std_logic                                         -- readdatavalid
+		);
+	end component LcdDriver;
 
 	component systemFile_SDRAM_ctrl is
 		port (
@@ -177,19 +207,6 @@ architecture rtl of systemFile is
 		);
 	end component systemFile_jtag_uart;
 
-	component parPort is
-		port (
-			Reset_BRI    : in    std_logic                    := 'X';             -- reset_n
-			Clk_CI       : in    std_logic                    := 'X';             -- clk
-			Address_DI   : in    std_logic_vector(2 downto 0) := (others => 'X'); -- address
-			ReadData_DO  : out   std_logic_vector(7 downto 0);                    -- readdata
-			WriteData_DI : in    std_logic_vector(7 downto 0) := (others => 'X'); -- writedata
-			Write_SI     : in    std_logic                    := 'X';             -- write
-			Read_SI      : in    std_logic                    := 'X';             -- read
-			ParPort_DIO  : inout std_logic_vector(7 downto 0) := (others => 'X')  -- export
-		);
-	end component parPort;
-
 	component systemFile_performance_counter_0 is
 		port (
 			clk           : in  std_logic                     := 'X';             -- clk
@@ -264,11 +281,16 @@ architecture rtl of systemFile is
 			jtag_uart_avalon_jtag_slave_writedata                      : out std_logic_vector(31 downto 0);                    -- writedata
 			jtag_uart_avalon_jtag_slave_waitrequest                    : in  std_logic                     := 'X';             -- waitrequest
 			jtag_uart_avalon_jtag_slave_chipselect                     : out std_logic;                                        -- chipselect
-			myPIO_LEDs_avalon_slave_address                            : out std_logic_vector(2 downto 0);                     -- address
-			myPIO_LEDs_avalon_slave_write                              : out std_logic;                                        -- write
-			myPIO_LEDs_avalon_slave_read                               : out std_logic;                                        -- read
-			myPIO_LEDs_avalon_slave_readdata                           : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- readdata
-			myPIO_LEDs_avalon_slave_writedata                          : out std_logic_vector(7 downto 0);                     -- writedata
+			LCD_LCD_AVALON_SLAVE_address                               : out std_logic_vector(1 downto 0);                     -- address
+			LCD_LCD_AVALON_SLAVE_write                                 : out std_logic;                                        -- write
+			LCD_LCD_AVALON_SLAVE_read                                  : out std_logic;                                        -- read
+			LCD_LCD_AVALON_SLAVE_readdata                              : in  std_logic_vector(15 downto 0) := (others => 'X'); -- readdata
+			LCD_LCD_AVALON_SLAVE_writedata                             : out std_logic_vector(15 downto 0);                    -- writedata
+			LCD_LCD_AVALON_SLAVE_beginbursttransfer                    : out std_logic;                                        -- beginbursttransfer
+			LCD_LCD_AVALON_SLAVE_burstcount                            : out std_logic_vector(7 downto 0);                     -- burstcount
+			LCD_LCD_AVALON_SLAVE_byteenable                            : out std_logic_vector(1 downto 0);                     -- byteenable
+			LCD_LCD_AVALON_SLAVE_readdatavalid                         : in  std_logic                     := 'X';             -- readdatavalid
+			LCD_LCD_AVALON_SLAVE_waitrequest                           : in  std_logic                     := 'X';             -- waitrequest
 			performance_counter_0_control_slave_address                : out std_logic_vector(4 downto 0);                     -- address
 			performance_counter_0_control_slave_write                  : out std_logic;                                        -- write
 			performance_counter_0_control_slave_readdata               : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
@@ -481,7 +503,7 @@ architecture rtl of systemFile is
 		);
 	end component systemfile_rst_controller_001;
 
-	signal altpll_0_c0_clk                                                     : std_logic;                     -- altpll_0:c0 -> [CPU:clk, SDRAM_ctrl:clk, TCDM:clk, TCIM:clk, TCIM:clk2, irq_mapper:clk, jtag_uart:clk, mm_interconnect_0:altpll_0_c0_clk, mm_interconnect_1:altpll_0_c0_clk, mm_interconnect_2:altpll_0_c0_clk, myPIO_LEDs:Clk_CI, performance_counter_0:clk, rst_controller:clk, sysid:clock, timer_0:clk]
+	signal altpll_0_c0_clk                                                     : std_logic;                     -- altpll_0:c0 -> [CPU:clk, LCD:Clk_CI, SDRAM_ctrl:clk, TCDM:clk, TCIM:clk, TCIM:clk2, irq_mapper:clk, jtag_uart:clk, mm_interconnect_0:altpll_0_c0_clk, mm_interconnect_1:altpll_0_c0_clk, mm_interconnect_2:altpll_0_c0_clk, performance_counter_0:clk, rst_controller:clk, sysid:clock, timer_0:clk]
 	signal cpu_data_master_readdata                                            : std_logic_vector(31 downto 0); -- mm_interconnect_0:CPU_data_master_readdata -> CPU:d_readdata
 	signal cpu_data_master_waitrequest                                         : std_logic;                     -- mm_interconnect_0:CPU_data_master_waitrequest -> CPU:d_waitrequest
 	signal cpu_data_master_debugaccess                                         : std_logic;                     -- CPU:debug_mem_slave_debugaccess_to_roms -> mm_interconnect_0:CPU_data_master_debugaccess
@@ -496,6 +518,16 @@ architecture rtl of systemFile is
 	signal cpu_instruction_master_address                                      : std_logic_vector(25 downto 0); -- CPU:i_address -> mm_interconnect_0:CPU_instruction_master_address
 	signal cpu_instruction_master_read                                         : std_logic;                     -- CPU:i_read -> mm_interconnect_0:CPU_instruction_master_read
 	signal cpu_instruction_master_readdatavalid                                : std_logic;                     -- mm_interconnect_0:CPU_instruction_master_readdatavalid -> CPU:i_readdatavalid
+	signal mm_interconnect_0_lcd_lcd_avalon_slave_beginbursttransfer           : std_logic;                     -- mm_interconnect_0:LCD_LCD_AVALON_SLAVE_beginbursttransfer -> LCD:BeginBurstTransfer_DI
+	signal mm_interconnect_0_lcd_lcd_avalon_slave_readdata                     : std_logic_vector(15 downto 0); -- LCD:ReadData_DO -> mm_interconnect_0:LCD_LCD_AVALON_SLAVE_readdata
+	signal mm_interconnect_0_lcd_lcd_avalon_slave_waitrequest                  : std_logic;                     -- LCD:WaitReq_SO -> mm_interconnect_0:LCD_LCD_AVALON_SLAVE_waitrequest
+	signal mm_interconnect_0_lcd_lcd_avalon_slave_address                      : std_logic_vector(1 downto 0);  -- mm_interconnect_0:LCD_LCD_AVALON_SLAVE_address -> LCD:Address_DI
+	signal mm_interconnect_0_lcd_lcd_avalon_slave_read                         : std_logic;                     -- mm_interconnect_0:LCD_LCD_AVALON_SLAVE_read -> LCD:Read_SI
+	signal mm_interconnect_0_lcd_lcd_avalon_slave_byteenable                   : std_logic_vector(1 downto 0);  -- mm_interconnect_0:LCD_LCD_AVALON_SLAVE_byteenable -> LCD:ByteEnable_DI
+	signal mm_interconnect_0_lcd_lcd_avalon_slave_readdatavalid                : std_logic;                     -- LCD:ReadDataValid_SO -> mm_interconnect_0:LCD_LCD_AVALON_SLAVE_readdatavalid
+	signal mm_interconnect_0_lcd_lcd_avalon_slave_write                        : std_logic;                     -- mm_interconnect_0:LCD_LCD_AVALON_SLAVE_write -> LCD:Write_SI
+	signal mm_interconnect_0_lcd_lcd_avalon_slave_writedata                    : std_logic_vector(15 downto 0); -- mm_interconnect_0:LCD_LCD_AVALON_SLAVE_writedata -> LCD:WriteData_DI
+	signal mm_interconnect_0_lcd_lcd_avalon_slave_burstcount                   : std_logic_vector(7 downto 0);  -- mm_interconnect_0:LCD_LCD_AVALON_SLAVE_burstcount -> LCD:BurstCount_DI
 	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_chipselect            : std_logic;                     -- mm_interconnect_0:jtag_uart_avalon_jtag_slave_chipselect -> jtag_uart:av_chipselect
 	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_readdata              : std_logic_vector(31 downto 0); -- jtag_uart:av_readdata -> mm_interconnect_0:jtag_uart_avalon_jtag_slave_readdata
 	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_waitrequest           : std_logic;                     -- jtag_uart:av_waitrequest -> mm_interconnect_0:jtag_uart_avalon_jtag_slave_waitrequest
@@ -503,11 +535,6 @@ architecture rtl of systemFile is
 	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_read                  : std_logic;                     -- mm_interconnect_0:jtag_uart_avalon_jtag_slave_read -> mm_interconnect_0_jtag_uart_avalon_jtag_slave_read:in
 	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_write                 : std_logic;                     -- mm_interconnect_0:jtag_uart_avalon_jtag_slave_write -> mm_interconnect_0_jtag_uart_avalon_jtag_slave_write:in
 	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_writedata             : std_logic_vector(31 downto 0); -- mm_interconnect_0:jtag_uart_avalon_jtag_slave_writedata -> jtag_uart:av_writedata
-	signal mm_interconnect_0_mypio_leds_avalon_slave_readdata                  : std_logic_vector(7 downto 0);  -- myPIO_LEDs:ReadData_DO -> mm_interconnect_0:myPIO_LEDs_avalon_slave_readdata
-	signal mm_interconnect_0_mypio_leds_avalon_slave_address                   : std_logic_vector(2 downto 0);  -- mm_interconnect_0:myPIO_LEDs_avalon_slave_address -> myPIO_LEDs:Address_DI
-	signal mm_interconnect_0_mypio_leds_avalon_slave_read                      : std_logic;                     -- mm_interconnect_0:myPIO_LEDs_avalon_slave_read -> myPIO_LEDs:Read_SI
-	signal mm_interconnect_0_mypio_leds_avalon_slave_write                     : std_logic;                     -- mm_interconnect_0:myPIO_LEDs_avalon_slave_write -> myPIO_LEDs:Write_SI
-	signal mm_interconnect_0_mypio_leds_avalon_slave_writedata                 : std_logic_vector(7 downto 0);  -- mm_interconnect_0:myPIO_LEDs_avalon_slave_writedata -> myPIO_LEDs:WriteData_DI
 	signal mm_interconnect_0_sysid_control_slave_readdata                      : std_logic_vector(31 downto 0); -- sysid:readdata -> mm_interconnect_0:sysid_control_slave_readdata
 	signal mm_interconnect_0_sysid_control_slave_address                       : std_logic_vector(0 downto 0);  -- mm_interconnect_0:sysid_control_slave_address -> sysid:address
 	signal mm_interconnect_0_performance_counter_0_control_slave_readdata      : std_logic_vector(31 downto 0); -- performance_counter_0:readdata -> mm_interconnect_0:performance_counter_0_control_slave_readdata
@@ -588,7 +615,7 @@ architecture rtl of systemFile is
 	signal mm_interconnect_0_sdram_ctrl_s1_byteenable_ports_inv                : std_logic_vector(1 downto 0);  -- mm_interconnect_0_sdram_ctrl_s1_byteenable:inv -> SDRAM_ctrl:az_be_n
 	signal mm_interconnect_0_sdram_ctrl_s1_write_ports_inv                     : std_logic;                     -- mm_interconnect_0_sdram_ctrl_s1_write:inv -> SDRAM_ctrl:az_wr_n
 	signal mm_interconnect_0_timer_0_s1_write_ports_inv                        : std_logic;                     -- mm_interconnect_0_timer_0_s1_write:inv -> timer_0:write_n
-	signal rst_controller_reset_out_reset_ports_inv                            : std_logic;                     -- rst_controller_reset_out_reset:inv -> [CPU:reset_n, SDRAM_ctrl:reset_n, jtag_uart:rst_n, myPIO_LEDs:Reset_BRI, performance_counter_0:reset_n, sysid:reset_n, timer_0:reset_n]
+	signal rst_controller_reset_out_reset_ports_inv                            : std_logic;                     -- rst_controller_reset_out_reset:inv -> [CPU:reset_n, LCD:Reset_NRI, SDRAM_ctrl:reset_n, jtag_uart:rst_n, performance_counter_0:reset_n, sysid:reset_n, timer_0:reset_n]
 
 begin
 
@@ -633,6 +660,29 @@ begin
 			debug_mem_slave_write               => mm_interconnect_0_cpu_debug_mem_slave_write,       --                                     .write
 			debug_mem_slave_writedata           => mm_interconnect_0_cpu_debug_mem_slave_writedata,   --                                     .writedata
 			dummy_ci_port                       => open                                               --            custom_instruction_master.readra
+		);
+
+	lcd : component LcdDriver
+		port map (
+			Clk_CI                => altpll_0_c0_clk,                                           --       clock_sink.clk
+			Reset_NRI             => rst_controller_reset_out_reset_ports_inv,                  --       reset_sink.reset_n
+			Cs_NSO                => lcd_conduit_end_chipselect,                                --      conduit_end.chipselect
+			LcdReset_NRO          => lcd_conduit_end_lcdreset,                                  --                 .lcdreset
+			DB_DIO                => lcd_conduit_end_lcddata,                                   --                 .lcddata
+			Rd_NSO                => lcd_conduit_end_read,                                      --                 .read
+			Wr_NSO                => lcd_conduit_end_write,                                     --                 .write
+			DC_NSO                => lcd_conduit_end_data_cmd_select,                           --                 .data_cmd_select
+			IM0_SO                => lcd_conduit_end_im0,                                       --                 .im0
+			WaitReq_SO            => mm_interconnect_0_lcd_lcd_avalon_slave_waitrequest,        -- LCD_AVALON_SLAVE.waitrequest
+			Read_SI               => mm_interconnect_0_lcd_lcd_avalon_slave_read,               --                 .read
+			Write_SI              => mm_interconnect_0_lcd_lcd_avalon_slave_write,              --                 .write
+			ReadData_DO           => mm_interconnect_0_lcd_lcd_avalon_slave_readdata,           --                 .readdata
+			Address_DI            => mm_interconnect_0_lcd_lcd_avalon_slave_address,            --                 .address
+			WriteData_DI          => mm_interconnect_0_lcd_lcd_avalon_slave_writedata,          --                 .writedata
+			ByteEnable_DI         => mm_interconnect_0_lcd_lcd_avalon_slave_byteenable,         --                 .byteenable
+			BeginBurstTransfer_DI => mm_interconnect_0_lcd_lcd_avalon_slave_beginbursttransfer, --                 .beginbursttransfer
+			BurstCount_DI         => mm_interconnect_0_lcd_lcd_avalon_slave_burstcount,         --                 .burstcount
+			ReadDataValid_SO      => mm_interconnect_0_lcd_lcd_avalon_slave_readdatavalid       --                 .readdatavalid
 		);
 
 	sdram_ctrl : component systemFile_SDRAM_ctrl
@@ -738,18 +788,6 @@ begin
 			av_irq         => irq_mapper_receiver0_irq                                       --               irq.irq
 		);
 
-	mypio_leds : component parPort
-		port map (
-			Reset_BRI    => rst_controller_reset_out_reset_ports_inv,            --   reset_sink.reset_n
-			Clk_CI       => altpll_0_c0_clk,                                     --   clock_sink.clk
-			Address_DI   => mm_interconnect_0_mypio_leds_avalon_slave_address,   -- avalon_slave.address
-			ReadData_DO  => mm_interconnect_0_mypio_leds_avalon_slave_readdata,  --             .readdata
-			WriteData_DI => mm_interconnect_0_mypio_leds_avalon_slave_writedata, --             .writedata
-			Write_SI     => mm_interconnect_0_mypio_leds_avalon_slave_write,     --             .write
-			Read_SI      => mm_interconnect_0_mypio_leds_avalon_slave_read,      --             .read
-			ParPort_DIO  => mypio_leds_conduit_end_export                        --  conduit_end.export
-		);
-
 	performance_counter_0 : component systemFile_performance_counter_0
 		port map (
 			clk           => altpll_0_c0_clk,                                                     --           clk.clk
@@ -821,11 +859,16 @@ begin
 			jtag_uart_avalon_jtag_slave_writedata                      => mm_interconnect_0_jtag_uart_avalon_jtag_slave_writedata,             --                                                     .writedata
 			jtag_uart_avalon_jtag_slave_waitrequest                    => mm_interconnect_0_jtag_uart_avalon_jtag_slave_waitrequest,           --                                                     .waitrequest
 			jtag_uart_avalon_jtag_slave_chipselect                     => mm_interconnect_0_jtag_uart_avalon_jtag_slave_chipselect,            --                                                     .chipselect
-			myPIO_LEDs_avalon_slave_address                            => mm_interconnect_0_mypio_leds_avalon_slave_address,                   --                              myPIO_LEDs_avalon_slave.address
-			myPIO_LEDs_avalon_slave_write                              => mm_interconnect_0_mypio_leds_avalon_slave_write,                     --                                                     .write
-			myPIO_LEDs_avalon_slave_read                               => mm_interconnect_0_mypio_leds_avalon_slave_read,                      --                                                     .read
-			myPIO_LEDs_avalon_slave_readdata                           => mm_interconnect_0_mypio_leds_avalon_slave_readdata,                  --                                                     .readdata
-			myPIO_LEDs_avalon_slave_writedata                          => mm_interconnect_0_mypio_leds_avalon_slave_writedata,                 --                                                     .writedata
+			LCD_LCD_AVALON_SLAVE_address                               => mm_interconnect_0_lcd_lcd_avalon_slave_address,                      --                                 LCD_LCD_AVALON_SLAVE.address
+			LCD_LCD_AVALON_SLAVE_write                                 => mm_interconnect_0_lcd_lcd_avalon_slave_write,                        --                                                     .write
+			LCD_LCD_AVALON_SLAVE_read                                  => mm_interconnect_0_lcd_lcd_avalon_slave_read,                         --                                                     .read
+			LCD_LCD_AVALON_SLAVE_readdata                              => mm_interconnect_0_lcd_lcd_avalon_slave_readdata,                     --                                                     .readdata
+			LCD_LCD_AVALON_SLAVE_writedata                             => mm_interconnect_0_lcd_lcd_avalon_slave_writedata,                    --                                                     .writedata
+			LCD_LCD_AVALON_SLAVE_beginbursttransfer                    => mm_interconnect_0_lcd_lcd_avalon_slave_beginbursttransfer,           --                                                     .beginbursttransfer
+			LCD_LCD_AVALON_SLAVE_burstcount                            => mm_interconnect_0_lcd_lcd_avalon_slave_burstcount,                   --                                                     .burstcount
+			LCD_LCD_AVALON_SLAVE_byteenable                            => mm_interconnect_0_lcd_lcd_avalon_slave_byteenable,                   --                                                     .byteenable
+			LCD_LCD_AVALON_SLAVE_readdatavalid                         => mm_interconnect_0_lcd_lcd_avalon_slave_readdatavalid,                --                                                     .readdatavalid
+			LCD_LCD_AVALON_SLAVE_waitrequest                           => mm_interconnect_0_lcd_lcd_avalon_slave_waitrequest,                  --                                                     .waitrequest
 			performance_counter_0_control_slave_address                => mm_interconnect_0_performance_counter_0_control_slave_address,       --                  performance_counter_0_control_slave.address
 			performance_counter_0_control_slave_write                  => mm_interconnect_0_performance_counter_0_control_slave_write,         --                                                     .write
 			performance_counter_0_control_slave_readdata               => mm_interconnect_0_performance_counter_0_control_slave_readdata,      --                                                     .readdata
