@@ -29,7 +29,28 @@ architecture behavioural of FIFO is
     signal numEl_D:             natural;
     signal head_D:              natural;
     signal tail_D:              natural;
+    
+    -- edge detection of Push_SI and Pop_SI
+    signal Push_Edge_D:        std_logic;
+    signal Push_Last_D:        std_logic;
+    
+    signal Pop_Edge_D:         std_logic; 
+    signal Pop_Last_D:         std_logic;
 begin
+
+    edgeDetect: process(Reset_NRI, Clk_CI)
+    begin
+        if(Reset_NRI = '0')then
+            Pop_Edge_D <= '0';
+            Push_Edge_D <= '0';
+        elsif(Clk_CI'event and Clk_CI = '1')then
+            Pop_Edge_D <=  Pop_SI and (not Pop_Last_D);
+            Pop_Last_D <=  Pop_SI;
+            
+            Push_Edge_D <= Push_SI and (not Push_Last_D);
+            Push_Last_D <= Push_SI;
+        end if;
+    end process edgeDetect;
 --------------------------------------------------------------------------------
 ---                                                                          ---
 --- state machine                                                            ---
@@ -45,7 +66,7 @@ begin
     end process nextState;
     
     
-    logic: process(Clk_CI, Push_SI, Pop_SI)
+    logic: process(Clk_CI)
     begin
         stateNext_D <= statePres_D;
         case statePres_D is
@@ -62,7 +83,7 @@ begin
                 Empty_SO <= '1';
                 Full_SO <= '0'; 
                 
-                if(Push_SI'event and Push_SI = '1')then
+                if(Push_Edge_D = '1')then
                     if(numEl_D < SIZE)then
                         if(head_D < SIZE-1)then
                             head_D <= head_D + 1;
@@ -83,7 +104,7 @@ begin
                 Empty_SO <= '0';
                 Full_SO <= '0';
                 
-                if(Push_SI'event and Push_SI = '1')then
+                if(Pop_Edge_D = '1')then
                     if(numEl_D < SIZE)then
                         if(head_D < SIZE-1)then
                             head_D <= head_D + 1;
@@ -96,7 +117,7 @@ begin
                     end if;
                 end if;
                 
-                if(Pop_SI'event and Pop_SI = '1')then
+                if(Pop_Edge_D = '1')then
                     if(numEl_D > 0)then
                         Data_DO <= data_D(tail_D);                    
 

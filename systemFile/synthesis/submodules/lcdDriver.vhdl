@@ -56,8 +56,7 @@ architecture LCD of LcdDriver is
                                     RxStateRxPrePushDataIdentifier,
                                     RxStateRxPrePushData,
                                     RxStateRxPostPushDataIdentifier,
-                                    RxStateRxPostPush,
-                                    RxStateRxBurst);
+                                    RxStateRxPostPush);
                                     
     type TxState_T              is (TxSTateReset, 
                                     TxStateDispReset,
@@ -84,6 +83,12 @@ architecture LCD of LcdDriver is
     
     signal BitEnable_D:         std_logic_vector (15 downto 0);
     
+    -- edge detection of Write_SI and Read_SI
+    signal Write_Edge_D:        std_logic;
+    signal Write_Last_D:        std_logic;
+    
+    signal Read_Edge_D:         std_logic;    
+    signal Read_Last_D:         std_logic;
 begin
     dataBuffer: FIFO generic map(256) port map(Clk_CI => Clk_CI,
                                                 Reset_NRI => Reset_NRI,
@@ -93,6 +98,20 @@ begin
                                                 Data_DO => TxData_D,
                                                 Full_SO => FifoFull_D,
                                                 Empty_SO => FifoEmpty_D);
+                                                
+    edgeDetect: process(Reset_NRI, Clk_CI)
+    begin
+        if(Reset_NRI = '0')then
+            Read_Edge_D <= '0';
+            Write_Edge_D <= '0';
+        elsif(Clk_CI'event and Clk_CI = '1')then
+            Write_Edge_D <= Write_SI and (not Write_Last_D);
+            Write_Last_D <= Write_SI;
+            
+            Read_Edge_D <= Read_SI and (not Read_Last_D);
+            Read_Last_D <= Read_SI;
+        end if;
+    end process edgeDetect;
 --------------------------------------------------------------------------------
 ---                                                                          ---
 --- Receiver state machine                                                   ---
@@ -107,7 +126,7 @@ begin
         end if;
     end process;
     
-    logicRx: process(Clk_CI, Write_SI)
+    logicRx: process(Clk_CI)
         variable BurstCount_D:  natural;
     begin
         RxStateNext_D <= RxStatePres_D;
@@ -120,7 +139,7 @@ begin
                 RxStateNext_D <= RxStateIdle;
                 
             when RxStateIdle =>
-                if((Write_SI'event) and (Write_SI = '1'))then
+                if(Write_Edge_D = '1')then
                     WaitReq_SO <= '1';
                     case Address_DI is
                         when "00" => 
@@ -152,6 +171,12 @@ begin
                     else
                         BurstCount_D := 0;
                     end if;
+                    
+                else
+                    RxStateNext_D <= RxStatePres_D;
+                    IsData_D <= '0';
+                    BitEnable_D <= (others => '0');
+                    BurstCount_D := 0;
                 end if;
                 
             when RxStateRxPrePushCmd =>
@@ -210,7 +235,7 @@ begin
                 RxStateNext_D <= RxStateReset;
         end case;
     end process logicRx; 
-
+    
 --------------------------------------------------------------------------------
 ---                                                                          ---
 --- Transmitter state machine                                                ---

@@ -1,0 +1,253 @@
+{
+	"partitions" : [
+		{
+			"name" : "Top",
+			"pins" : [
+				{
+					"name" : "SDRAM_CAS_n",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_CS_n",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_RAS_n",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_WE_n",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_WRITEn",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_CSn",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_DCn",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_AD[11]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_AD[10]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_AD[9]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_AD[8]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_AD[7]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_AD[6]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_AD[5]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_AD[4]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_AD[3]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_AD[2]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_AD[1]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_AD[0]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_BA[1]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_BA[0]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_DQM[1]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_DQM[0]",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_DATA[15]",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_DATA[14]",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_DATA[13]",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_DATA[12]",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_DATA[11]",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_DATA[10]",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_DATA[9]",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_DATA[8]",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_DATA[7]",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_DATA[6]",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_DATA[5]",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_DATA[4]",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_DATA[3]",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_DATA[2]",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_DATA[1]",
+					"strict" : false
+				},
+				{
+					"name" : "LCD_DATA[0]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_DQ[15]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_DQ[14]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_DQ[13]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_DQ[12]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_DQ[11]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_DQ[10]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_DQ[9]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_DQ[8]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_DQ[7]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_DQ[6]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_DQ[5]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_DQ[4]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_DQ[3]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_DQ[2]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_DQ[1]",
+					"strict" : false
+				},
+				{
+					"name" : "SDRAM_DQ[0]",
+					"strict" : false
+				},
+				{
+					"name" : "clk_50M",
+					"strict" : false
+				},
+				{
+					"name" : "nReset",
+					"strict" : false
+				},
+				{
+					"name" : "altera_reserved_tms",
+					"strict" : false
+				},
+				{
+					"name" : "altera_reserved_tck",
+					"strict" : false
+				},
+				{
+					"name" : "altera_reserved_tdi",
+					"strict" : false
+				},
+				{
+					"name" : "altera_reserved_tdo",
+					"strict" : false
+				}
+			]
+		}
+	]
+}

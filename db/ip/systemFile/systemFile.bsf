@@ -1,0 +1,205 @@
+/*
+WARNING: Do NOT edit the input and output ports in this file in a text
+editor if you plan to continue editing the block that represents it in
+the Block Editor! File corruption is VERY likely to occur.
+*/
+/*
+Copyright (C) 2017  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and its AMPP partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel MegaCore Function License Agreement, or other 
+applicable license agreement, including, without limitation, 
+that your use is for the sole purpose of programming logic 
+devices manufactured by Intel and sold by Intel or its 
+authorized distributors.  Please refer to the applicable 
+agreement for further details.
+*/
+(header "symbol" (version "1.1"))
+(symbol
+	(rect 0 0 496 448)
+	(text "systemFile" (rect 217 -1 260 11)(font "Arial" (font_size 10)))
+	(text "inst" (rect 8 432 20 444)(font "Arial" ))
+	(port
+		(pt 0 72)
+		(input)
+		(text "clk_clk" (rect 0 0 27 12)(font "Arial" (font_size 8)))
+		(text "clk_clk" (rect 4 61 46 72)(font "Arial" (font_size 8)))
+		(line (pt 0 72)(pt 192 72)(line_width 1))
+	)
+	(port
+		(pt 0 248)
+		(input)
+		(text "reset_reset_n" (rect 0 0 56 12)(font "Arial" (font_size 8)))
+		(text "reset_reset_n" (rect 4 237 82 248)(font "Arial" (font_size 8)))
+		(line (pt 0 248)(pt 192 248)(line_width 1))
+	)
+	(port
+		(pt 496 72)
+		(output)
+		(text "altpll_0_c2_clk" (rect 0 0 57 12)(font "Arial" (font_size 8)))
+		(text "altpll_0_c2_clk" (rect 421 61 511 72)(font "Arial" (font_size 8)))
+		(line (pt 496 72)(pt 304 72)(line_width 1))
+	)
+	(port
+		(pt 0 112)
+		(output)
+		(text "lcd_conduit_end_chipselect" (rect 0 0 107 12)(font "Arial" (font_size 8)))
+		(text "lcd_conduit_end_chipselect" (rect 4 101 160 112)(font "Arial" (font_size 8)))
+		(line (pt 0 112)(pt 192 112)(line_width 1))
+	)
+	(port
+		(pt 0 128)
+		(output)
+		(text "lcd_conduit_end_lcdreset" (rect 0 0 100 12)(font "Arial" (font_size 8)))
+		(text "lcd_conduit_end_lcdreset" (rect 4 117 148 128)(font "Arial" (font_size 8)))
+		(line (pt 0 128)(pt 192 128)(line_width 1))
+	)
+	(port
+		(pt 0 160)
+		(output)
+		(text "lcd_conduit_end_read" (rect 0 0 87 12)(font "Arial" (font_size 8)))
+		(text "lcd_conduit_end_read" (rect 4 149 124 160)(font "Arial" (font_size 8)))
+		(line (pt 0 160)(pt 192 160)(line_width 1))
+	)
+	(port
+		(pt 0 176)
+		(output)
+		(text "lcd_conduit_end_write" (rect 0 0 87 12)(font "Arial" (font_size 8)))
+		(text "lcd_conduit_end_write" (rect 4 165 130 176)(font "Arial" (font_size 8)))
+		(line (pt 0 176)(pt 192 176)(line_width 1))
+	)
+	(port
+		(pt 0 192)
+		(output)
+		(text "lcd_conduit_end_data_cmd_select" (rect 0 0 138 12)(font "Arial" (font_size 8)))
+		(text "lcd_conduit_end_data_cmd_select" (rect 4 181 190 192)(font "Arial" (font_size 8)))
+		(line (pt 0 192)(pt 192 192)(line_width 1))
+	)
+	(port
+		(pt 0 208)
+		(output)
+		(text "lcd_conduit_end_im0" (rect 0 0 83 12)(font "Arial" (font_size 8)))
+		(text "lcd_conduit_end_im0" (rect 4 197 118 208)(font "Arial" (font_size 8)))
+		(line (pt 0 208)(pt 192 208)(line_width 1))
+	)
+	(port
+		(pt 0 288)
+		(output)
+		(text "sdram_ctrl_wire_addr[11..0]" (rect 0 0 110 12)(font "Arial" (font_size 8)))
+		(text "sdram_ctrl_wire_addr[11..0]" (rect 4 277 166 288)(font "Arial" (font_size 8)))
+		(line (pt 0 288)(pt 192 288)(line_width 3))
+	)
+	(port
+		(pt 0 304)
+		(output)
+		(text "sdram_ctrl_wire_ba[1..0]" (rect 0 0 99 12)(font "Arial" (font_size 8)))
+		(text "sdram_ctrl_wire_ba[1..0]" (rect 4 293 148 304)(font "Arial" (font_size 8)))
+		(line (pt 0 304)(pt 192 304)(line_width 3))
+	)
+	(port
+		(pt 0 320)
+		(output)
+		(text "sdram_ctrl_wire_cas_n" (rect 0 0 95 12)(font "Arial" (font_size 8)))
+		(text "sdram_ctrl_wire_cas_n" (rect 4 309 130 320)(font "Arial" (font_size 8)))
+		(line (pt 0 320)(pt 192 320)(line_width 1))
+	)
+	(port
+		(pt 0 336)
+		(output)
+		(text "sdram_ctrl_wire_cke" (rect 0 0 84 12)(font "Arial" (font_size 8)))
+		(text "sdram_ctrl_wire_cke" (rect 4 325 118 336)(font "Arial" (font_size 8)))
+		(line (pt 0 336)(pt 192 336)(line_width 1))
+	)
+	(port
+		(pt 0 352)
+		(output)
+		(text "sdram_ctrl_wire_cs_n" (rect 0 0 90 12)(font "Arial" (font_size 8)))
+		(text "sdram_ctrl_wire_cs_n" (rect 4 341 124 352)(font "Arial" (font_size 8)))
+		(line (pt 0 352)(pt 192 352)(line_width 1))
+	)
+	(port
+		(pt 0 384)
+		(output)
+		(text "sdram_ctrl_wire_dqm[1..0]" (rect 0 0 107 12)(font "Arial" (font_size 8)))
+		(text "sdram_ctrl_wire_dqm[1..0]" (rect 4 373 154 384)(font "Arial" (font_size 8)))
+		(line (pt 0 384)(pt 192 384)(line_width 3))
+	)
+	(port
+		(pt 0 400)
+		(output)
+		(text "sdram_ctrl_wire_ras_n" (rect 0 0 94 12)(font "Arial" (font_size 8)))
+		(text "sdram_ctrl_wire_ras_n" (rect 4 389 130 400)(font "Arial" (font_size 8)))
+		(line (pt 0 400)(pt 192 400)(line_width 1))
+	)
+	(port
+		(pt 0 416)
+		(output)
+		(text "sdram_ctrl_wire_we_n" (rect 0 0 92 12)(font "Arial" (font_size 8)))
+		(text "sdram_ctrl_wire_we_n" (rect 4 405 124 416)(font "Arial" (font_size 8)))
+		(line (pt 0 416)(pt 192 416)(line_width 1))
+	)
+	(port
+		(pt 0 144)
+		(bidir)
+		(text "lcd_conduit_end_lcddata[15..0]" (rect 0 0 120 12)(font "Arial" (font_size 8)))
+		(text "lcd_conduit_end_lcddata[15..0]" (rect 4 133 184 144)(font "Arial" (font_size 8)))
+		(line (pt 0 144)(pt 192 144)(line_width 3))
+	)
+	(port
+		(pt 0 368)
+		(bidir)
+		(text "sdram_ctrl_wire_dq[15..0]" (rect 0 0 103 12)(font "Arial" (font_size 8)))
+		(text "sdram_ctrl_wire_dq[15..0]" (rect 4 357 154 368)(font "Arial" (font_size 8)))
+		(line (pt 0 368)(pt 192 368)(line_width 3))
+	)
+	(drawing
+		(text "altpll_0_c2" (rect 305 43 676 99)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "clk" (rect 289 67 596 144)(font "Arial" (color 0 0 0)))
+		(text "clk" (rect 177 43 372 99)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "clk" (rect 197 67 412 144)(font "Arial" (color 0 0 0)))
+		(text "lcd_conduit_end" (rect 99 83 288 179)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "chipselect" (rect 197 107 454 224)(font "Arial" (color 0 0 0)))
+		(text "lcdreset" (rect 197 123 442 256)(font "Arial" (color 0 0 0)))
+		(text "lcddata" (rect 197 139 436 288)(font "Arial" (color 0 0 0)))
+		(text "read" (rect 197 155 418 320)(font "Arial" (color 0 0 0)))
+		(text "write" (rect 197 171 424 352)(font "Arial" (color 0 0 0)))
+		(text "data_cmd_select" (rect 197 187 484 384)(font "Arial" (color 0 0 0)))
+		(text "im0" (rect 197 203 412 416)(font "Arial" (color 0 0 0)))
+		(text "reset" (rect 163 219 356 451)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "reset_n" (rect 197 243 436 496)(font "Arial" (color 0 0 0)))
+		(text "sdram_ctrl_wire" (rect 97 259 284 531)(font "Arial" (color 128 0 0)(font_size 9)))
+		(text "addr" (rect 197 283 418 576)(font "Arial" (color 0 0 0)))
+		(text "ba" (rect 197 299 406 608)(font "Arial" (color 0 0 0)))
+		(text "cas_n" (rect 197 315 424 640)(font "Arial" (color 0 0 0)))
+		(text "cke" (rect 197 331 412 672)(font "Arial" (color 0 0 0)))
+		(text "cs_n" (rect 197 347 418 704)(font "Arial" (color 0 0 0)))
+		(text "dq" (rect 197 363 406 736)(font "Arial" (color 0 0 0)))
+		(text "dqm" (rect 197 379 412 768)(font "Arial" (color 0 0 0)))
+		(text "ras_n" (rect 197 395 424 800)(font "Arial" (color 0 0 0)))
+		(text "we_n" (rect 197 411 418 832)(font "Arial" (color 0 0 0)))
+		(text " systemFile " (rect 446 432 964 874)(font "Arial" ))
+		(line (pt 192 32)(pt 304 32)(line_width 1))
+		(line (pt 304 32)(pt 304 432)(line_width 1))
+		(line (pt 192 432)(pt 304 432)(line_width 1))
+		(line (pt 192 32)(pt 192 432)(line_width 1))
+		(line (pt 303 52)(pt 303 76)(line_width 1))
+		(line (pt 302 52)(pt 302 76)(line_width 1))
+		(line (pt 193 52)(pt 193 76)(line_width 1))
+		(line (pt 194 52)(pt 194 76)(line_width 1))
+		(line (pt 193 92)(pt 193 212)(line_width 1))
+		(line (pt 194 92)(pt 194 212)(line_width 1))
+		(line (pt 193 228)(pt 193 252)(line_width 1))
+		(line (pt 194 228)(pt 194 252)(line_width 1))
+		(line (pt 193 268)(pt 193 420)(line_width 1))
+		(line (pt 194 268)(pt 194 420)(line_width 1))
+		(line (pt 0 0)(pt 496 0)(line_width 1))
+		(line (pt 496 0)(pt 496 448)(line_width 1))
+		(line (pt 0 448)(pt 496 448)(line_width 1))
+		(line (pt 0 0)(pt 0 448)(line_width 1))
+	)
+)

@@ -1,0 +1,70 @@
+
+State Machine - |topLevelEntity|systemFile:inst|systemFile_SDRAM_ctrl:sdram_ctrl|m_next
+Name m_next.010000000 m_next.000010000 m_next.000001000 m_next.000000001 
+m_next.000000001 0 0 0 0 
+m_next.000001000 0 0 1 1 
+m_next.000010000 0 1 0 1 
+m_next.010000000 1 0 0 1 
+
+State Machine - |topLevelEntity|systemFile:inst|systemFile_SDRAM_ctrl:sdram_ctrl|m_state
+Name m_state.100000000 m_state.010000000 m_state.001000000 m_state.000100000 m_state.000010000 m_state.000001000 m_state.000000100 m_state.000000010 m_state.000000001 
+m_state.000000001 0 0 0 0 0 0 0 0 0 
+m_state.000000010 0 0 0 0 0 0 0 1 1 
+m_state.000000100 0 0 0 0 0 0 1 0 1 
+m_state.000001000 0 0 0 0 0 1 0 0 1 
+m_state.000010000 0 0 0 0 1 0 0 0 1 
+m_state.000100000 0 0 0 1 0 0 0 0 1 
+m_state.001000000 0 0 1 0 0 0 0 0 1 
+m_state.010000000 0 1 0 0 0 0 0 0 1 
+m_state.100000000 1 0 0 0 0 0 0 0 1 
+
+State Machine - |topLevelEntity|systemFile:inst|systemFile_SDRAM_ctrl:sdram_ctrl|i_next
+Name i_next.111 i_next.101 i_next.010 i_next.000 
+i_next.000 0 0 0 0 
+i_next.010 0 0 1 1 
+i_next.101 0 1 0 1 
+i_next.111 1 0 0 1 
+
+State Machine - |topLevelEntity|systemFile:inst|systemFile_SDRAM_ctrl:sdram_ctrl|i_state
+Name i_state.111 i_state.101 i_state.011 i_state.010 i_state.001 i_state.000 
+i_state.000 0 0 0 0 0 0 
+i_state.001 0 0 0 0 1 1 
+i_state.010 0 0 0 1 0 1 
+i_state.011 0 0 1 0 0 1 
+i_state.101 0 1 0 0 0 1 
+i_state.111 1 0 0 0 0 1 
+
+State Machine - |topLevelEntity|systemFile:inst|LcdDriver:lcd|TxStatePres_D
+Name TxStatePres_D.TxStatePostTx TxStatePres_D.TxStateTx TxStatePres_D.TxStatePreTx TxStatePres_D.TxStateIdle TxStatePres_D.TxStateDispReset TxStatePres_D.TxSTateReset 
+TxStatePres_D.TxSTateReset 0 0 0 0 0 0 
+TxStatePres_D.TxStateDispReset 0 0 0 0 1 1 
+TxStatePres_D.TxStateIdle 0 0 0 1 0 1 
+TxStatePres_D.TxStatePreTx 0 0 1 0 0 1 
+TxStatePres_D.TxStateTx 0 1 0 0 0 1 
+TxStatePres_D.TxStatePostTx 1 0 0 0 0 1 
+
+State Machine - |topLevelEntity|systemFile:inst|LcdDriver:lcd|RxStatePres_D
+Name RxStatePres_D.RxStateRxPostPush RxStatePres_D.RxStateRxPostPushDataIdentifier RxStatePres_D.RxStateRxPrePushData RxStatePres_D.RxStateRxPrePushDataIdentifier RxStatePres_D.RxStateRxPrePushCmd RxStatePres_D.RxStateIdle RxStatePres_D.RxStateReset 
+RxStatePres_D.RxStateReset 0 0 0 0 0 0 0 
+RxStatePres_D.RxStateIdle 0 0 0 0 0 1 1 
+RxStatePres_D.RxStateRxPrePushCmd 0 0 0 0 1 0 1 
+RxStatePres_D.RxStateRxPrePushDataIdentifier 0 0 0 1 0 0 1 
+RxStatePres_D.RxStateRxPrePushData 0 0 1 0 0 0 1 
+RxStatePres_D.RxStateRxPostPushDataIdentifier 0 1 0 0 0 0 1 
+RxStatePres_D.RxStateRxPostPush 1 0 0 0 0 0 1 
+
+State Machine - |topLevelEntity|systemFile:inst|LcdDriver:lcd|FIFO:dataBuffer|statePres_D
+Name statePres_D.stateFull statePres_D.stateFilling statePres_D.stateEmpty statePres_D.stateReset 
+statePres_D.stateReset 0 0 0 0 
+statePres_D.stateEmpty 0 0 1 1 
+statePres_D.stateFilling 0 1 0 1 
+statePres_D.stateFull 1 0 0 1 
+
+State Machine - |topLevelEntity|systemFile:inst|systemFile_CPU:cpu|systemFile_CPU_cpu:cpu|systemFile_CPU_cpu_nios2_oci:the_systemFile_CPU_cpu_nios2_oci|systemFile_CPU_cpu_debug_slave_wrapper:the_systemFile_CPU_cpu_debug_slave_wrapper|systemFile_CPU_cpu_debug_slave_tck:the_systemFile_CPU_cpu_debug_slave_tck|DRsize
+Name DRsize.101 DRsize.100 DRsize.011 DRsize.010 DRsize.001 DRsize.000 
+DRsize.000 0 0 0 0 0 0 
+DRsize.001 0 0 0 0 1 1 
+DRsize.010 0 0 0 1 0 1 
+DRsize.011 0 0 1 0 0 1 
+DRsize.100 0 1 0 0 0 1 
+DRsize.101 1 0 0 0 0 1 

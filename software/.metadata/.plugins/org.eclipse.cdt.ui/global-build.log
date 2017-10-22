@@ -1,0 +1,333 @@
+17:14:56 **** Incremental Build of configuration Nios II for project lab4LcdInterface ****
+make all 
+Info: Building ../lab4LcdInterface_bsp/
+C:/intelFPGA_lite/17.0/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../lab4LcdInterface_bsp/
+[BSP build complete]
+Info: Compiling main.c to obj/default/main.o
+nios2-elf-gcc -xc -MP -MMD -c -I../lab4LcdInterface_bsp//HAL/inc -I../lab4LcdInterface_bsp/ -I../lab4LcdInterface_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mno-hw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/main.o main.c
+main.c:24:28: fatal error: tuxAnimation_1.h: No such file or directory
+compilation terminated.
+make: *** [obj/default/main.o] Error 1
+17:15:18 **** Incremental Build of configuration Nios II for project lab4LcdInterface ****
+make all 
+Info: Building ../lab4LcdInterface_bsp/
+C:/intelFPGA_lite/17.0/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../lab4LcdInterface_bsp/
+[BSP build complete]
+Info: Compiling main.c to obj/default/main.o
+nios2-elf-gcc -xc -MP -MMD -c -I../lab4LcdInterface_bsp//HAL/inc -I../lab4LcdInterface_bsp/ -I../lab4LcdInterface_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mno-hw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/main.o main.c
+main.c:24:28: fatal error: tuxAnimation_1.h: No such file or directory
+compilation terminated.
+make: *** [obj/default/main.o] Error 1
+17:15:19 **** Incremental Build of configuration Nios II for project lab4LcdInterface_bsp ****
+make all 
+[BSP build complete]
+17:17:32 **** Incremental Build of configuration Nios II for project lab4LcdInterface ****
+make all 
+Info: Building ../lab4LcdInterface_bsp/
+C:/intelFPGA_lite/17.0/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../lab4LcdInterface_bsp/
+[BSP build complete]
+Info: Compiling main.c to obj/default/main.o
+nios2-elf-gcc -xc -MP -MMD -c -I../lab4LcdInterface_bsp//HAL/inc -I../lab4LcdInterface_bsp/ -I../lab4LcdInterface_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mno-hw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/main.o main.c
+main.c:16:28: fatal error: tuxAnimation_1.h: No such file or directory
+compilation terminated.
+make: *** [obj/default/main.o] Error 1
+17:17:34 **** Incremental Build of configuration Nios II for project lab4LcdInterface_bsp ****
+make all 
+[BSP build complete]
+17:17:50 **** Incremental Build of configuration Nios II for project lab4LcdInterface ****
+make all 
+Info: Building ../lab4LcdInterface_bsp/
+C:/intelFPGA_lite/17.0/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../lab4LcdInterface_bsp/
+[BSP build complete]
+Info: Compiling main.c to obj/default/main.o
+nios2-elf-gcc -xc -MP -MMD -c -I../lab4LcdInterface_bsp//HAL/inc -I../lab4LcdInterface_bsp/ -I../lab4LcdInterface_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mno-hw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/main.o main.c
+main.c:24:28: fatal error: tuxAnimation_1.h: No such file or directory
+compilation terminated.
+make: *** [obj/default/main.o] Error 1
+17:17:52 **** Incremental Build of configuration Nios II for project lab4LcdInterface_bsp ****
+make all 
+[BSP build complete]
+17:18:03 **** Incremental Build of configuration Nios II for project lab4LcdInterface ****
+make all 
+Info: Building ../lab4LcdInterface_bsp/
+C:/intelFPGA_lite/17.0/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../lab4LcdInterface_bsp/
+[BSP build complete]
+Info: Compiling main.c to obj/default/main.o
+nios2-elf-gcc -xc -MP -MMD -c -I../lab4LcdInterface_bsp//HAL/inc -I../lab4LcdInterface_bsp/ -I../lab4LcdInterface_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mno-hw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/main.o main.c
+In file included from main.c:24:0:
+./inc/tuxAnimation_1.h:6:63: warning: missing braces around initializer [-Wmissing-braces]
+ const unsigned short picture_array_tuxAnimation_1[320][240] = {0x5228,0x000E,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
+                                                               ^
+./inc/tuxAnimation_1.h:6:63: note: (near initialization for 'picture_array_tuxAnimation_1')
+main.c:25:28: fatal error: tuxAnimation_2.h: No such file or directory
+compilation terminated.
+make: *** [obj/default/main.o] Error 1
+17:18:05 **** Incremental Build of configuration Nios II for project lab4LcdInterface_bsp ****
+make all 
+[BSP build complete]
+17:18:56 **** Incremental Build of configuration Nios II for project lab4LcdInterface ****
+make all 
+Info: Building ../lab4LcdInterface_bsp/
+C:/intelFPGA_lite/17.0/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../lab4LcdInterface_bsp/
+[BSP build complete]
+Info: Compiling main.c to obj/default/main.o
+nios2-elf-gcc -xc -MP -MMD -c -I../lab4LcdInterface_bsp//HAL/inc -I../lab4LcdInterface_bsp/ -I../lab4LcdInterface_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mno-hw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/main.o main.c
+main.c:24:28: fatal error: tuxAnimation_1.h: No such file or directory
+compilation terminated.
+make: *** [obj/default/main.o] Error 1
+17:18:58 **** Incremental Build of configuration Nios II for project lab4LcdInterface_bsp ****
+make all 
+[BSP build complete]
+17:22:14 **** Incremental Build of configuration Nios II for project lab4LcdInterface ****
+make all 
+Info: Building ../lab4LcdInterface_bsp/
+C:/intelFPGA_lite/17.0/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../lab4LcdInterface_bsp/
+[BSP build complete]
+Info: Compiling main.c to obj/default/main.o
+nios2-elf-gcc -xc -MP -MMD -c -I../lab4LcdInterface_bsp//HAL/inc -I../lab4LcdInterface_bsp/ -I../lab4LcdInterface_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mno-hw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/main.o main.c
+main.c:24:28: fatal error: tuxAnimation_1.h: No such file or directory
+compilation terminated.
+make: *** [obj/default/main.o] Error 1
+17:22:16 **** Incremental Build of configuration Nios II for project lab4LcdInterface_bsp ****
+make all 
+[BSP build complete]
+17:23:07 **** Incremental Build of configuration Nios II for project lab4LcdInterface ****
+make all 
+Info: Building ../lab4LcdInterface_bsp/
+C:/intelFPGA_lite/17.0/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../lab4LcdInterface_bsp/
+[BSP build complete]
+Info: Compiling main.c to obj/default/main.o
+nios2-elf-gcc -xc -MP -MMD -c -I../lab4LcdInterface_bsp//HAL/inc -I../lab4LcdInterface_bsp/ -I../lab4LcdInterface_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mno-hw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/main.o main.c
+In file included from main.c:24:0:
+./inc/tuxAnimation_1.h:6:63: warning: missing braces around initializer [-Wmissing-braces]
+ const unsigned short picture_array_tuxAnimation_1[320][240] = {0x5228,0x000E,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
+                                                               ^
+./inc/tuxAnimation_1.h:6:63: note: (near initialization for 'picture_array_tuxAnimation_1')
+In file included from main.c:25:0:
+./inc/tuxAnimation_2.h:6:63: warning: missing braces around initializer [-Wmissing-braces]
+ const unsigned short picture_array_tuxAnimation_2[320][240] = {0x5228,0x000E,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
+                                                               ^
+./inc/tuxAnimation_2.h:6:63: note: (near initialization for 'picture_array_tuxAnimation_2')
+In file included from main.c:26:0:
+./inc/tuxAnimation_3.h:6:63: warning: missing braces around initializer [-Wmissing-braces]
+ const unsigned short picture_array_tuxAnimation_3[320][240] = {0x5228,0x000E,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
+                                                               ^
+./inc/tuxAnimation_3.h:6:63: note: (near initialization for 'picture_array_tuxAnimation_3')
+main.c: In function 'main':
+main.c:35:3: warning: implicit declaration of function 'init_LCD' [-Wimplicit-function-declaration]
+   init_LCD();
+   ^
+main.c: At top level:
+main.c:49:6: warning: conflicting types for 'init_LCD'
+ void init_LCD() {
+      ^
+main.c:35:3: note: previous implicit declaration of 'init_LCD' was here
+   init_LCD();
+   ^
+In file included from main.c:19:0:
+main.c: In function 'LCD_Write_Command':
+main.c:135:17: error: 'LCD_CTRL_0_BASE' undeclared (first use in this function)
+   IOWR_16DIRECT(LCD_CTRL_0_BASE,COM_OFFSET,command);
+                 ^
+../lab4LcdInterface_bsp//HAL/inc/io.h:51:23: note: in definition of macro '__IO_CALC_ADDRESS_DYNAMIC'
+   ((void *)(((alt_u8*)BASE) + (OFFSET)))
+                       ^
+main.c:135:3: note: in expansion of macro 'IOWR_16DIRECT'
+   IOWR_16DIRECT(LCD_CTRL_0_BASE,COM_OFFSET,command);
+   ^
+main.c:135:17: note: each undeclared identifier is reported only once for each function it appears in
+   IOWR_16DIRECT(LCD_CTRL_0_BASE,COM_OFFSET,command);
+                 ^
+../lab4LcdInterface_bsp//HAL/inc/io.h:51:23: note: in definition of macro '__IO_CALC_ADDRESS_DYNAMIC'
+   ((void *)(((alt_u8*)BASE) + (OFFSET)))
+                       ^
+main.c:135:3: note: in expansion of macro 'IOWR_16DIRECT'
+   IOWR_16DIRECT(LCD_CTRL_0_BASE,COM_OFFSET,command);
+   ^
+main.c:135:33: error: 'COM_OFFSET' undeclared (first use in this function)
+   IOWR_16DIRECT(LCD_CTRL_0_BASE,COM_OFFSET,command);
+                                 ^
+../lab4LcdInterface_bsp//HAL/inc/io.h:51:32: note: in definition of macro '__IO_CALC_ADDRESS_DYNAMIC'
+   ((void *)(((alt_u8*)BASE) + (OFFSET)))
+                                ^
+main.c:135:3: note: in expansion of macro 'IOWR_16DIRECT'
+   IOWR_16DIRECT(LCD_CTRL_0_BASE,COM_OFFSET,command);
+   ^
+main.c: In function 'LCD_Write_Data':
+main.c:139:17: error: 'LCD_CTRL_0_BASE' undeclared (first use in this function)
+   IOWR_16DIRECT(LCD_CTRL_0_BASE,DATA_OFFSET,data);
+                 ^
+../lab4LcdInterface_bsp//HAL/inc/io.h:51:23: note: in definition of macro '__IO_CALC_ADDRESS_DYNAMIC'
+   ((void *)(((alt_u8*)BASE) + (OFFSET)))
+                       ^
+main.c:139:3: note: in expansion of macro 'IOWR_16DIRECT'
+   IOWR_16DIRECT(LCD_CTRL_0_BASE,DATA_OFFSET,data);
+   ^
+main.c:139:33: error: 'DATA_OFFSET' undeclared (first use in this function)
+   IOWR_16DIRECT(LCD_CTRL_0_BASE,DATA_OFFSET,data);
+                                 ^
+../lab4LcdInterface_bsp//HAL/inc/io.h:51:32: note: in definition of macro '__IO_CALC_ADDRESS_DYNAMIC'
+   ((void *)(((alt_u8*)BASE) + (OFFSET)))
+                                ^
+main.c:139:3: note: in expansion of macro 'IOWR_16DIRECT'
+   IOWR_16DIRECT(LCD_CTRL_0_BASE,DATA_OFFSET,data);
+   ^
+make: *** [obj/default/main.o] Error 1
+17:23:09 **** Incremental Build of configuration Nios II for project lab4LcdInterface_bsp ****
+make all 
+[BSP build complete]
+17:25:20 **** Incremental Build of configuration Nios II for project lab4LcdInterface ****
+make all 
+Info: Building ../lab4LcdInterface_bsp/
+C:/intelFPGA_lite/17.0/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../lab4LcdInterface_bsp/
+[BSP build complete]
+Info: Compiling main.c to obj/default/main.o
+nios2-elf-gcc -xc -MP -MMD -c -I../lab4LcdInterface_bsp//HAL/inc -I../lab4LcdInterface_bsp/ -I../lab4LcdInterface_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mno-hw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/main.o main.c
+In file included from main.c:24:0:
+./inc/tuxAnimation_1.h:6:63: warning: missing braces around initializer [-Wmissing-braces]
+ const unsigned short picture_array_tuxAnimation_1[320][240] = {0x5228,0x000E,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
+                                                               ^
+./inc/tuxAnimation_1.h:6:63: note: (near initialization for 'picture_array_tuxAnimation_1')
+In file included from main.c:25:0:
+./inc/tuxAnimation_2.h:6:63: warning: missing braces around initializer [-Wmissing-braces]
+ const unsigned short picture_array_tuxAnimation_2[320][240] = {0x5228,0x000E,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
+                                                               ^
+./inc/tuxAnimation_2.h:6:63: note: (near initialization for 'picture_array_tuxAnimation_2')
+In file included from main.c:26:0:
+./inc/tuxAnimation_3.h:6:63: warning: missing braces around initializer [-Wmissing-braces]
+ const unsigned short picture_array_tuxAnimation_3[320][240] = {0x5228,0x000E,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
+                                                               ^
+./inc/tuxAnimation_3.h:6:63: note: (near initialization for 'picture_array_tuxAnimation_3')
+main.c: In function 'main':
+main.c:35:3: warning: implicit declaration of function 'init_LCD' [-Wimplicit-function-declaration]
+   init_LCD();
+   ^
+main.c: At top level:
+main.c:49:6: warning: conflicting types for 'init_LCD'
+ void init_LCD() {
+      ^
+main.c:35:3: note: previous implicit declaration of 'init_LCD' was here
+   init_LCD();
+   ^
+Info: Linking lab4LcdInterface.elf
+nios2-elf-g++  -T'../lab4LcdInterface_bsp//linker.x' -msys-crt0='../lab4LcdInterface_bsp//obj/HAL/src/crt0.o' -msys-lib=hal_bsp -L../lab4LcdInterface_bsp/   -Wl,-Map=lab4LcdInterface.map   -O0 -g -Wall   -mno-hw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o lab4LcdInterface.elf obj/default/main.o -lm -msys-lib=m
+nios2-elf-insert lab4LcdInterface.elf --thread_model hal --cpu_name CPU --qsys true --simulation_enabled false --id 0 --sidp 0x20030c0 --timestamp 1508683940 --stderr_dev jtag_uart --stdin_dev jtag_uart --stdout_dev jtag_uart --sopc_system_name systemFile --quartus_project_dir "D:/syncplicity/z003nc3v/Documents/MSE/1Sem_HS17_18/TSM_EmbHardw/w4/exercises/lab4LcdInterface" --jdi ../..//output_files/mainRevision.jdi --sopcinfo D:/syncplicity/z003nc3v/Documents/MSE/1Sem_HS17_18/TSM_EmbHardw/w4/exercises/lab4LcdInterface/software/lab4LcdInterface_bsp/../../systemFile.sopcinfo
+Info: (lab4LcdInterface.elf) 480 KBytes program size (code + initialized data).
+Info:                        15897 KBytes free for stack + heap.
+Info: Creating lab4LcdInterface.objdump
+nios2-elf-objdump --disassemble --syms --all-header --source lab4LcdInterface.elf >lab4LcdInterface.objdump
+[lab4LcdInterface build complete]
+17:25:30 **** Incremental Build of configuration Nios II for project lab4LcdInterface_bsp ****
+make all 
+[BSP build complete]
+17:25:44 **** Incremental Build of configuration Nios II for project lab4LcdInterface ****
+make all 
+Info: Building ../lab4LcdInterface_bsp/
+C:/intelFPGA_lite/17.0/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../lab4LcdInterface_bsp/
+[BSP build complete]
+Info: Compiling main.c to obj/default/main.o
+nios2-elf-gcc -xc -MP -MMD -c -I../lab4LcdInterface_bsp//HAL/inc -I../lab4LcdInterface_bsp/ -I../lab4LcdInterface_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mno-hw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/main.o main.c
+In file included from main.c:24:0:
+./inc/tuxAnimation_1.h:6:63: warning: missing braces around initializer [-Wmissing-braces]
+ const unsigned short picture_array_tuxAnimation_1[320][240] = {0x5228,0x000E,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
+                                                               ^
+./inc/tuxAnimation_1.h:6:63: note: (near initialization for 'picture_array_tuxAnimation_1')
+In file included from main.c:25:0:
+./inc/tuxAnimation_2.h:6:63: warning: missing braces around initializer [-Wmissing-braces]
+ const unsigned short picture_array_tuxAnimation_2[320][240] = {0x5228,0x000E,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
+                                                               ^
+./inc/tuxAnimation_2.h:6:63: note: (near initialization for 'picture_array_tuxAnimation_2')
+In file included from main.c:26:0:
+./inc/tuxAnimation_3.h:6:63: warning: missing braces around initializer [-Wmissing-braces]
+ const unsigned short picture_array_tuxAnimation_3[320][240] = {0x5228,0x000E,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
+                                                               ^
+./inc/tuxAnimation_3.h:6:63: note: (near initialization for 'picture_array_tuxAnimation_3')
+Info: Linking lab4LcdInterface.elf
+nios2-elf-g++  -T'../lab4LcdInterface_bsp//linker.x' -msys-crt0='../lab4LcdInterface_bsp//obj/HAL/src/crt0.o' -msys-lib=hal_bsp -L../lab4LcdInterface_bsp/   -Wl,-Map=lab4LcdInterface.map   -O0 -g -Wall   -mno-hw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o lab4LcdInterface.elf obj/default/main.o -lm -msys-lib=m
+nios2-elf-insert lab4LcdInterface.elf --thread_model hal --cpu_name CPU --qsys true --simulation_enabled false --id 0 --sidp 0x20030c0 --timestamp 1508683940 --stderr_dev jtag_uart --stdin_dev jtag_uart --stdout_dev jtag_uart --sopc_system_name systemFile --quartus_project_dir "D:/syncplicity/z003nc3v/Documents/MSE/1Sem_HS17_18/TSM_EmbHardw/w4/exercises/lab4LcdInterface" --jdi ../..//output_files/mainRevision.jdi --sopcinfo D:/syncplicity/z003nc3v/Documents/MSE/1Sem_HS17_18/TSM_EmbHardw/w4/exercises/lab4LcdInterface/software/lab4LcdInterface_bsp/../../systemFile.sopcinfo
+Info: (lab4LcdInterface.elf) 480 KBytes program size (code + initialized data).
+Info:                        15897 KBytes free for stack + heap.
+Info: Creating lab4LcdInterface.objdump
+nios2-elf-objdump --disassemble --syms --all-header --source lab4LcdInterface.elf >lab4LcdInterface.objdump
+[lab4LcdInterface build complete]
+17:25:52 **** Incremental Build of configuration Nios II for project lab4LcdInterface_bsp ****
+make all 
+[BSP build complete]
+17:27:25 **** Incremental Build of configuration Nios II for project lab4LcdInterface ****
+make all 
+Info: Building ../lab4LcdInterface_bsp/
+C:/intelFPGA_lite/17.0/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../lab4LcdInterface_bsp/
+[BSP build complete]
+Info: Compiling main.c to obj/default/main.o
+nios2-elf-gcc -xc -MP -MMD -c -I../lab4LcdInterface_bsp//HAL/inc -I../lab4LcdInterface_bsp/ -I../lab4LcdInterface_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mno-hw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/main.o main.c
+In file included from main.c:24:0:
+./inc/tuxAnimation_1.h:6:63: warning: missing braces around initializer [-Wmissing-braces]
+ const unsigned short picture_array_tuxAnimation_1[320][240] = {0x5228,0x000E,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
+                                                               ^
+./inc/tuxAnimation_1.h:6:63: note: (near initialization for 'picture_array_tuxAnimation_1')
+In file included from main.c:25:0:
+./inc/tuxAnimation_2.h:6:63: warning: missing braces around initializer [-Wmissing-braces]
+ const unsigned short picture_array_tuxAnimation_2[320][240] = {0x5228,0x000E,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
+                                                               ^
+./inc/tuxAnimation_2.h:6:63: note: (near initialization for 'picture_array_tuxAnimation_2')
+In file included from main.c:26:0:
+./inc/tuxAnimation_3.h:6:63: warning: missing braces around initializer [-Wmissing-braces]
+ const unsigned short picture_array_tuxAnimation_3[320][240] = {0x5228,0x000E,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
+                                                               ^
+./inc/tuxAnimation_3.h:6:63: note: (near initialization for 'picture_array_tuxAnimation_3')
+Info: Linking lab4LcdInterface.elf
+nios2-elf-g++  -T'../lab4LcdInterface_bsp//linker.x' -msys-crt0='../lab4LcdInterface_bsp//obj/HAL/src/crt0.o' -msys-lib=hal_bsp -L../lab4LcdInterface_bsp/   -Wl,-Map=lab4LcdInterface.map   -O0 -g -Wall   -mno-hw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o lab4LcdInterface.elf obj/default/main.o -lm -msys-lib=m
+nios2-elf-insert lab4LcdInterface.elf --thread_model hal --cpu_name CPU --qsys true --simulation_enabled false --id 0 --sidp 0x20030c0 --timestamp 1508683940 --stderr_dev jtag_uart --stdin_dev jtag_uart --stdout_dev jtag_uart --sopc_system_name systemFile --quartus_project_dir "D:/syncplicity/z003nc3v/Documents/MSE/1Sem_HS17_18/TSM_EmbHardw/w4/exercises/lab4LcdInterface" --jdi ../..//output_files/mainRevision.jdi --sopcinfo D:/syncplicity/z003nc3v/Documents/MSE/1Sem_HS17_18/TSM_EmbHardw/w4/exercises/lab4LcdInterface/software/lab4LcdInterface_bsp/../../systemFile.sopcinfo
+Info: (lab4LcdInterface.elf) 480 KBytes program size (code + initialized data).
+Info:                        15896 KBytes free for stack + heap.
+Info: Creating lab4LcdInterface.objdump
+nios2-elf-objdump --disassemble --syms --all-header --source lab4LcdInterface.elf >lab4LcdInterface.objdump
+[lab4LcdInterface build complete]
+17:27:31 **** Incremental Build of configuration Nios II for project lab4LcdInterface_bsp ****
+make all 
+[BSP build complete]
+17:28:41 **** Incremental Build of configuration Nios II for project lab4LcdInterface ****
+make all 
+Info: Building ../lab4LcdInterface_bsp/
+C:/intelFPGA_lite/17.0/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../lab4LcdInterface_bsp/
+[BSP build complete]
+[lab4LcdInterface build complete]
+17:33:22 **** Incremental Build of configuration Nios II for project lab4LcdInterface ****
+make all 
+Info: Building ../lab4LcdInterface_bsp/
+C:/intelFPGA_lite/17.0/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../lab4LcdInterface_bsp/
+[BSP build complete]
+Info: Compiling main.c to obj/default/main.o
+nios2-elf-gcc -xc -MP -MMD -c -I../lab4LcdInterface_bsp//HAL/inc -I../lab4LcdInterface_bsp/ -I../lab4LcdInterface_bsp//drivers/inc  -pipe -D__hal__ -DALT_NO_INSTRUCTION_EMULATION -DALT_SINGLE_THREADED    -O0 -g -Wall   -mno-hw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o obj/default/main.o main.c
+In file included from main.c:24:0:
+./inc/tuxAnimation_1.h:6:63: warning: missing braces around initializer [-Wmissing-braces]
+ const unsigned short picture_array_tuxAnimation_1[320][240] = {0x5228,0x000E,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
+                                                               ^
+./inc/tuxAnimation_1.h:6:63: note: (near initialization for 'picture_array_tuxAnimation_1')
+In file included from main.c:25:0:
+./inc/tuxAnimation_2.h:6:63: warning: missing braces around initializer [-Wmissing-braces]
+ const unsigned short picture_array_tuxAnimation_2[320][240] = {0x5228,0x000E,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
+                                                               ^
+./inc/tuxAnimation_2.h:6:63: note: (near initialization for 'picture_array_tuxAnimation_2')
+In file included from main.c:26:0:
+./inc/tuxAnimation_3.h:6:63: warning: missing braces around initializer [-Wmissing-braces]
+ const unsigned short picture_array_tuxAnimation_3[320][240] = {0x5228,0x000E,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
+                                                               ^
+./inc/tuxAnimation_3.h:6:63: note: (near initialization for 'picture_array_tuxAnimation_3')
+Info: Linking lab4LcdInterface.elf
+nios2-elf-g++  -T'../lab4LcdInterface_bsp//linker.x' -msys-crt0='../lab4LcdInterface_bsp//obj/HAL/src/crt0.o' -msys-lib=hal_bsp -L../lab4LcdInterface_bsp/   -Wl,-Map=lab4LcdInterface.map   -O0 -g -Wall   -mno-hw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o lab4LcdInterface.elf obj/default/main.o -lm -msys-lib=m
+nios2-elf-insert lab4LcdInterface.elf --thread_model hal --cpu_name CPU --qsys true --simulation_enabled false --id 0 --sidp 0x20030c0 --timestamp 1508683940 --stderr_dev jtag_uart --stdin_dev jtag_uart --stdout_dev jtag_uart --sopc_system_name systemFile --quartus_project_dir "D:/syncplicity/z003nc3v/Documents/MSE/1Sem_HS17_18/TSM_EmbHardw/w4/exercises/lab4LcdInterface" --jdi ../..//output_files/mainRevision.jdi --sopcinfo D:/syncplicity/z003nc3v/Documents/MSE/1Sem_HS17_18/TSM_EmbHardw/w4/exercises/lab4LcdInterface/software/lab4LcdInterface_bsp/../../systemFile.sopcinfo
+Info: (lab4LcdInterface.elf) 480 KBytes program size (code + initialized data).
+Info:                        15896 KBytes free for stack + heap.
+Info: Creating lab4LcdInterface.objdump
+nios2-elf-objdump --disassemble --syms --all-header --source lab4LcdInterface.elf >lab4LcdInterface.objdump
+[lab4LcdInterface build complete]
+17:33:29 **** Incremental Build of configuration Nios II for project lab4LcdInterface_bsp ****
+make all 
+[BSP build complete]
+17:33:34 **** Incremental Build of configuration Nios II for project lab4LcdInterface ****
+make all 
+Info: Building ../lab4LcdInterface_bsp/
+C:/intelFPGA_lite/17.0/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../lab4LcdInterface_bsp/
+[BSP build complete]
+[lab4LcdInterface build complete]

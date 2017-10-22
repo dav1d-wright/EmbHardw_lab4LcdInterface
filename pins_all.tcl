@@ -47,3 +47,26 @@ set_location_assignment PIN_V6 -to SDRAM_CS_n
 set_location_assignment PIN_U10 -to SDRAM_RAS_n
 set_location_assignment PIN_V10 -to SDRAM_CAS_n
 set_location_assignment PIN_V5 -to SDRAM_WE_n
+
+set_location_assignment PIN_A18  -to LCD_RESETn
+set_location_assignment PIN_G14  -to LCD_CSn
+set_location_assignment PIN_H14  -to LCD_DCn
+set_location_assignment PIN_G15  -to LCD_WRITEn
+set_location_assignment PIN_H15  -to LCD_READn
+set_location_assignment PIN_G13  -to LCD_IM0
+set_location_assignment PIN_G16  -to LCD_DATA[0]
+set_location_assignment PIN_E12  -to LCD_DATA[1]
+set_location_assignment PIN_E13  -to LCD_DATA[2]
+set_location_assignment PIN_F14  -to LCD_DATA[3]
+set_location_assignment PIN_E15  -to LCD_DATA[4]
+set_location_assignment PIN_F15  -to LCD_DATA[5]
+set_location_assignment PIN_E16  -to LCD_DATA[6]
+set_location_assignment PIN_F16  -to LCD_DATA[7]
+set_location_assignment PIN_C15  -to LCD_DATA[8]
+set_location_assignment PIN_D15  -to LCD_DATA[9]
+set_location_assignment PIN_C17  -to LCD_DATA[10]
+set_location_assignment PIN_D17  -to LCD_DATA[11]
+set_location_assignment PIN_C19  -to LCD_DATA[12]
+set_location_assignment PIN_D19  -to LCD_DATA[13]
+set_location_assignment PIN_A16  -to LCD_DATA[14]
+set_location_assignment PIN_B16  -to LCD_DATA[15]
