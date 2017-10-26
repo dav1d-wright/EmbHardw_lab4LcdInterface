@@ -1,6 +1,6 @@
 Assembler report for mainRevision
-Sun Oct 22 16:55:59 2017
-Quartus Prime Version 17.0.2 Build 602 07/19/2017 SJ Lite Edition
+Thu Oct 26 22:58:21 2017
+Quartus Prime Version 17.0.0 Build 595 04/25/2017 SJ Lite Edition
 
 
 ---------------------
@@ -39,7 +39,7 @@ agreement for further details.
 +---------------------------------------------------------------+
 ; Assembler Summary                                             ;
 +-----------------------+---------------------------------------+
-; Assembler Status      ; Successful - Sun Oct 22 16:55:59 2017 ;
+; Assembler Status      ; Successful - Thu Oct 26 22:58:21 2017 ;
 ; Revision Name         ; mainRevision                          ;
 ; Top-level Entity Name ; topLevelEntity                        ;
 ; Family                ; Cyclone IV E                          ;
@@ -79,8 +79,8 @@ agreement for further details.
 +----------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
 ; Option         ; Setting                                                                                                                                           ;
 +----------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
-; JTAG usercode  ; 0x00A62727                                                                                                                                        ;
-; Checksum       ; 0x00A62727                                                                                                                                        ;
+; JTAG usercode  ; 0x006A2032                                                                                                                                        ;
+; Checksum       ; 0x006A2032                                                                                                                                        ;
 +----------------+---------------------------------------------------------------------------------------------------------------------------------------------------+
 
 
@@ -89,8 +89,8 @@ agreement for further details.
 +--------------------+
 Info: *******************************************************************
 Info: Running Quartus Prime Assembler
-    Info: Version 17.0.2 Build 602 07/19/2017 SJ Lite Edition
-    Info: Processing started: Sun Oct 22 16:55:54 2017
+    Info: Version 17.0.0 Build 595 04/25/2017 SJ Lite Edition
+    Info: Processing started: Thu Oct 26 22:58:18 2017
 Info: Command: quartus_asm --read_settings_files=off --write_settings_files=off lab4LcdInterface -c mainRevision
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (115031): Writing out detailed assembly data for power analysis
@@ -98,9 +98,9 @@ Info (115030): Assembler is generating device programming files
 Info (115017): Design contains a time-limited core -- only a single, time-limited programming file can be generated
 Warning (210042): Can't convert time-limited SOF into POF, HEX File, TTF, or RBF
 Info: Quartus Prime Assembler was successful. 0 errors, 2 warnings
-    Info: Peak virtual memory: 594 megabytes
-    Info: Processing ended: Sun Oct 22 16:56:00 2017
-    Info: Elapsed time: 00:00:06
-    Info: Total CPU time (on all processors): 00:00:05
+    Info: Peak virtual memory: 580 megabytes
+    Info: Processing ended: Thu Oct 26 22:58:21 2017
+    Info: Elapsed time: 00:00:03
+    Info: Total CPU time (on all processors): 00:00:03
 
 

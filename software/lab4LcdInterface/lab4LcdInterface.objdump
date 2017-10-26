@@ -45,45 +45,45 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
  12 .debug_abbrev 000061c1  00000000  00000000  0009049e  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_line   00006b82  00000000  00000000  0009665f  2**0
+ 13 .debug_line   00006c00  00000000  00000000  0009665f  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_frame  00001670  00000000  00000000  0009d1e4  2**2
+ 14 .debug_frame  00001670  00000000  00000000  0009d260  2**2
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_str    00002915  00000000  00000000  0009e854  2**0
+ 15 .debug_str    00002915  00000000  00000000  0009e8d0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_loc    00004a4c  00000000  00000000  000a1169  2**0
+ 16 .debug_loc    00004a4c  00000000  00000000  000a11e5  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .debug_alt_sim_info 00000060  00000000  00000000  000a5bb8  2**2
+ 17 .debug_alt_sim_info 00000060  00000000  00000000  000a5c34  2**2
                   CONTENTS, READONLY, DEBUGGING
- 18 .debug_ranges 00000680  00000000  00000000  000a5c18  2**3
+ 18 .debug_ranges 00000680  00000000  00000000  000a5c98  2**3
                   CONTENTS, READONLY, DEBUGGING
- 19 .thread_model 00000003  00000000  00000000  000a8b2e  2**0
+ 19 .thread_model 00000003  00000000  00000000  000a8bae  2**0
                   CONTENTS, READONLY
- 20 .cpu          00000003  00000000  00000000  000a8b31  2**0
+ 20 .cpu          00000003  00000000  00000000  000a8bb1  2**0
                   CONTENTS, READONLY
- 21 .qsys         00000001  00000000  00000000  000a8b34  2**0
+ 21 .qsys         00000001  00000000  00000000  000a8bb4  2**0
                   CONTENTS, READONLY
- 22 .simulation_enabled 00000001  00000000  00000000  000a8b35  2**0
+ 22 .simulation_enabled 00000001  00000000  00000000  000a8bb5  2**0
                   CONTENTS, READONLY
- 23 .sysid_hash   00000004  00000000  00000000  000a8b36  2**0
+ 23 .sysid_hash   00000004  00000000  00000000  000a8bb6  2**0
                   CONTENTS, READONLY
- 24 .sysid_base   00000004  00000000  00000000  000a8b3a  2**0
+ 24 .sysid_base   00000004  00000000  00000000  000a8bba  2**0
                   CONTENTS, READONLY
- 25 .sysid_time   00000004  00000000  00000000  000a8b3e  2**0
+ 25 .sysid_time   00000004  00000000  00000000  000a8bbe  2**0
                   CONTENTS, READONLY
- 26 .stderr_dev   00000009  00000000  00000000  000a8b42  2**0
+ 26 .stderr_dev   00000009  00000000  00000000  000a8bc2  2**0
                   CONTENTS, READONLY
- 27 .stdin_dev    00000009  00000000  00000000  000a8b4b  2**0
+ 27 .stdin_dev    00000009  00000000  00000000  000a8bcb  2**0
                   CONTENTS, READONLY
- 28 .stdout_dev   00000009  00000000  00000000  000a8b54  2**0
+ 28 .stdout_dev   00000009  00000000  00000000  000a8bd4  2**0
                   CONTENTS, READONLY
- 29 .sopc_system_name 0000000a  00000000  00000000  000a8b5d  2**0
+ 29 .sopc_system_name 0000000a  00000000  00000000  000a8bdd  2**0
                   CONTENTS, READONLY
- 30 .quartus_project_dir 0000005d  00000000  00000000  000a8b67  2**0
+ 30 .quartus_project_dir 0000005d  00000000  00000000  000a8be7  2**0
                   CONTENTS, READONLY
- 31 .jdi          00003f9f  00000000  00000000  000a8bc4  2**0
+ 31 .jdi          0000522c  00000000  00000000  000a8c44  2**0
                   CONTENTS, READONLY
- 32 .sopcinfo     00068aec  00000000  00000000  000acb63  2**0
+ 32 .sopcinfo     00068aec  00000000  00000000  000ade70  2**0
                   CONTENTS, READONLY
 SYMBOL TABLE:
 01000000 l    d  .entry	00000000 .entry
@@ -1048,9 +1048,9 @@ int main()
  1000418:	e0fffc17 	ldw	r3,-16(fp)
  100041c:	00805004 	movi	r2,320
  1000420:	18bfd536 	bltu	r3,r2,1000378 <__alt_mem_TCDM+0xfefff378>
-			  {
 				  LCD_Write_Command(picture_array_tuxAnimation_2[i][j]);
-			  }		  }
+			  }
+		  }
 	  }
 
 	  for(int i = 0; i < picture_height_tuxAnimation_3; i++)
@@ -1097,7 +1097,7 @@ int main()
  100049c:	10bfffcc 	andi	r2,r2,65535
  10004a0:	1009883a 	mov	r4,r2
  10004a4:	10006f80 	call	10006f8 <LCD_Write_Command>
-			  }		  }
+		  }
 	  }
 
 	  for(int i = 0; i < picture_height_tuxAnimation_3; i++)
@@ -1109,9 +1109,9 @@ int main()
  10004b4:	e0ffff17 	ldw	r3,-4(fp)
  10004b8:	00803c04 	movi	r2,240
  10004bc:	18bfdd36 	bltu	r3,r2,1000434 <__alt_mem_TCDM+0xfefff434>
-			  {
 				  LCD_Write_Command(picture_array_tuxAnimation_2[i][j]);
-			  }		  }
+			  }
+		  }
 	  }
 
 	  for(int i = 0; i < picture_height_tuxAnimation_3; i++)
@@ -1121,10 +1121,10 @@ int main()
  10004cc:	e0fffe17 	ldw	r3,-8(fp)
  10004d0:	00805004 	movi	r2,320
  10004d4:	18bfd536 	bltu	r3,r2,100042c <__alt_mem_TCDM+0xfefff42c>
-			  else
 			  {
 				  LCD_Write_Command(picture_array_tuxAnimation_3[i][j]);
-			  }		  }
+			  }
+		  }
 	  }
   }
  10004d8:	003f7806 	br	10002bc <__alt_mem_TCDM+0xfefff2bc>
@@ -1362,9 +1362,9 @@ void LCD_Write_Command(int command) {
  10006fc:	df000115 	stw	fp,4(sp)
  1000700:	df000104 	addi	fp,sp,4
  1000704:	e13fff15 	stw	r4,-4(fp)
-  IOWR_16DIRECT(LCD_BASE,0x00,command);
+  IOWR_16DIRECT(LCD_BASE,0x01,command);
  1000708:	00808034 	movhi	r2,512
- 100070c:	108c2e04 	addi	r2,r2,12472
+ 100070c:	108c2e44 	addi	r2,r2,12473
  1000710:	e0ffff0b 	ldhu	r3,-4(fp)
  1000714:	10c0002d 	sthio	r3,0(r2)
 }
@@ -1381,9 +1381,9 @@ void LCD_Write_Data(int data) {
  1000730:	df000115 	stw	fp,4(sp)
  1000734:	df000104 	addi	fp,sp,4
  1000738:	e13fff15 	stw	r4,-4(fp)
-  IOWR_16DIRECT(LCD_BASE,0x01,data);
+  IOWR_16DIRECT(LCD_BASE,0x00,data);
  100073c:	00808034 	movhi	r2,512
- 1000740:	108c2e44 	addi	r2,r2,12473
+ 1000740:	108c2e04 	addi	r2,r2,12472
  1000744:	e0ffff0b 	ldhu	r3,-4(fp)
  1000748:	10c0002d 	sthio	r3,0(r2)
 }

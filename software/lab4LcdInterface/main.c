@@ -65,7 +65,8 @@ int main()
 			  else
 			  {
 				  LCD_Write_Command(picture_array_tuxAnimation_2[i][j]);
-			  }		  }
+			  }
+		  }
 	  }
 
 	  for(int i = 0; i < picture_height_tuxAnimation_3; i++)
@@ -79,7 +80,8 @@ int main()
 			  else
 			  {
 				  LCD_Write_Command(picture_array_tuxAnimation_3[i][j]);
-			  }		  }
+			  }
+		  }
 	  }
   }
 
@@ -174,9 +176,9 @@ void init_LCD() {
 }
 
 void LCD_Write_Command(int command) {
-  IOWR_16DIRECT(LCD_BASE,0x00,command);
+  IOWR_16DIRECT(LCD_BASE,0x01,command);
 }
 
 void LCD_Write_Data(int data) {
-  IOWR_16DIRECT(LCD_BASE,0x01,data);
+  IOWR_16DIRECT(LCD_BASE,0x00,data);
 }

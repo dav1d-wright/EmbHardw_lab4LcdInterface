@@ -1,6 +1,6 @@
-17:33:29 **** Incremental Build of configuration Nios II for project lab4LcdInterface_bsp ****
+23:01:12 **** Build of configuration Nios II for project lab4LcdInterface_bsp ****
 make all 
 [BSP build complete]
 
-17:33:29 Build Finished (took 899ms)
+23:01:13 Build Finished (took 848ms)
 

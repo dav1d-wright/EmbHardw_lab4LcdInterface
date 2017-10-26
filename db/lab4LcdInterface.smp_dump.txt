@@ -35,8 +35,8 @@ i_state.101 0 1 0 0 0 1
 i_state.111 1 0 0 0 0 1 
 
 State Machine - |topLevelEntity|systemFile:inst|LcdDriver:lcd|TxStatePres_D
-Name TxStatePres_D.TxStatePostTx TxStatePres_D.TxStateTx TxStatePres_D.TxStatePreTx TxStatePres_D.TxStateIdle TxStatePres_D.TxStateDispReset TxStatePres_D.TxSTateReset 
-TxStatePres_D.TxSTateReset 0 0 0 0 0 0 
+Name TxStatePres_D.TxStatePostTx TxStatePres_D.TxStateTx TxStatePres_D.TxStatePreTx TxStatePres_D.TxStateIdle TxStatePres_D.TxStateDispReset TxStatePres_D.TxStateReset 
+TxStatePres_D.TxStateReset 0 0 0 0 0 0 
 TxStatePres_D.TxStateDispReset 0 0 0 0 1 1 
 TxStatePres_D.TxStateIdle 0 0 0 1 0 1 
 TxStatePres_D.TxStatePreTx 0 0 1 0 0 1 

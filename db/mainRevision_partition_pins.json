@@ -20,6 +20,10 @@
 					"strict" : false
 				},
 				{
+					"name" : "LCD_RESETn",
+					"strict" : false
+				},
+				{
 					"name" : "LCD_WRITEn",
 					"strict" : false
 				},

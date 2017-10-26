@@ -26,9 +26,9 @@ architecture behavioural of FIFO is
     signal statePres_D:         state_T;
     
     signal data_D:              memory_T;
-    signal numEl_D:             natural;
-    signal head_D:              natural;
-    signal tail_D:              natural;
+    signal numEl_D:             integer;
+    signal head_D:              integer;
+    signal tail_D:              integer;
     
     -- edge detection of Push_SI and Pop_SI
     signal Push_Edge_D:        std_logic;
@@ -38,19 +38,21 @@ architecture behavioural of FIFO is
     signal Pop_Last_D:         std_logic;
 begin
 
-    edgeDetect: process(Reset_NRI, Clk_CI)
-    begin
-        if(Reset_NRI = '0')then
-            Pop_Edge_D <= '0';
-            Push_Edge_D <= '0';
-        elsif(Clk_CI'event and Clk_CI = '1')then
-            Pop_Edge_D <=  Pop_SI and (not Pop_Last_D);
-            Pop_Last_D <=  Pop_SI;
-            
-            Push_Edge_D <= Push_SI and (not Push_Last_D);
-            Push_Last_D <= Push_SI;
-        end if;
-    end process edgeDetect;
+    -- edgeDetect: process(Reset_NRI, Clk_CI)
+    -- begin
+        -- if(Clk_CI'event and Clk_CI = '1')then
+            -- if(Reset_NRI = '0')then
+                -- Pop_Edge_D <= '0';
+                -- Push_Edge_D <= '0';
+            -- elsif(Clk_CI'event and Clk_CI = '1')then
+                -- Pop_Edge_D <=  Pop_SI and (not Pop_Last_D);
+                -- Pop_Last_D <=  Pop_SI;
+                
+                -- Push_Edge_D <= Push_SI and (not Push_Last_D);
+                -- Push_Last_D <= Push_SI;
+            -- end if;
+        -- end if;
+    -- end process edgeDetect;
 --------------------------------------------------------------------------------
 ---                                                                          ---
 --- state machine                                                            ---
@@ -66,14 +68,13 @@ begin
     end process nextState;
     
     
-    logic: process(Clk_CI)
+    logic: process(statePres_D, Push_SI, Pop_SI)
     begin
-        stateNext_D <= statePres_D;
         case statePres_D is
             when stateReset =>
                 Empty_SO <= '1';
                 Full_SO <= '0';
-                Data_DO <= (others => '0');
+                Data_DO <= (others => 'Z');
                 numEl_D <= 0;
                 head_D <= 0;
                 tail_D <= 0;
@@ -82,8 +83,10 @@ begin
             when stateEmpty =>
                 Empty_SO <= '1';
                 Full_SO <= '0'; 
+                numEl_D <= 0;
+                Data_DO <= (others => 'Z');
                 
-                if(Push_Edge_D = '1')then
+                if(Push_SI = '1')then
                     if(numEl_D < SIZE)then
                         if(head_D < SIZE-1)then
                             head_D <= head_D + 1;
@@ -91,20 +94,31 @@ begin
                             head_D <= 0;
                         end if;
                         
-                        numEl_D <= numEl_D + 1;
-                        data_D(head_D) <= Data_DI;                    
+                        numEl_D <= 1;
+                        data_D(head_D) <= Data_DI;
+                    else
+                        head_D <= head_D;
+                        numEl_D <= 0;
+                        data_D(head_D) <= data_D(head_D);
                     end if;
+                else
+                    head_D <= head_D;
+                    numEl_D <= 0;
+                    data_D(head_D) <= data_D(head_D);
                 end if;
                 
                 if(numEl_D /= 0)then
                     stateNext_D <= stateFilling;
+                else  
+                    stateNext_D <= stateEmpty;
                 end if;
                 
             when stateFilling =>
                 Empty_SO <= '0';
                 Full_SO <= '0';
+                numEl_D <= numEl_D;
                 
-                if(Pop_Edge_D = '1')then
+                if(Push_SI = '1')then
                     if(numEl_D < SIZE)then
                         if(head_D < SIZE-1)then
                             head_D <= head_D + 1;
@@ -115,9 +129,13 @@ begin
                         numEl_D <= numEl_D + 1;
                         data_D(head_D) <= Data_DI;                    
                     end if;
+                else
+                    head_D <= head_D;
+                    numEl_D <= numEl_D;
+                    data_D(head_D) <= data_D(head_D);
                 end if;
                 
-                if(Pop_Edge_D = '1')then
+                if(Pop_SI = '1')then
                     if(numEl_D > 0)then
                         Data_DO <= data_D(tail_D);                    
 
@@ -128,6 +146,10 @@ begin
                         end if;
                             
                         numEl_D <= numEl_D - 1;
+                    else
+                        Data_DO <= (others => 'Z');
+                        tail_D <= tail_D;
+                        numEl_D <= numEl_D;
                     end if;
                 end if;
                 
@@ -136,15 +158,46 @@ begin
                 elsif(numEl_D = 0)then
                     stateNext_D <= stateEmpty;
                 else
-                    stateNext_D <= statePres_D;
+                    stateNext_D <= stateFilling;
                 end if;
                 
             when stateFull =>
+                numEl_D <= numEl_D;
                 Empty_SO <= '0';
                 Full_SO <= '1';
+                
+                if(Pop_SI = '1')then
+                    if(numEl_D > 0)then
+                        Data_DO <= data_D(tail_D);                    
+
+                        if(tail_D < SIZE-1)then
+                            tail_D <= tail_D + 1;
+                        else
+                            tail_D <= 0;
+                        end if;
+                            
+                        numEl_D <= numEl_D - 1;
+                    else
+                        Data_DO <= (others => 'Z');
+                        tail_D <= tail_D;
+                        numEl_D <= numEl_D;
+                    end if;
+                end if;
+                
                 if(numEl_D /= SIZE)then
                     stateNext_D <= stateFilling;
+                else
+                    stateNext_D <= stateFull;
                 end if;
+                
+            when others =>
+                Empty_SO <= '1';
+                Full_SO <= '0';
+                Data_DO <= (others => 'Z');
+                numEl_D <= 0;
+                head_D <= 0;
+                tail_D <= 0;
+                stateNext_D <= stateReset;
         end case;
     end process logic;
 end behavioural;

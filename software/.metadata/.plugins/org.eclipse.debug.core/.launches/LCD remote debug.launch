@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="com.altera.sbtgui.launch.hardware.Nios2HardwareLaunchConfiguration">
+<booleanAttribute key="acceptBadSysId" value="true"/>
+<booleanAttribute key="acceptBadTimestamp" value="false"/>
 <stringAttribute key="byteStreamDeviceCableName" value="USB-Blaster on localhost [USB-0]"/>
 <stringAttribute key="byteStreamDeviceDeviceID" value="1"/>
 <stringAttribute key="byteStreamDeviceInstanceID" value="0"/>
-<stringAttribute key="com.altera.sbtgui.launch.REMOTE_PORT" value="50022"/>
+<stringAttribute key="com.altera.sbtgui.launch.REMOTE_PORT" value="51977"/>
 <booleanAttribute key="downloadProgram" value="true"/>
 <stringAttribute key="elfFile" value="D:\syncplicity\z003nc3v\Documents\MSE\1Sem_HS17_18\TSM_EmbHardw\w4\exercises\lab4LcdInterface\software\lab4LcdInterface\lab4LcdInterface.elf"/>
 <stringAttribute key="org.eclipse.cdt.debug.mi.core.GDB_INIT" value=""/>
