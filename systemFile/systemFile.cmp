@@ -1,24 +1,24 @@
 	component systemFile is
 		port (
-			altpll_0_c2_clk                 : out   std_logic;                                        -- clk
-			clk_clk                         : in    std_logic                     := 'X';             -- clk
-			lcd_conduit_end_chipselect      : out   std_logic;                                        -- chipselect
-			lcd_conduit_end_lcdreset        : out   std_logic;                                        -- lcdreset
-			lcd_conduit_end_lcddata         : inout std_logic_vector(15 downto 0) := (others => 'X'); -- lcddata
-			lcd_conduit_end_read            : out   std_logic;                                        -- read
-			lcd_conduit_end_write           : out   std_logic;                                        -- write
-			lcd_conduit_end_data_cmd_select : out   std_logic;                                        -- data_cmd_select
-			lcd_conduit_end_im0             : out   std_logic;                                        -- im0
-			reset_reset_n                   : in    std_logic                     := 'X';             -- reset_n
-			sdram_ctrl_wire_addr            : out   std_logic_vector(11 downto 0);                    -- addr
-			sdram_ctrl_wire_ba              : out   std_logic_vector(1 downto 0);                     -- ba
-			sdram_ctrl_wire_cas_n           : out   std_logic;                                        -- cas_n
-			sdram_ctrl_wire_cke             : out   std_logic;                                        -- cke
-			sdram_ctrl_wire_cs_n            : out   std_logic;                                        -- cs_n
-			sdram_ctrl_wire_dq              : inout std_logic_vector(15 downto 0) := (others => 'X'); -- dq
-			sdram_ctrl_wire_dqm             : out   std_logic_vector(1 downto 0);                     -- dqm
-			sdram_ctrl_wire_ras_n           : out   std_logic;                                        -- ras_n
-			sdram_ctrl_wire_we_n            : out   std_logic                                         -- we_n
+			altpll_0_c2_clk            : out   std_logic;                                        -- clk
+			clk_clk                    : in    std_logic                     := 'X';             -- clk
+			lcd_conduit_end_cs_n       : out   std_logic;                                        -- cs_n
+			lcd_conduit_end_data       : inout std_logic_vector(15 downto 0) := (others => 'X'); -- data
+			lcd_conduit_end_dc_n       : out   std_logic;                                        -- dc_n
+			lcd_conduit_end_im0        : out   std_logic;                                        -- im0
+			lcd_conduit_end_lcdreset_n : out   std_logic;                                        -- lcdreset_n
+			lcd_conduit_end_rd_n       : out   std_logic;                                        -- rd_n
+			lcd_conduit_end_wr_n       : out   std_logic;                                        -- wr_n
+			reset_reset_n              : in    std_logic                     := 'X';             -- reset_n
+			sdram_ctrl_wire_addr       : out   std_logic_vector(11 downto 0);                    -- addr
+			sdram_ctrl_wire_ba         : out   std_logic_vector(1 downto 0);                     -- ba
+			sdram_ctrl_wire_cas_n      : out   std_logic;                                        -- cas_n
+			sdram_ctrl_wire_cke        : out   std_logic;                                        -- cke
+			sdram_ctrl_wire_cs_n       : out   std_logic;                                        -- cs_n
+			sdram_ctrl_wire_dq         : inout std_logic_vector(15 downto 0) := (others => 'X'); -- dq
+			sdram_ctrl_wire_dqm        : out   std_logic_vector(1 downto 0);                     -- dqm
+			sdram_ctrl_wire_ras_n      : out   std_logic;                                        -- ras_n
+			sdram_ctrl_wire_we_n       : out   std_logic                                         -- we_n
 		);
 	end component systemFile;
 

@@ -1,9 +1,9 @@
-23:01:24 **** Incremental Build of configuration Nios II for project lab4LcdInterface ****
+20:33:55 **** Incremental Build of configuration Nios II for project lab4LcdInterface ****
 make all 
 Info: Building ../lab4LcdInterface_bsp/
 D:/programs/intelFPGA_lite/17.0/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../lab4LcdInterface_bsp/
 [BSP build complete]
 [lab4LcdInterface build complete]
 
-23:01:25 Build Finished (took 1s.48ms)
+20:33:56 Build Finished (took 1s.0ms)
 

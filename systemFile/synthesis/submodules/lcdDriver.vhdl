@@ -14,7 +14,7 @@ entity LcdDriver is
         -- communication between CPU and LcdDriver
         Clk_CI:         	    in std_logic;
         Reset_NRI:      	    in std_logic;
-        Address_DI:     	    in std_logic_vector (1 downto 0);
+        Address_DI:     	    in std_logic_vector (2 downto 0);
         Write_SI:       	    in std_logic;
         WriteData_DI:		    in std_logic_vector (15 downto 0);
         Read_SI:		        in std_logic;
@@ -39,124 +39,165 @@ entity LcdDriver is
 end LcdDriver;
 
 architecture LCD of LcdDriver is 
-    component FIFO
-        generic (SIZE:              natural := 256);
+    -- D-FlipFlop for input storage 
+    component D_FF is
+        generic (WIDTH:     natural := 16);
         port
         (
-            Clk_CI:         	    in std_logic;
-            Reset_NRI:      	    in std_logic;
-            Push_SI:                in std_logic;
-            Pop_SI:                 in std_logic;
-            Data_DI:                in std_logic_vector (15 downto 0);
-            Data_DO:                out std_logic_vector (15 downto 0);
-            Full_SO:                out std_logic;
-            Empty_SO:               out std_logic
+            Clk_CI:         in std_logic;
+            Reset_NRI:      in std_logic;
+            Set_SI:         in std_logic;
+            D_DI:           in std_logic_vector (WIDTH-1 downto 0);
+            Q_DO:           out std_logic_vector(WIDTH-1 downto 0)
         );
     end component;
 
 
     -- State macine types & signals
 
-    type RxState_T              is (RxStateReset,
-                                    RxStateIdle,
-                                    RxStateRxPrePushCmd,
-                                    RxStateRxPrePushDataIdentifier,
-                                    RxStateRxPrePushData,
-                                    RxStateRxPostPushDataIdentifier,
-                                    RxStateRxPostPush);
-                                    
-    type TxState_T              is (TxStateReset, 
-                                    TxStateDispReset,
-                                    TxStateIdle,
-                                    TxStatePreTx,
-                                    TxStateTx,
-                                    TxStatePostTx);
+    type State_T                is (StateReset,
+                                    StateLcdReset,
+                                    StateIdle,
+                                    StateTxCmd,
+                                    StateTxDataIdentifier,
+                                    StatePostTxDataIdentifier,
+                                    StateTxData,
+                                    StatePostTx);
     
                                     
-    signal RxStateNext_D:       RxState_T := RxStateReset;
-    signal TxStateNext_D:       TxState_T := TxStateReset;
-
-
-    signal RxStatePres_D:       RxState_T := RxStateReset;
-    signal TxStatePres_D:       TxState_T := TxStateReset;   
-
-    -- FIFO signals
-    signal Pop_S:               std_logic;
-    signal Push_S:              std_logic;
-    signal RxData_D:            std_logic_vector (15 downto 0);
-    signal TxData_D:            std_logic_vector (15 downto 0);
-    signal FifoFull_D:          std_logic;
-    signal FifoEmpty_D:         std_logic;
+    signal StateNext_D:             State_T := StateReset;
+    signal StatePres_D:             State_T := StateReset;
+        
+    signal IsData_D:                std_logic;
+        
+    signal BurstCount_D:            natural range 0 to 255;
+        
+    signal idleCount_D:             natural range 0 to 255;
     
-    signal IsData_D:            std_logic;
+    signal BitEnable_Persist_D:     std_logic_vector (15 downto 0) := (others => '0');
+    signal WriteData_Persist_D:     std_logic_vector (15 downto 0) := (others => '0');
+    signal SetBitEnable_S:          std_logic := '0';
+    signal SetWriteData_S:          std_logic := '0';
     
-    signal BitEnable_D:         std_logic_vector (15 downto 0);
-    signal BurstCount_D:        integer;
-    
-    signal idleCount_D:         unsigned (7 downto 0);
-    
-    -- edge detection of Write_SI and Read_SI
-    signal Write_Edge_D:        std_logic;
-    signal Write_Last_D:        std_logic;
-    
-    signal Read_Edge_D:         std_logic;    
-    signal Read_Last_D:         std_logic;
+    signal BitEnable_D:             std_logic_vector (15 downto 0);
 begin
-    dataBuffer: FIFO generic map(256) port map(Clk_CI => Clk_CI,
-                                                Reset_NRI => Reset_NRI,
-                                                Push_SI => Push_S,
-                                                Pop_SI => Pop_S, 
-                                                Data_DI => RxData_D,
-                                                Data_DO => TxData_D,
-                                                Full_SO => FifoFull_D,
-                                                Empty_SO => FifoEmpty_D);
-                                                
-    -- edgeDetect: process(Reset_NRI, Clk_CI)
-    -- begin
-        -- if(Clk_CI'event and Clk_CI = '1')then
-            -- if(Reset_NRI = '0')then
-                -- Read_Edge_D <= '0';
-                -- Write_Edge_D <= '0';
-            -- elsif(Clk_CI'event and Clk_CI = '1')then
-                -- Write_Edge_D <= Write_SI and (not Write_Last_D);
-                -- Write_Last_D <= Write_SI;
-                
-                -- Read_Edge_D <= Read_SI and (not Read_Last_D);
-                -- Read_Last_D <= Read_SI;
-            -- end if;
-        -- end if;
-    -- end process edgeDetect;
 --------------------------------------------------------------------------------
 ---                                                                          ---
---- Receiver state machine                                                   ---
+--- data storage                                                             ---
 ---                                                                          ---
 --------------------------------------------------------------------------------
+WriteDataStorage: D_FF generic map(WIDTH => 16)
+                        port map
+                        (
+                            Clk_CI      => Clk_CI,                        
+                            Reset_NRI   => Reset_NRI,
+                            Set_SI      => SetWriteData_S,
+                            D_DI        => WriteData_DI,
+                            Q_DO        => WriteData_Persist_D
+                        );
+
+BitEnableStorage: D_FF generic map(WIDTH => 16)
+                        port map
+                        (
+                            Clk_CI      => Clk_CI,                        
+                            Reset_NRI   => Reset_NRI,
+                            Set_SI      => SetBitEnable_S,
+                            D_DI        => BitEnable_D,
+                            Q_DO        => BitEnable_Persist_D
+                        );
+--------------------------------------------------------------------------------
+---                                                                          ---
+--- state machine                                                            ---
+---                                                                          ---
+--------------------------------------------------------------------------------
+
     nextStateRx: process(Clk_CI, Reset_NRI)
     begin
         if(Reset_NRI = '0')then
-            RxStatePres_D <= RxStateReset;
+            StatePres_D <= StateReset;
         elsif(Clk_CI'event and Clk_CI = '1')then
-            RxStatePres_D <= RxStateNext_D;
+            StatePres_D <= StateNext_D;
         end if;
     end process;
     
-    logicRx: process(Write_SI, RxStatePres_D)
+    
+    logic: process(Write_SI, StatePres_D)
+        -- storage for all input data on read/write cycles
+        variable Address_D:                 std_logic_vector (2 downto 0);
+        variable ByteEnable_D:              std_logic_vector (1 downto 0);
+        variable BeginBurstTransfer_D:      std_logic;
+        variable TotalBurstCount_D:         natural range 0 to 255;
+
     begin
-        case RxStatePres_D is
-            when RxStateReset =>
+        case StatePres_D is
+            when StateReset =>
                 WaitReq_SO <= '0';
-                Push_S <= '0';
-                RxData_D <= (others => '0');
                 BurstCount_D <= 0;
-                RxStateNext_D <= RxStateIdle;
+                StateNext_D <= StateLcdReset;
+                SetBitEnable_S <= '0';
+                SetWriteData_S <= '0';
+                DB_DIO <= (others => '0');     
+                Rd_NSO <= '1';   
+                Wr_NSO <= '1';              
+                Cs_NSO <= '1';               
+                DC_NSO <= '1';
+                LcdReset_NRO <= '1';                
+                IM0_SO <= '0';        
                 
-            when RxStateIdle =>
-                Push_S <= '0';
+                idleCount_D <= 0;
+                LcdReset_NRO <= '0';
+                
+            when StateLcdReset =>
+                SetBitEnable_S <= '0';
+                SetWriteData_S <= '0';
+                DB_DIO <= (others => '0');     
+                Rd_NSO <= '1';   
+                Wr_NSO <= '1';              
+                Cs_NSO <= '1';               
+                DC_NSO <= '1';
+                LcdReset_NRO <= '0';                
+                IM0_SO <= '0';  
+                WaitReq_SO <= '1';
+
+
+                if(idleCount_D < 5)then
+                    idleCount_D <= idleCount_D + 1;
+                    StateNext_D <= StateLcdReset;
+                else
+                    idleCount_D <= 0;
+                    StateNext_D <= StateIdle;
+                end if;
+                
+            when StateIdle =>
+                -- store input values as early as possible
+                Address_D := Address_DI;
+                ByteEnable_D := ByteEnable_DI;
+                TotalBurstCount_D := to_integer(unsigned(BurstCount_DI));
+                BeginBurstTransfer_D := BeginBurstTransfer_DI;
+                
+                -- default values
                 BurstCount_D <= 0;
-                RxData_D <= (others => '0');
                 WaitReq_SO <= '0';
+                
+                DB_DIO <= (others => '0');     
+                Rd_NSO <= '1';   
+                Wr_NSO <= '1';              
+                Cs_NSO <= '1';               
+                DC_NSO <= '1';
+                LcdReset_NRO <= '1';                
+                IM0_SO <= '0';  
+
+                idleCount_D <= 0;
+                
                 if(Write_SI = '1')then
-                    case ByteEnable_DI is
+                    SetWriteData_S <= '1';
+                    if(BeginBurstTransfer_D = '1')then
+                        BurstCount_D <= TotalBurstCount_D;
+                    else
+                        BurstCount_D <= 0;
+                    end if;
+                    
+                    case ByteEnable_D is
                         when "00" => 
                             BitEnable_D <= (others => '0');
                         when "01" =>
@@ -168,127 +209,196 @@ begin
                         when others =>
                             BitEnable_D <= (others => '0');
                     end case;
+                    SetBitEnable_S <= '1';
                     
-                    if(BeginBurstTransfer_DI = '1')then
-                        BurstCount_D <= to_integer(unsigned(BurstCount_DI));
-                    else
-                        BurstCount_D <= 0;
-                    end if;
                     
-                    case Address_DI is
-                        when "00" => 
+                    case Address_D is
+                        when "000" => 
                             IsData_D <= '1';
-                            RxStateNext_D <= RxStateRxPrePushDataIdentifier;
-                        when "01" =>
+                            StateNext_D <= StateTxDataIdentifier;
+                        when "001" =>
                             IsData_D <= '0';
-                            RxStateNext_D <= RxStateRxPrePushCmd;
+                            StateNext_D <= StateTxCmd;
                         when others =>
                             IsData_D <= IsData_D;
-                            RxStateNext_D <= RxStateIdle;
+                            StateNext_D <= StateIdle;
                     end case;
 
                 else
                     IsData_D <= '0';
                     BitEnable_D <= (others => '0');
                     BurstCount_D <= 0;
-                    RxStateNext_D <= RxStateIdle;
+                    SetWriteData_S <= '0';
+                    SetBitEnable_S <= '0';
+                    StateNext_D <= StateIdle;
                 end if;
                 
-            when RxStateRxPrePushCmd =>
-                BurstCount_D <= BurstCount_D;
-                if(FifoFull_D = '1')then
-                    WaitReq_SO <= '1';
-                    Push_S <= '0';
-                    RxData_D <= (others => '0');
-                    RxStateNext_D <= RxStateRxPrePushCmd;
-                else
-                    RxData_D <= WriteData_DI and BitEnable_D;
-                    WaitReq_SO <= '0';
-                    Push_S <= '1';
-                    RxStateNext_D <= RxStateRxPostPush;
-                end if;
                 
-            when RxStateRxPrePushDataIdentifier =>
-                BurstCount_D <= BurstCount_D;
-                if(FifoFull_D = '1')then
-                    WaitReq_SO <= '1';
-                    Push_S <= '0';
-                    RxData_D <= (others => '0');
-                    RxStateNext_D <= RxStateRxPrePushDataIdentifier;
-                else
-                    WaitReq_SO <= '0';
-                    RxData_D <= x"002C";
-                    Push_S <= '1';
-                    RxStateNext_D <= RxStateRxPostPushDataIdentifier;
-                end if;
+            when StateTxCmd =>
+                SetWriteData_S <= '0';
+                SetBitEnable_S <= '0';
+                -- -- debug begin
+                -- StateNext_D <= StateTxDataIdentifier;
+                -- -- debug end 
+                -- transfer to LCD
+                WaitReq_SO <= '1';
+                DB_DIO <= WriteData_Persist_D and BitEnable_Persist_D;
+
+                DC_NSO <='0';
                 
-            when RxStateRxPostPushDataIdentifier =>
-                BurstCount_D <= BurstCount_D;
-                Push_S <= '0';
-                RxData_D <= (others => '0');
-                RxStateNext_D <= RxStateRxPrePushData;
+                LcdReset_NRO <= '1';  
+                Rd_NSO <= '1';
+                Cs_NSO <= '0';
+                Wr_NSO <= '0';
+                IM0_SO <= '0';
                 
-            when RxStateRxPrePushData =>
-                BurstCount_D <= BurstCount_D;
-                if(FifoFull_D = '1')then
-                    WaitReq_SO <= '1';
-                    Push_S <= '0';
-                    RxData_D <= (others => '0');
-                    RxStateNext_D <= RxStateRxPrePushData;
-                else
-                    WaitReq_SO <= '0';
-                    RxData_D <= WriteData_DI and BitEnable_D;
-                    WaitReq_SO <= '0';
-                    Push_S <= '1';
-                    RxStateNext_D <= RxStateRxPostPush;
-                end if;
+                idleCount_D <= 0;
+                -- BurstCount_D <= BurstCount_D;
+                StateNext_D <= StatePostTx;
+                
+            when StateTxDataIdentifier =>
+                SetWriteData_S <= '0';
+                SetBitEnable_S <= '0';
+                -- -- debug begin
+                -- StateNext_D <= StateRxPostPushDataIdentifier;
+                -- -- debug end 
+                -- transfer to LCD
+                WaitReq_SO <= '1';
+                DB_DIO <= x"002C";
+
+                DC_NSO <= '1';
+                
+                LcdReset_NRO <= '1';  
+                Rd_NSO <= '1';
+                Cs_NSO <= '0';
+                Wr_NSO <= '0';
+                IM0_SO <= '0';
+                
+                idleCount_D <= 0;
+                
+                -- BurstCount_D <= BurstCount_D;
+
+                StateNext_D <= StatePostTxDataIdentifier;
+                
+            when StatePostTxDataIdentifier =>
+                WaitReq_SO <= '1';
+                SetWriteData_S <= '0';
+                SetBitEnable_S <= '0';
+
+                -- -- debug begin
+                -- StateNext_D <= StateIdle;
+                -- -- debug end 
+                -- BurstCount_D <= BurstCount_D;
 
                 
-            when RxStateRxPostPush =>
-                WaitReq_SO <= '0';
-                BurstCount_D <= BurstCount_D;
-                Push_S <= '0';
-                RxData_D <= (others => '0');
+                -- if(idleCount_D < 1)then
+                    DB_DIO <= x"002C";
+
+                    -- idleCount_D <= idleCount_D + 1;
+                    -- StateNext_D <= StatePostTxDataIdentifier;
+                -- else
+                    -- DB_DIO <= (others => '0');
+                    idleCount_D <= 0;
+                    LcdReset_NRO <= '1';  
+                    Rd_NSO <= '1';
+                    Cs_NSO <= '1';
+                    Wr_NSO <= '1';
+                    IM0_SO <= '0';
+                    StateNext_D <= StateTxData;
+                -- end if;
                 
+            when StateTxData =>
+                SetWriteData_S <= '0';
+                SetBitEnable_S <= '0';
+
+                -- -- debug begin
+                -- StateNext_D <= StateRxPostPush;
+                -- -- debug end                 
+                -- transfer to LCD
+                WaitReq_SO <= '1';
+                DB_DIO <= WriteData_Persist_D and BitEnable_Persist_D;
+
+                DC_NSO <= '1';
+                
+                LcdReset_NRO <= '1';  
+                Rd_NSO <= '1';
+                Cs_NSO <= '0';
+                Wr_NSO <= '0';
+                IM0_SO <= '0';
+                
+                idleCount_D <= 0;
+                
+                -- BurstCount_D <= BurstCount_D;
+
+                StateNext_D <= StatePostTx;
+
+                
+            when StatePostTx =>
+                SetWriteData_S <= '0';
+                SetBitEnable_S <= '0';
+
+
+                -- -- debug begin
+                -- StateNext_D <= StateIdle;
+                -- -- debug end 
+                if(IsData_D = '1')then
+                    DC_NSO <= '1';
+                else
+                    DC_NSO <= '0';
+                end if;
+                
+                -- if(idleCount_D < 1)then
+                    WaitReq_SO <= '1';
+                    DB_DIO <= WriteData_Persist_D and BitEnable_Persist_D;
+
+                    -- idleCount_D <= idleCount_D + 1;
+                    
+                    LcdReset_NRO <= '1';  
+                    Rd_NSO <= '1';
+                    Cs_NSO <= '0';
+                    Wr_NSO <= '0';
+                    IM0_SO <= '0';
+                
+                    StateNext_D <= StatePostTx;
+                -- elsif(BurstCount_D > 0)then
                 if(BurstCount_D > 0)then
+                    idleCount_D <= 0;
+                    WaitReq_SO <= '0';
+                    DB_DIO <= (others => '0');
+
                     BurstCount_D <= BurstCount_D - 1;
+                    
+                    LcdReset_NRO <= '1';  
+                    Rd_NSO <= '1';
+                    Cs_NSO <= '1';
+                    Wr_NSO <= '1';
+                    IM0_SO <= '0';
+                    
                     if(IsData_D = '1')then
-                        RxStateNext_D <= RxStateRxPrePushDataIdentifier;
+                        StateNext_D <= StateTxDataIdentifier;
                     else
-                        RxStateNext_D <= RxStateRxPrePushCmd;
+                        StateNext_D <= StateTxCmd;
                     end if;
                 else
-                    RxStateNext_D <= RxStateIdle;
+                    LcdReset_NRO <= '1';  
+                    Rd_NSO <= '1';
+                    Cs_NSO <= '1';
+                    Wr_NSO <= '1';
+                    IM0_SO <= '0';
+                    idleCount_D <= 0;
+                    
+                    WaitReq_SO <= '0';
+                    DB_DIO <= (others => '0');
+                    StateNext_D <= StateIdle;
                 end if;
                 
             when others =>
-                RxData_D <= (others => '0');
-                WaitReq_SO <= '0';
-                BurstCount_D <= BurstCount_D;
-                RxStateNext_D <= RxStateReset;
-        end case;
-    end process logicRx; 
-    
---------------------------------------------------------------------------------
----                                                                          ---
---- Transmitter state machine                                                ---
----                                                                          ---
---------------------------------------------------------------------------------
-    nextStateTx: process(Clk_CI, Reset_NRI)
-    begin
-        if(Reset_NRI = '0')then
-            TxStatePres_D <= TxStateReset;
-        elsif(Clk_CI'event and Clk_CI = '1')then
-            TxStatePres_D <= TxStateNext_D;
-        end if;
-    end process;
-
-    logicTx: process(FifoEmpty_D, FifoFull_D, TxStatePres_D)
-    begin
-        case TxStatePres_D is
-            when TxStateReset =>
-                Pop_S <= '0';
+                SetWriteData_S <= '0';
+                SetBitEnable_S <= '0';
                 
+                WaitReq_SO <= '0';
+                BurstCount_D <= 0;
+                StateNext_D <= StateLcdReset;
                 DB_DIO <= (others => '0');     
                 Rd_NSO <= '1';   
                 Wr_NSO <= '1';              
@@ -297,101 +407,10 @@ begin
                 LcdReset_NRO <= '1';                
                 IM0_SO <= '0';        
                 
-                idleCount_D <= to_unsigned(0, 8);
+                idleCount_D <= 0;
                 LcdReset_NRO <= '0';
                 
-                TxStateNext_D <= TxStateDispReset;
-                
-            when TxStateDispReset =>
-                DB_DIO <= (others => '0');     
-                Rd_NSO <= '1';   
-                Wr_NSO <= '1';              
-                Cs_NSO <= '1';               
-                DC_NSO <= '1';
-                LcdReset_NRO <= '0';                
-                IM0_SO <= '0';  
-                Pop_S <= '0';
-
-                if(idleCount_D < to_unsigned(5, 8))then
-                    idleCount_D <= idleCount_D + to_unsigned(1, 8);
-                    TxStateNext_D <= TxStateDispReset;
-                else
-                    idleCount_D <= to_unsigned(0, 8);
-                    TxStateNext_D <= TxStateIdle;
-                end if;
-                
-            when TxStateIdle =>
-                DB_DIO <= (others => '0');     
-                Rd_NSO <= '1';   
-                Wr_NSO <= '1';              
-                Cs_NSO <= '1';               
-                DC_NSO <= '1';
-                LcdReset_NRO <= '1';                
-                IM0_SO <= '0';  
-                Pop_S <= '0';
-
-                idleCount_D <= to_unsigned(0, 8);
-                
-                if(FifoEmpty_D = '0')then
-                    TxStateNext_D <= TxStatePreTx;
-                else
-                    TxStateNext_D <= TxStateIdle;
-                end if;
-            
-            when TxStatePreTx =>
-                DB_DIO <= (others => '0');     
-                Rd_NSO <= '1';   
-                Wr_NSO <= '1';              
-                Cs_NSO <= '1';               
-                DC_NSO <= '1';
-                LcdReset_NRO <= '1';                
-                IM0_SO <= '0';  
-                idleCount_D <= to_unsigned(0, 8);
-                Pop_S <= '1';
-                TxStateNext_D <= TxStateTx;
-                
-            when TxStateTx =>
-                -- transfer to LCD
-                DB_DIO <= TxData_D;
-
-                if(TxData_D = x"002C")then
-                    DC_NSO <= '1';
-                else
-                    DC_NSO <='0';
-                end if;
-                
-                LcdReset_NRO <= '1';  
-                Pop_S <= '0';
-                Rd_NSO <= '1';
-                Cs_NSO <= '0';
-                Wr_NSO <= '0';
-                IM0_SO <= '0';
-                
-                
-                idleCount_D <= to_unsigned(0, 8);
-                TxStateNext_D <= TxStatePostTx;                
-            
-            when TxStatePostTx =>
-                DB_DIO <= TxData_D;
-                Pop_S <= '0';
-                LcdReset_NRO <= '1';
-                
-                if(idleCount_D < to_unsigned(5, 8))then
-                    idleCount_D <= idleCount_D + to_unsigned(1, 8);
-                    TxStateNext_D <= TxStatePostTx;
-                else
-                    idleCount_D <= to_unsigned(0, 8);
-                    Cs_NSO <= '1';
-                    Wr_NSO <= '1';
-                    Rd_NSO <= '1';
-                    
-                    TxStateNext_D <= TxStateIdle;
-                end if;
-                
-            when others =>
-                DB_DIO <= (others => '0');
-                idleCount_D <= to_unsigned(0, 8);
-                TxStateNext_D <= TxStateReset;
+                StateNext_D <= StateReset;
         end case;
-    end process logicTx;
+    end process logic; 
 end LCD;

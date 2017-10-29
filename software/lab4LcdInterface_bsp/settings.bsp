@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>26.10.2017 23:00:19</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1509051619178</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>29.10.2017 20:18:28</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1509304708517</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>D:\syncplicity\z003nc3v\Documents\MSE\1Sem_HS17_18\TSM_EmbHardw\w4\exercises\lab4LcdInterface\software\lab4LcdInterface_bsp</BspGeneratedLocation>
         <BspSettingsFile>.\settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\systemFile.sopcinfo</SopcDesignFile>
@@ -929,26 +929,26 @@
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>altpll_0</slaveDescriptor>
+                <slaveDescriptor>LCD</slaveDescriptor>
                 <addressRange>0x020030A0 - 0x020030AF</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>LCD</slaveDescriptor>
-                <addressRange>0x020030B8 - 0x020030BF</addressRange>
-                <addressSpan>8</addressSpan>
+                <slaveDescriptor>altpll_0</slaveDescriptor>
+                <addressRange>0x020030B0 - 0x020030BF</addressRange>
+                <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>sysid</slaveDescriptor>
-                <addressRange>0x020030C0 - 0x020030C7</addressRange>
+                <addressRange>0x020030C8 - 0x020030CF</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>jtag_uart</slaveDescriptor>
-                <addressRange>0x020030C8 - 0x020030CF</addressRange>
+                <addressRange>0x020030D0 - 0x020030D7</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>

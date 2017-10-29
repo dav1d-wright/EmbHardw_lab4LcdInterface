@@ -39,18 +39,16 @@ entity LcdDriver is
 end LcdDriver;
 
 architecture LCD of LcdDriver is 
-    component FIFO
-        generic (SIZE:              natural := 256);
+    -- D-FlipFlop for input storage 
+    component D_FF is
+        generic (WIDTH:     natural := 16);
         port
         (
-            Clk_CI:         	    in std_logic;
-            Reset_NRI:      	    in std_logic;
-            Push_SI:                in std_logic;
-            Pop_SI:                 in std_logic;
-            Data_DI:                in std_logic_vector (15 downto 0);
-            Data_DO:                out std_logic_vector (15 downto 0);
-            Full_SO:                out std_logic;
-            Empty_SO:               out std_logic
+            Clk_CI:         in std_logic;
+            Reset_NRI:      in std_logic;
+            Set_SI:         in std_logic;
+            D_DI:           in std_logic_vector (WIDTH-1 downto 0);
+            Q_DO:           out std_logic_vector(WIDTH-1 downto 0)
         );
     end component;
 
@@ -67,23 +65,52 @@ architecture LCD of LcdDriver is
                                     StatePostTx);
     
                                     
-    signal StateNext_D:       State_T := StateReset;
-    signal StatePres_D:       State_T := StateReset;
+    signal StateNext_D:             State_T := StateReset;
+    signal StatePres_D:             State_T := StateReset;
         
     signal IsData_D:                std_logic;
         
-    signal BitEnable_D:             std_logic_vector (15 downto 0);
     signal BurstCount_D:            natural range 0 to 255;
         
     signal idleCount_D:             natural range 0 to 255;
     
-    signal WriteData_D:             std_logic_vector (15 downto 0);
+    signal BitEnable_Persist_D:     std_logic_vector (15 downto 0) := (others => '0');
+    signal WriteData_Persist_D:     std_logic_vector (15 downto 0) := (others => '0');
+    signal SetBitEnable_S:          std_logic := '0';
+    signal SetWriteData_S:          std_logic := '0';
+    
+    signal BitEnable_D:             std_logic_vector (15 downto 0);
 begin
 --------------------------------------------------------------------------------
 ---                                                                          ---
---- state machine                                                   ---
+--- data storage                                                             ---
 ---                                                                          ---
 --------------------------------------------------------------------------------
+WriteDataStorage: D_FF generic map(WIDTH => 16)
+                        port map
+                        (
+                            Clk_CI      => Clk_CI,                        
+                            Reset_NRI   => Reset_NRI,
+                            Set_SI      => SetWriteData_S,
+                            D_DI        => WriteData_DI,
+                            Q_DO        => WriteData_Persist_D
+                        );
+
+BitEnableStorage: D_FF generic map(WIDTH => 16)
+                        port map
+                        (
+                            Clk_CI      => Clk_CI,                        
+                            Reset_NRI   => Reset_NRI,
+                            Set_SI      => SetBitEnable_S,
+                            D_DI        => BitEnable_D,
+                            Q_DO        => BitEnable_Persist_D
+                        );
+--------------------------------------------------------------------------------
+---                                                                          ---
+--- state machine                                                            ---
+---                                                                          ---
+--------------------------------------------------------------------------------
+
     nextStateRx: process(Clk_CI, Reset_NRI)
     begin
         if(Reset_NRI = '0')then
@@ -93,18 +120,22 @@ begin
         end if;
     end process;
     
+    
     logic: process(Write_SI, StatePres_D)
         -- storage for all input data on read/write cycles
         variable Address_D:                 std_logic_vector (2 downto 0);
         variable ByteEnable_D:              std_logic_vector (1 downto 0);
         variable BeginBurstTransfer_D:      std_logic;
-        variable TotalBurstCount_D:           natural range 0 to 255;
+        variable TotalBurstCount_D:         natural range 0 to 255;
+
     begin
         case StatePres_D is
             when StateReset =>
                 WaitReq_SO <= '0';
                 BurstCount_D <= 0;
                 StateNext_D <= StateLcdReset;
+                SetBitEnable_S <= '0';
+                SetWriteData_S <= '0';
                 DB_DIO <= (others => '0');     
                 Rd_NSO <= '1';   
                 Wr_NSO <= '1';              
@@ -117,6 +148,8 @@ begin
                 LcdReset_NRO <= '0';
                 
             when StateLcdReset =>
+                SetBitEnable_S <= '0';
+                SetWriteData_S <= '0';
                 DB_DIO <= (others => '0');     
                 Rd_NSO <= '1';   
                 Wr_NSO <= '1';              
@@ -139,7 +172,6 @@ begin
                 -- store input values as early as possible
                 Address_D := Address_DI;
                 ByteEnable_D := ByteEnable_DI;
-                WriteData_D <= WriteData_DI;  
                 TotalBurstCount_D := to_integer(unsigned(BurstCount_DI));
                 BeginBurstTransfer_D := BeginBurstTransfer_DI;
                 
@@ -158,6 +190,7 @@ begin
                 idleCount_D <= 0;
                 
                 if(Write_SI = '1')then
+                    SetWriteData_S <= '1';
                     if(BeginBurstTransfer_D = '1')then
                         BurstCount_D <= TotalBurstCount_D;
                     else
@@ -176,10 +209,11 @@ begin
                         when others =>
                             BitEnable_D <= (others => '0');
                     end case;
+                    SetBitEnable_S <= '1';
                     
                     
                     case Address_D is
-                        when "000" => 
+                        when "001" => 
                             IsData_D <= '1';
                             StateNext_D <= StateTxDataIdentifier;
                         when "011" =>
@@ -194,17 +228,21 @@ begin
                     IsData_D <= '0';
                     BitEnable_D <= (others => '0');
                     BurstCount_D <= 0;
+                    SetWriteData_S <= '0';
+                    SetBitEnable_S <= '0';
                     StateNext_D <= StateIdle;
                 end if;
                 
                 
             when StateTxCmd =>
+                SetWriteData_S <= '0';
+                SetBitEnable_S <= '0';
                 -- -- debug begin
                 -- StateNext_D <= StateTxDataIdentifier;
                 -- -- debug end 
                 -- transfer to LCD
                 WaitReq_SO <= '1';
-                DB_DIO <= WriteData_D and BitEnable_D;
+                DB_DIO <= WriteData_Persist_D and BitEnable_Persist_D;
 
                 DC_NSO <='0';
                 
@@ -215,10 +253,12 @@ begin
                 IM0_SO <= '0';
                 
                 idleCount_D <= 0;
-                BurstCount_D <= BurstCount_D;
+                -- BurstCount_D <= BurstCount_D;
                 StateNext_D <= StatePostTx;
                 
             when StateTxDataIdentifier =>
+                SetWriteData_S <= '0';
+                SetBitEnable_S <= '0';
                 -- -- debug begin
                 -- StateNext_D <= StateRxPostPushDataIdentifier;
                 -- -- debug end 
@@ -236,36 +276,47 @@ begin
                 
                 idleCount_D <= 0;
                 
-                BurstCount_D <= BurstCount_D;
+                -- BurstCount_D <= BurstCount_D;
 
                 StateNext_D <= StatePostTxDataIdentifier;
                 
             when StatePostTxDataIdentifier =>
                 WaitReq_SO <= '1';
-                
+                SetWriteData_S <= '0';
+                SetBitEnable_S <= '0';
+
                 -- -- debug begin
                 -- StateNext_D <= StateIdle;
                 -- -- debug end 
-                BurstCount_D <= BurstCount_D;
+                -- BurstCount_D <= BurstCount_D;
 
                 
-                if(idleCount_D < 1)then
+                -- if(idleCount_D < 1)then
                     DB_DIO <= x"002C";
 
-                    idleCount_D <= idleCount_D + 1;
-                    StateNext_D <= StatePostTxDataIdentifier;
-                else
-                    DB_DIO <= (others => '0');
+                    -- idleCount_D <= idleCount_D + 1;
+                    -- StateNext_D <= StatePostTxDataIdentifier;
+                -- else
+                    -- DB_DIO <= (others => '0');
+                    idleCount_D <= 0;
+                    LcdReset_NRO <= '1';  
+                    Rd_NSO <= '1';
+                    Cs_NSO <= '1';
+                    Wr_NSO <= '1';
+                    IM0_SO <= '0';
                     StateNext_D <= StateTxData;
-                end if;
+                -- end if;
                 
             when StateTxData =>
+                SetWriteData_S <= '0';
+                SetBitEnable_S <= '0';
+
                 -- -- debug begin
                 -- StateNext_D <= StateRxPostPush;
                 -- -- debug end                 
                 -- transfer to LCD
                 WaitReq_SO <= '1';
-                DB_DIO <= WriteData_D and BitEnable_D;
+                DB_DIO <= WriteData_Persist_D and BitEnable_Persist_D;
 
                 DC_NSO <= '1';
                 
@@ -277,13 +328,16 @@ begin
                 
                 idleCount_D <= 0;
                 
-                BurstCount_D <= BurstCount_D;
+                -- BurstCount_D <= BurstCount_D;
 
                 StateNext_D <= StatePostTx;
 
                 
             when StatePostTx =>
-                
+                SetWriteData_S <= '0';
+                SetBitEnable_S <= '0';
+
+
                 -- -- debug begin
                 -- StateNext_D <= StateIdle;
                 -- -- debug end 
@@ -293,20 +347,22 @@ begin
                     DC_NSO <= '0';
                 end if;
                 
-                if(idleCount_D < 1)then
+                -- if(idleCount_D < 1)then
                     WaitReq_SO <= '1';
-                    DB_DIO <= WriteData_D and BitEnable_D;
+                    DB_DIO <= WriteData_Persist_D and BitEnable_Persist_D;
 
-                    idleCount_D <= idleCount_D + 1;
+                    -- idleCount_D <= idleCount_D + 1;
                     
                     LcdReset_NRO <= '1';  
                     Rd_NSO <= '1';
-                    Cs_NSO <= '1';
-                    Wr_NSO <= '1';
+                    Cs_NSO <= '0';
+                    Wr_NSO <= '0';
                     IM0_SO <= '0';
                 
                     StateNext_D <= StatePostTx;
-                elsif(BurstCount_D > 0)then
+                -- elsif(BurstCount_D > 0)then
+                if(BurstCount_D > 0)then
+                    idleCount_D <= 0;
                     WaitReq_SO <= '0';
                     DB_DIO <= (others => '0');
 
@@ -329,6 +385,7 @@ begin
                     Cs_NSO <= '1';
                     Wr_NSO <= '1';
                     IM0_SO <= '0';
+                    idleCount_D <= 0;
                     
                     WaitReq_SO <= '0';
                     DB_DIO <= (others => '0');
@@ -336,6 +393,9 @@ begin
                 end if;
                 
             when others =>
+                SetWriteData_S <= '0';
+                SetBitEnable_S <= '0';
+                
                 WaitReq_SO <= '0';
                 BurstCount_D <= 0;
                 StateNext_D <= StateLcdReset;

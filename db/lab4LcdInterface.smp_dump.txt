@@ -34,31 +34,16 @@ i_state.011 0 0 1 0 0 1
 i_state.101 0 1 0 0 0 1 
 i_state.111 1 0 0 0 0 1 
 
-State Machine - |topLevelEntity|systemFile:inst|LcdDriver:lcd|TxStatePres_D
-Name TxStatePres_D.TxStatePostTx TxStatePres_D.TxStateTx TxStatePres_D.TxStatePreTx TxStatePres_D.TxStateIdle TxStatePres_D.TxStateDispReset TxStatePres_D.TxStateReset 
-TxStatePres_D.TxStateReset 0 0 0 0 0 0 
-TxStatePres_D.TxStateDispReset 0 0 0 0 1 1 
-TxStatePres_D.TxStateIdle 0 0 0 1 0 1 
-TxStatePres_D.TxStatePreTx 0 0 1 0 0 1 
-TxStatePres_D.TxStateTx 0 1 0 0 0 1 
-TxStatePres_D.TxStatePostTx 1 0 0 0 0 1 
-
-State Machine - |topLevelEntity|systemFile:inst|LcdDriver:lcd|RxStatePres_D
-Name RxStatePres_D.RxStateRxPostPush RxStatePres_D.RxStateRxPostPushDataIdentifier RxStatePres_D.RxStateRxPrePushData RxStatePres_D.RxStateRxPrePushDataIdentifier RxStatePres_D.RxStateRxPrePushCmd RxStatePres_D.RxStateIdle RxStatePres_D.RxStateReset 
-RxStatePres_D.RxStateReset 0 0 0 0 0 0 0 
-RxStatePres_D.RxStateIdle 0 0 0 0 0 1 1 
-RxStatePres_D.RxStateRxPrePushCmd 0 0 0 0 1 0 1 
-RxStatePres_D.RxStateRxPrePushDataIdentifier 0 0 0 1 0 0 1 
-RxStatePres_D.RxStateRxPrePushData 0 0 1 0 0 0 1 
-RxStatePres_D.RxStateRxPostPushDataIdentifier 0 1 0 0 0 0 1 
-RxStatePres_D.RxStateRxPostPush 1 0 0 0 0 0 1 
-
-State Machine - |topLevelEntity|systemFile:inst|LcdDriver:lcd|FIFO:dataBuffer|statePres_D
-Name statePres_D.stateFull statePres_D.stateFilling statePres_D.stateEmpty statePres_D.stateReset 
-statePres_D.stateReset 0 0 0 0 
-statePres_D.stateEmpty 0 0 1 1 
-statePres_D.stateFilling 0 1 0 1 
-statePres_D.stateFull 1 0 0 1 
+State Machine - |topLevelEntity|systemFile:inst|LcdDriver:lcd|StatePres_D
+Name StatePres_D.StatePostTx StatePres_D.StateTxData StatePres_D.StatePostTxDataIdentifier StatePres_D.StateTxDataIdentifier StatePres_D.StateTxCmd StatePres_D.StateIdle StatePres_D.StateLcdReset StatePres_D.StateReset 
+StatePres_D.StateReset 0 0 0 0 0 0 0 0 
+StatePres_D.StateLcdReset 0 0 0 0 0 0 1 1 
+StatePres_D.StateIdle 0 0 0 0 0 1 0 1 
+StatePres_D.StateTxCmd 0 0 0 0 1 0 0 1 
+StatePres_D.StateTxDataIdentifier 0 0 0 1 0 0 0 1 
+StatePres_D.StatePostTxDataIdentifier 0 0 1 0 0 0 0 1 
+StatePres_D.StateTxData 0 1 0 0 0 0 0 1 
+StatePres_D.StatePostTx 1 0 0 0 0 0 0 1 
 
 State Machine - |topLevelEntity|systemFile:inst|systemFile_CPU:cpu|systemFile_CPU_cpu:cpu|systemFile_CPU_cpu_nios2_oci:the_systemFile_CPU_cpu_nios2_oci|systemFile_CPU_cpu_debug_slave_wrapper:the_systemFile_CPU_cpu_debug_slave_wrapper|systemFile_CPU_cpu_debug_slave_tck:the_systemFile_CPU_cpu_debug_slave_tck|DRsize
 Name DRsize.101 DRsize.100 DRsize.011 DRsize.010 DRsize.001 DRsize.000 

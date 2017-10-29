@@ -8,25 +8,25 @@ use IEEE.numeric_std.all;
 
 entity systemFile is
 	port (
-		altpll_0_c2_clk                 : out   std_logic;                                        --     altpll_0_c2.clk
-		clk_clk                         : in    std_logic                     := '0';             --             clk.clk
-		lcd_conduit_end_chipselect      : out   std_logic;                                        -- lcd_conduit_end.chipselect
-		lcd_conduit_end_lcdreset        : out   std_logic;                                        --                .lcdreset
-		lcd_conduit_end_lcddata         : inout std_logic_vector(15 downto 0) := (others => '0'); --                .lcddata
-		lcd_conduit_end_read            : out   std_logic;                                        --                .read
-		lcd_conduit_end_write           : out   std_logic;                                        --                .write
-		lcd_conduit_end_data_cmd_select : out   std_logic;                                        --                .data_cmd_select
-		lcd_conduit_end_im0             : out   std_logic;                                        --                .im0
-		reset_reset_n                   : in    std_logic                     := '0';             --           reset.reset_n
-		sdram_ctrl_wire_addr            : out   std_logic_vector(11 downto 0);                    -- sdram_ctrl_wire.addr
-		sdram_ctrl_wire_ba              : out   std_logic_vector(1 downto 0);                     --                .ba
-		sdram_ctrl_wire_cas_n           : out   std_logic;                                        --                .cas_n
-		sdram_ctrl_wire_cke             : out   std_logic;                                        --                .cke
-		sdram_ctrl_wire_cs_n            : out   std_logic;                                        --                .cs_n
-		sdram_ctrl_wire_dq              : inout std_logic_vector(15 downto 0) := (others => '0'); --                .dq
-		sdram_ctrl_wire_dqm             : out   std_logic_vector(1 downto 0);                     --                .dqm
-		sdram_ctrl_wire_ras_n           : out   std_logic;                                        --                .ras_n
-		sdram_ctrl_wire_we_n            : out   std_logic                                         --                .we_n
+		altpll_0_c2_clk            : out   std_logic;                                        --     altpll_0_c2.clk
+		clk_clk                    : in    std_logic                     := '0';             --             clk.clk
+		lcd_conduit_end_cs_n       : out   std_logic;                                        -- lcd_conduit_end.cs_n
+		lcd_conduit_end_data       : inout std_logic_vector(15 downto 0) := (others => '0'); --                .data
+		lcd_conduit_end_dc_n       : out   std_logic;                                        --                .dc_n
+		lcd_conduit_end_im0        : out   std_logic;                                        --                .im0
+		lcd_conduit_end_lcdreset_n : out   std_logic;                                        --                .lcdreset_n
+		lcd_conduit_end_rd_n       : out   std_logic;                                        --                .rd_n
+		lcd_conduit_end_wr_n       : out   std_logic;                                        --                .wr_n
+		reset_reset_n              : in    std_logic                     := '0';             --           reset.reset_n
+		sdram_ctrl_wire_addr       : out   std_logic_vector(11 downto 0);                    -- sdram_ctrl_wire.addr
+		sdram_ctrl_wire_ba         : out   std_logic_vector(1 downto 0);                     --                .ba
+		sdram_ctrl_wire_cas_n      : out   std_logic;                                        --                .cas_n
+		sdram_ctrl_wire_cke        : out   std_logic;                                        --                .cke
+		sdram_ctrl_wire_cs_n       : out   std_logic;                                        --                .cs_n
+		sdram_ctrl_wire_dq         : inout std_logic_vector(15 downto 0) := (others => '0'); --                .dq
+		sdram_ctrl_wire_dqm        : out   std_logic_vector(1 downto 0);                     --                .dqm
+		sdram_ctrl_wire_ras_n      : out   std_logic;                                        --                .ras_n
+		sdram_ctrl_wire_we_n       : out   std_logic                                         --                .we_n
 	);
 end entity systemFile;
 
@@ -77,25 +77,25 @@ architecture rtl of systemFile is
 
 	component LcdDriver is
 		port (
-			Clk_CI                : in    std_logic                     := 'X';             -- clk
-			Reset_NRI             : in    std_logic                     := 'X';             -- reset_n
-			Cs_NSO                : out   std_logic;                                        -- chipselect
-			LcdReset_NRO          : out   std_logic;                                        -- lcdreset
-			DB_DIO                : inout std_logic_vector(15 downto 0) := (others => 'X'); -- lcddata
-			Rd_NSO                : out   std_logic;                                        -- read
-			Wr_NSO                : out   std_logic;                                        -- write
-			DC_NSO                : out   std_logic;                                        -- data_cmd_select
-			IM0_SO                : out   std_logic;                                        -- im0
 			WaitReq_SO            : out   std_logic;                                        -- waitrequest
-			Read_SI               : in    std_logic                     := 'X';             -- read
-			Write_SI              : in    std_logic                     := 'X';             -- write
-			ReadData_DO           : out   std_logic_vector(15 downto 0);                    -- readdata
-			Address_DI            : in    std_logic_vector(1 downto 0)  := (others => 'X'); -- address
-			WriteData_DI          : in    std_logic_vector(15 downto 0) := (others => 'X'); -- writedata
-			ByteEnable_DI         : in    std_logic_vector(1 downto 0)  := (others => 'X'); -- byteenable
+			Address_DI            : in    std_logic_vector(2 downto 0)  := (others => 'X'); -- address
 			BeginBurstTransfer_DI : in    std_logic                     := 'X';             -- beginbursttransfer
 			BurstCount_DI         : in    std_logic_vector(7 downto 0)  := (others => 'X'); -- burstcount
-			ReadDataValid_SO      : out   std_logic                                         -- readdatavalid
+			ByteEnable_DI         : in    std_logic_vector(1 downto 0)  := (others => 'X'); -- byteenable
+			WriteData_DI          : in    std_logic_vector(15 downto 0) := (others => 'X'); -- writedata
+			ReadData_DO           : out   std_logic_vector(15 downto 0);                    -- readdata
+			Read_SI               : in    std_logic                     := 'X';             -- read
+			Write_SI              : in    std_logic                     := 'X';             -- write
+			ReadDataValid_SO      : out   std_logic;                                        -- readdatavalid
+			Clk_CI                : in    std_logic                     := 'X';             -- clk
+			Cs_NSO                : out   std_logic;                                        -- cs_n
+			DB_DIO                : inout std_logic_vector(15 downto 0) := (others => 'X'); -- data
+			DC_NSO                : out   std_logic;                                        -- dc_n
+			IM0_SO                : out   std_logic;                                        -- im0
+			LcdReset_NRO          : out   std_logic;                                        -- lcdreset_n
+			Rd_NSO                : out   std_logic;                                        -- rd_n
+			Wr_NSO                : out   std_logic;                                        -- wr_n
+			Reset_NRI             : in    std_logic                     := 'X'              -- reset_n
 		);
 	end component LcdDriver;
 
@@ -281,16 +281,16 @@ architecture rtl of systemFile is
 			jtag_uart_avalon_jtag_slave_writedata                      : out std_logic_vector(31 downto 0);                    -- writedata
 			jtag_uart_avalon_jtag_slave_waitrequest                    : in  std_logic                     := 'X';             -- waitrequest
 			jtag_uart_avalon_jtag_slave_chipselect                     : out std_logic;                                        -- chipselect
-			LCD_LCD_AVALON_SLAVE_address                               : out std_logic_vector(1 downto 0);                     -- address
-			LCD_LCD_AVALON_SLAVE_write                                 : out std_logic;                                        -- write
-			LCD_LCD_AVALON_SLAVE_read                                  : out std_logic;                                        -- read
-			LCD_LCD_AVALON_SLAVE_readdata                              : in  std_logic_vector(15 downto 0) := (others => 'X'); -- readdata
-			LCD_LCD_AVALON_SLAVE_writedata                             : out std_logic_vector(15 downto 0);                    -- writedata
-			LCD_LCD_AVALON_SLAVE_beginbursttransfer                    : out std_logic;                                        -- beginbursttransfer
-			LCD_LCD_AVALON_SLAVE_burstcount                            : out std_logic_vector(7 downto 0);                     -- burstcount
-			LCD_LCD_AVALON_SLAVE_byteenable                            : out std_logic_vector(1 downto 0);                     -- byteenable
-			LCD_LCD_AVALON_SLAVE_readdatavalid                         : in  std_logic                     := 'X';             -- readdatavalid
-			LCD_LCD_AVALON_SLAVE_waitrequest                           : in  std_logic                     := 'X';             -- waitrequest
+			LCD_avalon_slave_address                                   : out std_logic_vector(2 downto 0);                     -- address
+			LCD_avalon_slave_write                                     : out std_logic;                                        -- write
+			LCD_avalon_slave_read                                      : out std_logic;                                        -- read
+			LCD_avalon_slave_readdata                                  : in  std_logic_vector(15 downto 0) := (others => 'X'); -- readdata
+			LCD_avalon_slave_writedata                                 : out std_logic_vector(15 downto 0);                    -- writedata
+			LCD_avalon_slave_beginbursttransfer                        : out std_logic;                                        -- beginbursttransfer
+			LCD_avalon_slave_burstcount                                : out std_logic_vector(7 downto 0);                     -- burstcount
+			LCD_avalon_slave_byteenable                                : out std_logic_vector(1 downto 0);                     -- byteenable
+			LCD_avalon_slave_readdatavalid                             : in  std_logic                     := 'X';             -- readdatavalid
+			LCD_avalon_slave_waitrequest                               : in  std_logic                     := 'X';             -- waitrequest
 			performance_counter_0_control_slave_address                : out std_logic_vector(4 downto 0);                     -- address
 			performance_counter_0_control_slave_write                  : out std_logic;                                        -- write
 			performance_counter_0_control_slave_readdata               : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
@@ -518,16 +518,6 @@ architecture rtl of systemFile is
 	signal cpu_instruction_master_address                                      : std_logic_vector(25 downto 0); -- CPU:i_address -> mm_interconnect_0:CPU_instruction_master_address
 	signal cpu_instruction_master_read                                         : std_logic;                     -- CPU:i_read -> mm_interconnect_0:CPU_instruction_master_read
 	signal cpu_instruction_master_readdatavalid                                : std_logic;                     -- mm_interconnect_0:CPU_instruction_master_readdatavalid -> CPU:i_readdatavalid
-	signal mm_interconnect_0_lcd_lcd_avalon_slave_beginbursttransfer           : std_logic;                     -- mm_interconnect_0:LCD_LCD_AVALON_SLAVE_beginbursttransfer -> LCD:BeginBurstTransfer_DI
-	signal mm_interconnect_0_lcd_lcd_avalon_slave_readdata                     : std_logic_vector(15 downto 0); -- LCD:ReadData_DO -> mm_interconnect_0:LCD_LCD_AVALON_SLAVE_readdata
-	signal mm_interconnect_0_lcd_lcd_avalon_slave_waitrequest                  : std_logic;                     -- LCD:WaitReq_SO -> mm_interconnect_0:LCD_LCD_AVALON_SLAVE_waitrequest
-	signal mm_interconnect_0_lcd_lcd_avalon_slave_address                      : std_logic_vector(1 downto 0);  -- mm_interconnect_0:LCD_LCD_AVALON_SLAVE_address -> LCD:Address_DI
-	signal mm_interconnect_0_lcd_lcd_avalon_slave_read                         : std_logic;                     -- mm_interconnect_0:LCD_LCD_AVALON_SLAVE_read -> LCD:Read_SI
-	signal mm_interconnect_0_lcd_lcd_avalon_slave_byteenable                   : std_logic_vector(1 downto 0);  -- mm_interconnect_0:LCD_LCD_AVALON_SLAVE_byteenable -> LCD:ByteEnable_DI
-	signal mm_interconnect_0_lcd_lcd_avalon_slave_readdatavalid                : std_logic;                     -- LCD:ReadDataValid_SO -> mm_interconnect_0:LCD_LCD_AVALON_SLAVE_readdatavalid
-	signal mm_interconnect_0_lcd_lcd_avalon_slave_write                        : std_logic;                     -- mm_interconnect_0:LCD_LCD_AVALON_SLAVE_write -> LCD:Write_SI
-	signal mm_interconnect_0_lcd_lcd_avalon_slave_writedata                    : std_logic_vector(15 downto 0); -- mm_interconnect_0:LCD_LCD_AVALON_SLAVE_writedata -> LCD:WriteData_DI
-	signal mm_interconnect_0_lcd_lcd_avalon_slave_burstcount                   : std_logic_vector(7 downto 0);  -- mm_interconnect_0:LCD_LCD_AVALON_SLAVE_burstcount -> LCD:BurstCount_DI
 	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_chipselect            : std_logic;                     -- mm_interconnect_0:jtag_uart_avalon_jtag_slave_chipselect -> jtag_uart:av_chipselect
 	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_readdata              : std_logic_vector(31 downto 0); -- jtag_uart:av_readdata -> mm_interconnect_0:jtag_uart_avalon_jtag_slave_readdata
 	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_waitrequest           : std_logic;                     -- jtag_uart:av_waitrequest -> mm_interconnect_0:jtag_uart_avalon_jtag_slave_waitrequest
@@ -535,6 +525,16 @@ architecture rtl of systemFile is
 	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_read                  : std_logic;                     -- mm_interconnect_0:jtag_uart_avalon_jtag_slave_read -> mm_interconnect_0_jtag_uart_avalon_jtag_slave_read:in
 	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_write                 : std_logic;                     -- mm_interconnect_0:jtag_uart_avalon_jtag_slave_write -> mm_interconnect_0_jtag_uart_avalon_jtag_slave_write:in
 	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_writedata             : std_logic_vector(31 downto 0); -- mm_interconnect_0:jtag_uart_avalon_jtag_slave_writedata -> jtag_uart:av_writedata
+	signal mm_interconnect_0_lcd_avalon_slave_beginbursttransfer               : std_logic;                     -- mm_interconnect_0:LCD_avalon_slave_beginbursttransfer -> LCD:BeginBurstTransfer_DI
+	signal mm_interconnect_0_lcd_avalon_slave_readdata                         : std_logic_vector(15 downto 0); -- LCD:ReadData_DO -> mm_interconnect_0:LCD_avalon_slave_readdata
+	signal mm_interconnect_0_lcd_avalon_slave_waitrequest                      : std_logic;                     -- LCD:WaitReq_SO -> mm_interconnect_0:LCD_avalon_slave_waitrequest
+	signal mm_interconnect_0_lcd_avalon_slave_address                          : std_logic_vector(2 downto 0);  -- mm_interconnect_0:LCD_avalon_slave_address -> LCD:Address_DI
+	signal mm_interconnect_0_lcd_avalon_slave_read                             : std_logic;                     -- mm_interconnect_0:LCD_avalon_slave_read -> LCD:Read_SI
+	signal mm_interconnect_0_lcd_avalon_slave_byteenable                       : std_logic_vector(1 downto 0);  -- mm_interconnect_0:LCD_avalon_slave_byteenable -> LCD:ByteEnable_DI
+	signal mm_interconnect_0_lcd_avalon_slave_readdatavalid                    : std_logic;                     -- LCD:ReadDataValid_SO -> mm_interconnect_0:LCD_avalon_slave_readdatavalid
+	signal mm_interconnect_0_lcd_avalon_slave_write                            : std_logic;                     -- mm_interconnect_0:LCD_avalon_slave_write -> LCD:Write_SI
+	signal mm_interconnect_0_lcd_avalon_slave_writedata                        : std_logic_vector(15 downto 0); -- mm_interconnect_0:LCD_avalon_slave_writedata -> LCD:WriteData_DI
+	signal mm_interconnect_0_lcd_avalon_slave_burstcount                       : std_logic_vector(7 downto 0);  -- mm_interconnect_0:LCD_avalon_slave_burstcount -> LCD:BurstCount_DI
 	signal mm_interconnect_0_sysid_control_slave_readdata                      : std_logic_vector(31 downto 0); -- sysid:readdata -> mm_interconnect_0:sysid_control_slave_readdata
 	signal mm_interconnect_0_sysid_control_slave_address                       : std_logic_vector(0 downto 0);  -- mm_interconnect_0:sysid_control_slave_address -> sysid:address
 	signal mm_interconnect_0_performance_counter_0_control_slave_readdata      : std_logic_vector(31 downto 0); -- performance_counter_0:readdata -> mm_interconnect_0:performance_counter_0_control_slave_readdata
@@ -664,25 +664,25 @@ begin
 
 	lcd : component LcdDriver
 		port map (
-			Clk_CI                => altpll_0_c0_clk,                                           --       clock_sink.clk
-			Reset_NRI             => rst_controller_reset_out_reset_ports_inv,                  --       reset_sink.reset_n
-			Cs_NSO                => lcd_conduit_end_chipselect,                                --      conduit_end.chipselect
-			LcdReset_NRO          => lcd_conduit_end_lcdreset,                                  --                 .lcdreset
-			DB_DIO                => lcd_conduit_end_lcddata,                                   --                 .lcddata
-			Rd_NSO                => lcd_conduit_end_read,                                      --                 .read
-			Wr_NSO                => lcd_conduit_end_write,                                     --                 .write
-			DC_NSO                => lcd_conduit_end_data_cmd_select,                           --                 .data_cmd_select
-			IM0_SO                => lcd_conduit_end_im0,                                       --                 .im0
-			WaitReq_SO            => mm_interconnect_0_lcd_lcd_avalon_slave_waitrequest,        -- LCD_AVALON_SLAVE.waitrequest
-			Read_SI               => mm_interconnect_0_lcd_lcd_avalon_slave_read,               --                 .read
-			Write_SI              => mm_interconnect_0_lcd_lcd_avalon_slave_write,              --                 .write
-			ReadData_DO           => mm_interconnect_0_lcd_lcd_avalon_slave_readdata,           --                 .readdata
-			Address_DI            => mm_interconnect_0_lcd_lcd_avalon_slave_address,            --                 .address
-			WriteData_DI          => mm_interconnect_0_lcd_lcd_avalon_slave_writedata,          --                 .writedata
-			ByteEnable_DI         => mm_interconnect_0_lcd_lcd_avalon_slave_byteenable,         --                 .byteenable
-			BeginBurstTransfer_DI => mm_interconnect_0_lcd_lcd_avalon_slave_beginbursttransfer, --                 .beginbursttransfer
-			BurstCount_DI         => mm_interconnect_0_lcd_lcd_avalon_slave_burstcount,         --                 .burstcount
-			ReadDataValid_SO      => mm_interconnect_0_lcd_lcd_avalon_slave_readdatavalid       --                 .readdatavalid
+			WaitReq_SO            => mm_interconnect_0_lcd_avalon_slave_waitrequest,        -- avalon_slave.waitrequest
+			Address_DI            => mm_interconnect_0_lcd_avalon_slave_address,            --             .address
+			BeginBurstTransfer_DI => mm_interconnect_0_lcd_avalon_slave_beginbursttransfer, --             .beginbursttransfer
+			BurstCount_DI         => mm_interconnect_0_lcd_avalon_slave_burstcount,         --             .burstcount
+			ByteEnable_DI         => mm_interconnect_0_lcd_avalon_slave_byteenable,         --             .byteenable
+			WriteData_DI          => mm_interconnect_0_lcd_avalon_slave_writedata,          --             .writedata
+			ReadData_DO           => mm_interconnect_0_lcd_avalon_slave_readdata,           --             .readdata
+			Read_SI               => mm_interconnect_0_lcd_avalon_slave_read,               --             .read
+			Write_SI              => mm_interconnect_0_lcd_avalon_slave_write,              --             .write
+			ReadDataValid_SO      => mm_interconnect_0_lcd_avalon_slave_readdatavalid,      --             .readdatavalid
+			Clk_CI                => altpll_0_c0_clk,                                       --   clock_sink.clk
+			Cs_NSO                => lcd_conduit_end_cs_n,                                  --  conduit_end.cs_n
+			DB_DIO                => lcd_conduit_end_data,                                  --             .data
+			DC_NSO                => lcd_conduit_end_dc_n,                                  --             .dc_n
+			IM0_SO                => lcd_conduit_end_im0,                                   --             .im0
+			LcdReset_NRO          => lcd_conduit_end_lcdreset_n,                            --             .lcdreset_n
+			Rd_NSO                => lcd_conduit_end_rd_n,                                  --             .rd_n
+			Wr_NSO                => lcd_conduit_end_wr_n,                                  --             .wr_n
+			Reset_NRI             => rst_controller_reset_out_reset_ports_inv               --   reset_sink.reset_n
 		);
 
 	sdram_ctrl : component systemFile_SDRAM_ctrl
@@ -859,16 +859,16 @@ begin
 			jtag_uart_avalon_jtag_slave_writedata                      => mm_interconnect_0_jtag_uart_avalon_jtag_slave_writedata,             --                                                     .writedata
 			jtag_uart_avalon_jtag_slave_waitrequest                    => mm_interconnect_0_jtag_uart_avalon_jtag_slave_waitrequest,           --                                                     .waitrequest
 			jtag_uart_avalon_jtag_slave_chipselect                     => mm_interconnect_0_jtag_uart_avalon_jtag_slave_chipselect,            --                                                     .chipselect
-			LCD_LCD_AVALON_SLAVE_address                               => mm_interconnect_0_lcd_lcd_avalon_slave_address,                      --                                 LCD_LCD_AVALON_SLAVE.address
-			LCD_LCD_AVALON_SLAVE_write                                 => mm_interconnect_0_lcd_lcd_avalon_slave_write,                        --                                                     .write
-			LCD_LCD_AVALON_SLAVE_read                                  => mm_interconnect_0_lcd_lcd_avalon_slave_read,                         --                                                     .read
-			LCD_LCD_AVALON_SLAVE_readdata                              => mm_interconnect_0_lcd_lcd_avalon_slave_readdata,                     --                                                     .readdata
-			LCD_LCD_AVALON_SLAVE_writedata                             => mm_interconnect_0_lcd_lcd_avalon_slave_writedata,                    --                                                     .writedata
-			LCD_LCD_AVALON_SLAVE_beginbursttransfer                    => mm_interconnect_0_lcd_lcd_avalon_slave_beginbursttransfer,           --                                                     .beginbursttransfer
-			LCD_LCD_AVALON_SLAVE_burstcount                            => mm_interconnect_0_lcd_lcd_avalon_slave_burstcount,                   --                                                     .burstcount
-			LCD_LCD_AVALON_SLAVE_byteenable                            => mm_interconnect_0_lcd_lcd_avalon_slave_byteenable,                   --                                                     .byteenable
-			LCD_LCD_AVALON_SLAVE_readdatavalid                         => mm_interconnect_0_lcd_lcd_avalon_slave_readdatavalid,                --                                                     .readdatavalid
-			LCD_LCD_AVALON_SLAVE_waitrequest                           => mm_interconnect_0_lcd_lcd_avalon_slave_waitrequest,                  --                                                     .waitrequest
+			LCD_avalon_slave_address                                   => mm_interconnect_0_lcd_avalon_slave_address,                          --                                     LCD_avalon_slave.address
+			LCD_avalon_slave_write                                     => mm_interconnect_0_lcd_avalon_slave_write,                            --                                                     .write
+			LCD_avalon_slave_read                                      => mm_interconnect_0_lcd_avalon_slave_read,                             --                                                     .read
+			LCD_avalon_slave_readdata                                  => mm_interconnect_0_lcd_avalon_slave_readdata,                         --                                                     .readdata
+			LCD_avalon_slave_writedata                                 => mm_interconnect_0_lcd_avalon_slave_writedata,                        --                                                     .writedata
+			LCD_avalon_slave_beginbursttransfer                        => mm_interconnect_0_lcd_avalon_slave_beginbursttransfer,               --                                                     .beginbursttransfer
+			LCD_avalon_slave_burstcount                                => mm_interconnect_0_lcd_avalon_slave_burstcount,                       --                                                     .burstcount
+			LCD_avalon_slave_byteenable                                => mm_interconnect_0_lcd_avalon_slave_byteenable,                       --                                                     .byteenable
+			LCD_avalon_slave_readdatavalid                             => mm_interconnect_0_lcd_avalon_slave_readdatavalid,                    --                                                     .readdatavalid
+			LCD_avalon_slave_waitrequest                               => mm_interconnect_0_lcd_avalon_slave_waitrequest,                      --                                                     .waitrequest
 			performance_counter_0_control_slave_address                => mm_interconnect_0_performance_counter_0_control_slave_address,       --                  performance_counter_0_control_slave.address
 			performance_counter_0_control_slave_write                  => mm_interconnect_0_performance_counter_0_control_slave_write,         --                                                     .write
 			performance_counter_0_control_slave_readdata               => mm_interconnect_0_performance_counter_0_control_slave_readdata,      --                                                     .readdata

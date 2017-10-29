@@ -33,57 +33,66 @@ int main()
 {
   printf("Hello from Nios II!\n");
 
-  init_LCD();
+  while (true)
+  {
+	  LCD_Write_Command(0xFFFFU);
+
+	  LCD_Write_Data(0xF0F0U);
+  }
+
+
+//  init_LCD();
 
   usleep(500E3);
 
-  while (true)
-  {
-	  for(int i = 0; i < picture_height_tuxAnimation_1; i++)
-	  {
-		  for(int j = 0; j < picture_width_tuxAnimation_1; j++)
-		  {
-			  if((i == 0) && (j == 0))
-			  {
-				  LCD_Write_Data(picture_array_tuxAnimation_1[i][j]);
-			  }
-			  else
-			  {
-				  LCD_Write_Command(picture_array_tuxAnimation_1[i][j]);
-			  }
-		  }
-	  }
 
-	  for(int i = 0; i < picture_height_tuxAnimation_2; i++)
-	  {
-		  for(int j = 0; j < picture_width_tuxAnimation_2; j++)
-		  {
-			  if((i == 0) && (j == 0))
-			  {
-				  LCD_Write_Data(picture_array_tuxAnimation_2[i][j]);
-			  }
-			  else
-			  {
-				  LCD_Write_Command(picture_array_tuxAnimation_2[i][j]);
-			  }
-		  }
-	  }
-
-	  for(int i = 0; i < picture_height_tuxAnimation_3; i++)
-	  {
-		  for(int j = 0; j < picture_width_tuxAnimation_3; j++)
-		  {
-			  if((i == 0) && (j == 0))
-			  {
-				  LCD_Write_Data(picture_array_tuxAnimation_3[i][j]);
-			  }
-			  else
-			  {
-				  LCD_Write_Command(picture_array_tuxAnimation_3[i][j]);
-			  }
-		  }
-	  }
-  }
+//  while (true)
+//  {
+//	  for(int i = 0; i < picture_height_tuxAnimation_1; i++)
+//	  {
+//		  for(int j = 0; j < picture_width_tuxAnimation_1; j++)
+//		  {
+//			  if((i == 0) && (j == 0))
+//			  {
+//				  LCD_Write_Data(picture_array_tuxAnimation_1[i][j]);
+//			  }
+//			  else
+//			  {
+//				  LCD_Write_Command(picture_array_tuxAnimation_1[i][j]);
+//			  }
+//		  }
+//	  }
+//
+//	  for(int i = 0; i < picture_height_tuxAnimation_2; i++)
+//	  {
+//		  for(int j = 0; j < picture_width_tuxAnimation_2; j++)
+//		  {
+//			  if((i == 0) && (j == 0))
+//			  {
+//				  LCD_Write_Data(picture_array_tuxAnimation_2[i][j]);
+//			  }
+//			  else
+//			  {
+//				  LCD_Write_Command(picture_array_tuxAnimation_2[i][j]);
+//			  }
+//		  }
+//	  }
+//
+//	  for(int i = 0; i < picture_height_tuxAnimation_3; i++)
+//	  {
+//		  for(int j = 0; j < picture_width_tuxAnimation_3; j++)
+//		  {
+//			  if((i == 0) && (j == 0))
+//			  {
+//				  LCD_Write_Data(picture_array_tuxAnimation_3[i][j]);
+//			  }
+//			  else
+//			  {
+//				  LCD_Write_Command(picture_array_tuxAnimation_3[i][j]);
+//			  }
+//		  }
+//	  }
+//  }
 
 
 
@@ -176,7 +185,7 @@ void init_LCD() {
 }
 
 void LCD_Write_Command(int command) {
-  IOWR_16DIRECT(LCD_BASE,0x01,command);
+  IOWR_16DIRECT(LCD_BASE,0x04,command);
 }
 
 void LCD_Write_Data(int data) {

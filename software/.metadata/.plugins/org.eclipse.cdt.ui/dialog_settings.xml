@@ -3,13 +3,6 @@
 	<section name="org.eclipse.cdt.ui.text.hover.CMacroExpansionExploration">
 	</section>
 	<section name="PDOMSearchPage">
-		<item value="false" key="caseSensitive"/>
-		<item value="227191" key="searchFlags"/>
-		<list key="previousPatterns">
-			<item value="IOWR_16DIRECT"/>
-			<item value="iowr_"/>
-			<item value="usleep"/>
-		</list>
 	</section>
 	<section name="OptionalMessageDialog.hide.">
 		<item value="true" key="askReindex"/>

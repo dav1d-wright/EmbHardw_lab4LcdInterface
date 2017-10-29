@@ -1,0 +1,9 @@
+19:19:48 **** Incremental Build of configuration Nios II for project lab3ParPortAndTimers ****
+make all 
+Info: Building ../lab3ParPortAndTimers_bsp/
+D:/programs/intelFPGA_lite/17.0/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../lab3ParPortAndTimers_bsp/
+[BSP build complete]
+[lab3ParPortAndTimers build complete]
+
+19:19:49 Build Finished (took 943ms)
+
