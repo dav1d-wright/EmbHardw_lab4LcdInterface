@@ -76,6 +76,7 @@ architecture LCD of LcdDriver is
     
     signal BitEnable_Persist_D:     std_logic_vector (15 downto 0) := (others => '0');
     signal WriteData_Persist_D:     std_logic_vector (15 downto 0) := (others => '0');
+
     signal SetBitEnable_S:          std_logic := '0';
     signal SetWriteData_S:          std_logic := '0';
     
@@ -111,6 +112,26 @@ BitEnableStorage: D_FF generic map(WIDTH => 16)
 ---                                                                          ---
 --------------------------------------------------------------------------------
 
+    captBitEnable: process(Clk_CI, Reset_NRI)
+    begin
+        if(Reset_NRI = '0')then
+            BitEnable_D <= (others => '0');
+        elsif(Clk_CI'event and Clk_CI = '1')then
+            case ByteEnable_DI is
+                when "00" => 
+                    BitEnable_D <= (others => '0');
+                when "01" =>
+                    BitEnable_D <= "0000000011111111";
+                when "10" =>
+                    BitEnable_D <= "1111111100000000";
+                when "11" =>
+                    BitEnable_D <= (others => '1');
+                when others =>
+                    BitEnable_D <= (others => '0');
+            end case;
+        end if;
+    end process;
+    
     nextStateRx: process(Clk_CI, Reset_NRI)
     begin
         if(Reset_NRI = '0')then
@@ -124,9 +145,9 @@ BitEnableStorage: D_FF generic map(WIDTH => 16)
     logic: process(Write_SI, StatePres_D)
         -- storage for all input data on read/write cycles
         variable Address_D:                 std_logic_vector (2 downto 0);
-        variable ByteEnable_D:              std_logic_vector (1 downto 0);
         variable BeginBurstTransfer_D:      std_logic;
         variable TotalBurstCount_D:         natural range 0 to 255;
+        variable WriteDataFast_D:           std_logic_vector(15 downto 0);
 
     begin
         case StatePres_D is
@@ -171,7 +192,6 @@ BitEnableStorage: D_FF generic map(WIDTH => 16)
             when StateIdle =>
                 -- store input values as early as possible
                 Address_D := Address_DI;
-                ByteEnable_D := ByteEnable_DI;
                 TotalBurstCount_D := to_integer(unsigned(BurstCount_DI));
                 BeginBurstTransfer_D := BeginBurstTransfer_DI;
                 
@@ -191,26 +211,12 @@ BitEnableStorage: D_FF generic map(WIDTH => 16)
                 
                 if(Write_SI = '1')then
                     SetWriteData_S <= '1';
+                    SetBitEnable_S <= '1';
                     if(BeginBurstTransfer_D = '1')then
                         BurstCount_D <= TotalBurstCount_D;
                     else
                         BurstCount_D <= 0;
                     end if;
-                    
-                    case ByteEnable_D is
-                        when "00" => 
-                            BitEnable_D <= (others => '0');
-                        when "01" =>
-                            BitEnable_D <= "0000000011111111";
-                        when "10" =>
-                            BitEnable_D <= "1111111100000000";
-                        when "11" =>
-                            BitEnable_D <= (others => '1');
-                        when others =>
-                            BitEnable_D <= (others => '0');
-                    end case;
-                    SetBitEnable_S <= '1';
-                    
                     
                     case Address_D is
                         when "001" => 
@@ -223,10 +229,9 @@ BitEnableStorage: D_FF generic map(WIDTH => 16)
                             IsData_D <= IsData_D;
                             StateNext_D <= StateIdle;
                     end case;
-
+                    
                 else
                     IsData_D <= '0';
-                    BitEnable_D <= (others => '0');
                     BurstCount_D <= 0;
                     SetWriteData_S <= '0';
                     SetBitEnable_S <= '0';

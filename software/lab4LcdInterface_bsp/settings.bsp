@@ -2,10 +2,10 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>29.10.2017 20:18:28</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1509304708517</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>29.10.2017 22:25:21</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1509312321552</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>D:\syncplicity\z003nc3v\Documents\MSE\1Sem_HS17_18\TSM_EmbHardw\w4\exercises\lab4LcdInterface\software\lab4LcdInterface_bsp</BspGeneratedLocation>
-        <BspSettingsFile>.\settings.bsp</BspSettingsFile>
+        <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\systemFile.sopcinfo</SopcDesignFile>
         <JdiFile>default</JdiFile>
         <Cpu>CPU</Cpu>
