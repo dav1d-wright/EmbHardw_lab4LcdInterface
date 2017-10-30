@@ -233,14 +233,14 @@ module systemFile_mm_interconnect_0_router
 
     // ( 0x20030a0 .. 0x20030b0 )
     if ( {address[RG:PAD5],{PAD5{1'b0}}} == 26'h20030a0   ) begin
-            src_channel = 9'b000000010;
-            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 1;
+            src_channel = 9'b000100000;
+            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 4;
     end
 
     // ( 0x20030b0 .. 0x20030c0 )
     if ( {address[RG:PAD6],{PAD6{1'b0}}} == 26'h20030b0   ) begin
-            src_channel = 9'b000100000;
-            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 4;
+            src_channel = 9'b000000010;
+            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 1;
     end
 
     // ( 0x20030c8 .. 0x20030d0 )

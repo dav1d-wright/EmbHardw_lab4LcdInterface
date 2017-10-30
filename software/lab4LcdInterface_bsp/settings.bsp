@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>29.10.2017 22:25:21</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1509312321552</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>30.10.2017 23:16:21</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1509401781457</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>D:\syncplicity\z003nc3v\Documents\MSE\1Sem_HS17_18\TSM_EmbHardw\w4\exercises\lab4LcdInterface\software\lab4LcdInterface_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\systemFile.sopcinfo</SopcDesignFile>
@@ -929,13 +929,13 @@
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>LCD</slaveDescriptor>
+                <slaveDescriptor>altpll_0</slaveDescriptor>
                 <addressRange>0x020030A0 - 0x020030AF</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>altpll_0</slaveDescriptor>
+                <slaveDescriptor>LCD</slaveDescriptor>
                 <addressRange>0x020030B0 - 0x020030BF</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>

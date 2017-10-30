@@ -4,7 +4,7 @@
  * Machine generated for CPU 'CPU' in SOPC Builder design 'systemFile'
  * SOPC Builder design path: ../../systemFile.sopcinfo
  *
- * Generated: Sun Oct 29 22:25:22 CET 2017
+ * Generated: Mon Oct 30 23:16:22 CET 2017
  */
 
 /*
@@ -158,7 +158,7 @@
  */
 
 #define ALT_MODULE_CLASS_LCD LCD
-#define LCD_BASE 0x20030a0
+#define LCD_BASE 0x20030b0
 #define LCD_IRQ -1
 #define LCD_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define LCD_NAME "/dev/LCD"
@@ -304,7 +304,7 @@
  *
  */
 
-#define ALTPLL_0_BASE 0x20030b0
+#define ALTPLL_0_BASE 0x20030a0
 #define ALTPLL_0_IRQ -1
 #define ALTPLL_0_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define ALTPLL_0_NAME "/dev/altpll_0"
@@ -369,7 +369,7 @@
 #define SYSID_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define SYSID_NAME "/dev/sysid"
 #define SYSID_SPAN 8
-#define SYSID_TIMESTAMP 1509312168
+#define SYSID_TIMESTAMP 1509401627
 #define SYSID_TYPE "altera_avalon_sysid_qsys"
 
 

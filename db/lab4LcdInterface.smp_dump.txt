@@ -35,15 +35,21 @@ i_state.101 0 1 0 0 0 1
 i_state.111 1 0 0 0 0 1 
 
 State Machine - |topLevelEntity|systemFile:inst|LcdDriver:lcd|StatePres_D
-Name StatePres_D.StatePostTx StatePres_D.StateTxData StatePres_D.StatePostTxDataIdentifier StatePres_D.StateTxDataIdentifier StatePres_D.StateTxCmd StatePres_D.StateIdle StatePres_D.StateLcdReset StatePres_D.StateReset 
-StatePres_D.StateReset 0 0 0 0 0 0 0 0 
-StatePres_D.StateLcdReset 0 0 0 0 0 0 1 1 
-StatePres_D.StateIdle 0 0 0 0 0 1 0 1 
-StatePres_D.StateTxCmd 0 0 0 0 1 0 0 1 
-StatePres_D.StateTxDataIdentifier 0 0 0 1 0 0 0 1 
-StatePres_D.StatePostTxDataIdentifier 0 0 1 0 0 0 0 1 
-StatePres_D.StateTxData 0 1 0 0 0 0 0 1 
-StatePres_D.StatePostTx 1 0 0 0 0 0 0 1 
+Name StatePres_D.StatePostTxBurstWaitCmd StatePres_D.StatePostTxBurstWaitData StatePres_D.StatePostTxWait StatePres_D.StatePostTx StatePres_D.StateTxData StatePres_D.StatePostTxDataIdentifierWait StatePres_D.StatePostTxDataIdentifier StatePres_D.StateTxDataIdentifier StatePres_D.StateTxCmd StatePres_D.StateEvalData StatePres_D.StateIdle StatePres_D.StateLcdResetWait StatePres_D.StateLcdReset StatePres_D.StateReset 
+StatePres_D.StateReset 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+StatePres_D.StateLcdReset 0 0 0 0 0 0 0 0 0 0 0 0 1 1 
+StatePres_D.StateLcdResetWait 0 0 0 0 0 0 0 0 0 0 0 1 0 1 
+StatePres_D.StateIdle 0 0 0 0 0 0 0 0 0 0 1 0 0 1 
+StatePres_D.StateEvalData 0 0 0 0 0 0 0 0 0 1 0 0 0 1 
+StatePres_D.StateTxCmd 0 0 0 0 0 0 0 0 1 0 0 0 0 1 
+StatePres_D.StateTxDataIdentifier 0 0 0 0 0 0 0 1 0 0 0 0 0 1 
+StatePres_D.StatePostTxDataIdentifier 0 0 0 0 0 0 1 0 0 0 0 0 0 1 
+StatePres_D.StatePostTxDataIdentifierWait 0 0 0 0 0 1 0 0 0 0 0 0 0 1 
+StatePres_D.StateTxData 0 0 0 0 1 0 0 0 0 0 0 0 0 1 
+StatePres_D.StatePostTx 0 0 0 1 0 0 0 0 0 0 0 0 0 1 
+StatePres_D.StatePostTxWait 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
+StatePres_D.StatePostTxBurstWaitData 0 1 0 0 0 0 0 0 0 0 0 0 0 1 
+StatePres_D.StatePostTxBurstWaitCmd 1 0 0 0 0 0 0 0 0 0 0 0 0 1 
 
 State Machine - |topLevelEntity|systemFile:inst|systemFile_CPU:cpu|systemFile_CPU_cpu:cpu|systemFile_CPU_cpu_nios2_oci:the_systemFile_CPU_cpu_nios2_oci|systemFile_CPU_cpu_debug_slave_wrapper:the_systemFile_CPU_cpu_debug_slave_wrapper|systemFile_CPU_cpu_debug_slave_tck:the_systemFile_CPU_cpu_debug_slave_tck|DRsize
 Name DRsize.101 DRsize.100 DRsize.011 DRsize.010 DRsize.001 DRsize.000 

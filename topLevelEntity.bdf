@@ -526,10 +526,6 @@ agreement for further details.
 	)
 )
 (connector
-	(pt 1000 200)
-	(pt 1104 200)
-)
-(connector
 	(pt 600 200)
 	(pt 528 200)
 )
@@ -605,4 +601,8 @@ agreement for further details.
 (connector
 	(pt 600 544)
 	(pt 528 544)
+)
+(connector
+	(pt 1104 200)
+	(pt 1000 200)
 )

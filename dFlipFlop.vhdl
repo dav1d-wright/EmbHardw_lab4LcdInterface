@@ -5,7 +5,6 @@ entity D_FF is
     generic (WIDTH:              natural := 16);
     port
     (
-        Clk_CI:         in std_logic;
         Reset_NRI:      in std_logic;
         Set_SI:         in std_logic;
         D_DI:           in std_logic_vector (WIDTH-1 downto 0);
@@ -14,15 +13,15 @@ entity D_FF is
 end entity D_FF;
 
 architecture behavioural of D_FF is
+    signal Set_Edge_D:            std_logic := '0';
+    signal Set_Last_D:            std_logic := '0';
 begin
-	process(Reset_NRI, Clk_CI)
+    process(Reset_NRI, Set_SI)
     begin
         if(Reset_NRI = '0')then
             Q_DO <= (others => '0');
-        elsif(Clk_CI'event and Clk_CI = '1')then
-            if(Set_SI = '1')then
-                Q_DO <= D_DI;
-            end if;
+        elsif(Set_SI'event and Set_SI = '1')then
+            Q_DO <= D_DI;
         end if;
     end process;
 end behavioural;
