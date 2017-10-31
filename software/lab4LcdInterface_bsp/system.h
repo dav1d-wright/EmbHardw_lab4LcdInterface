@@ -4,7 +4,7 @@
  * Machine generated for CPU 'CPU' in SOPC Builder design 'systemFile'
  * SOPC Builder design path: ../../systemFile.sopcinfo
  *
- * Generated: Mon Oct 30 23:16:22 CET 2017
+ * Generated: Tue Oct 31 22:43:36 CET 2017
  */
 
 /*
@@ -158,7 +158,7 @@
  */
 
 #define ALT_MODULE_CLASS_LCD LCD
-#define LCD_BASE 0x20030b0
+#define LCD_BASE 0x20030c0
 #define LCD_IRQ -1
 #define LCD_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define LCD_NAME "/dev/LCD"
@@ -221,19 +221,19 @@
 #define ALT_NUM_INTERNAL_INTERRUPT_CONTROLLERS 1
 #define ALT_NUM_INTERRUPT_CONTROLLERS 1
 #define ALT_STDERR "/dev/jtag_uart"
-#define ALT_STDERR_BASE 0x20030d0
+#define ALT_STDERR_BASE 0x20030e0
 #define ALT_STDERR_DEV jtag_uart
 #define ALT_STDERR_IS_JTAG_UART
 #define ALT_STDERR_PRESENT
 #define ALT_STDERR_TYPE "altera_avalon_jtag_uart"
 #define ALT_STDIN "/dev/jtag_uart"
-#define ALT_STDIN_BASE 0x20030d0
+#define ALT_STDIN_BASE 0x20030e0
 #define ALT_STDIN_DEV jtag_uart
 #define ALT_STDIN_IS_JTAG_UART
 #define ALT_STDIN_PRESENT
 #define ALT_STDIN_TYPE "altera_avalon_jtag_uart"
 #define ALT_STDOUT "/dev/jtag_uart"
-#define ALT_STDOUT_BASE 0x20030d0
+#define ALT_STDOUT_BASE 0x20030e0
 #define ALT_STDOUT_DEV jtag_uart
 #define ALT_STDOUT_IS_JTAG_UART
 #define ALT_STDOUT_PRESENT
@@ -304,13 +304,27 @@
  *
  */
 
-#define ALTPLL_0_BASE 0x20030a0
+#define ALTPLL_0_BASE 0x20030b0
 #define ALTPLL_0_IRQ -1
 #define ALTPLL_0_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define ALTPLL_0_NAME "/dev/altpll_0"
 #define ALTPLL_0_SPAN 16
 #define ALTPLL_0_TYPE "altpll"
 #define ALT_MODULE_CLASS_altpll_0 altpll
+
+
+/*
+ * altpll_signalTap configuration
+ *
+ */
+
+#define ALTPLL_SIGNALTAP_BASE 0x20030a0
+#define ALTPLL_SIGNALTAP_IRQ -1
+#define ALTPLL_SIGNALTAP_IRQ_INTERRUPT_CONTROLLER_ID -1
+#define ALTPLL_SIGNALTAP_NAME "/dev/altpll_signalTap"
+#define ALTPLL_SIGNALTAP_SPAN 16
+#define ALTPLL_SIGNALTAP_TYPE "altpll"
+#define ALT_MODULE_CLASS_altpll_signalTap altpll
 
 
 /*
@@ -330,7 +344,7 @@
  */
 
 #define ALT_MODULE_CLASS_jtag_uart altera_avalon_jtag_uart
-#define JTAG_UART_BASE 0x20030d0
+#define JTAG_UART_BASE 0x20030e0
 #define JTAG_UART_IRQ 0
 #define JTAG_UART_IRQ_INTERRUPT_CONTROLLER_ID 0
 #define JTAG_UART_NAME "/dev/jtag_uart"
@@ -363,13 +377,13 @@
  */
 
 #define ALT_MODULE_CLASS_sysid altera_avalon_sysid_qsys
-#define SYSID_BASE 0x20030c8
+#define SYSID_BASE 0x20030d8
 #define SYSID_ID 0
 #define SYSID_IRQ -1
 #define SYSID_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define SYSID_NAME "/dev/sysid"
 #define SYSID_SPAN 8
-#define SYSID_TIMESTAMP 1509401627
+#define SYSID_TIMESTAMP 1509485925
 #define SYSID_TYPE "altera_avalon_sysid_qsys"
 
 

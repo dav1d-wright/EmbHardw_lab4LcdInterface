@@ -20,7 +20,7 @@
 					"strict" : false
 				},
 				{
-					"name" : "LCD_RESETn",
+					"name" : "LCD_READn",
 					"strict" : false
 				},
 				{

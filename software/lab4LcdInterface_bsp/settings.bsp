@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>30.10.2017 23:16:21</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1509401781457</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>31.10.2017 22:43:35</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1509486215106</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>D:\syncplicity\z003nc3v\Documents\MSE\1Sem_HS17_18\TSM_EmbHardw\w4\exercises\lab4LcdInterface\software\lab4LcdInterface_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\systemFile.sopcinfo</SopcDesignFile>
@@ -929,26 +929,32 @@
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>altpll_0</slaveDescriptor>
+                <slaveDescriptor>altpll_signalTap</slaveDescriptor>
                 <addressRange>0x020030A0 - 0x020030AF</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>LCD</slaveDescriptor>
+                <slaveDescriptor>altpll_0</slaveDescriptor>
                 <addressRange>0x020030B0 - 0x020030BF</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
+                <slaveDescriptor>LCD</slaveDescriptor>
+                <addressRange>0x020030C0 - 0x020030CF</addressRange>
+                <addressSpan>16</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
                 <slaveDescriptor>sysid</slaveDescriptor>
-                <addressRange>0x020030C8 - 0x020030CF</addressRange>
+                <addressRange>0x020030D8 - 0x020030DF</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>jtag_uart</slaveDescriptor>
-                <addressRange>0x020030D0 - 0x020030D7</addressRange>
+                <addressRange>0x020030E0 - 0x020030E7</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>

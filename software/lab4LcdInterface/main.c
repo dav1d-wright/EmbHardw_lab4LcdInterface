@@ -33,12 +33,12 @@ int main()
 {
   printf("Hello from Nios II!\n");
 
-  while (true)
-  {
-	  LCD_Write_Command(0xFFFFU);
-
-	  LCD_Write_Data(0xF0F0U);
-  }
+//  while (true)
+//  {
+//	  LCD_Write_Command(0xFFFFU);
+//
+//	  LCD_Write_Data(0xF0F0U);
+//  }
 
 
   init_LCD();

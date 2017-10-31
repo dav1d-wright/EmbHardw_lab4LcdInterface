@@ -4,215 +4,286 @@
 --! @brief LCD driver. Translates avalon bus data and commands to the LCD interface
 -------------------------------------------------------
 
+--! @mainpage This project is a Project for the MSE module TSM_EmbHardw during the autumn semester of 2017
+--!
+--! This project is implemented on the MSE-Embedded Board developed by Microlab at the Bern University of Applied Sciences (https://www.microlab.ti.bfh.ch/wiki/huce:microlab:projects:internal:mse-em-board)
+
+ 
+--! Use standard library
 library ieee;
+--! Use logic elements
 use ieee.std_logic_1164.all;
+--! Use numeric elements
 use ieee.numeric_std.all;
 
+--! LCD driver
+
+--! Interface between Avalon bus
+--! and LCD
 entity LcdDriver is
     port
     (
-        -- communication between CPU and LcdDriver
+        --! @defgroup cpuLcdDriverComm communication between CPU and LcdDriver
+        --! @{
+        
+        --! Clock input
         Clk_CI:         	    in std_logic;
+        --! Reset input
         Reset_NRI:      	    in std_logic;
+        --! Address data input
         Address_DI:     	    in std_logic_vector (2 downto 0);
+        --! Write signal input
         Write_SI:       	    in std_logic;
+        --! Write data input
         WriteData_DI:		    in std_logic_vector (15 downto 0);
+        --! Read signal input
         Read_SI:		        in std_logic;
+        --! Byte enable data input
         ByteEnable_DI:          in std_logic_vector (1 downto 0);
-        BeginBurstTransfer_DI:  in std_logic;
+        --! Begin burst transfer signal input
+        BeginBurstTransfer_SI:  in std_logic;
+        --! Burst count data input
         BurstCount_DI:          in std_logic_vector (7 downto 0);
         
+        --! Wait request signal output
         WaitReq_SO:             out std_logic;
+        --! Read data output
         ReadData_DO:		    out std_logic_vector (15 downto 0);
+        --! Read data valid signal output
         ReadDataValid_SO:       out std_logic;
+        --! @}
+
+        --! @defgroup lcdDriverLcdComm communication between LcdDriver and LCD
+        --! @{
         
-      
-        -- communication from LcdDriver to LCD
+        --! data output to LCD
         DB_DIO:      		    inout std_logic_vector (15 downto 0);
+        --! Read signal output to LCD
         Rd_NSO:                 out std_logic;
+        --! Write signal output to LCD
         Wr_NSO:                 out std_logic;
+        --! Chip select signal output to LCD
         Cs_NSO:                 out std_logic;
+        --! Data/Command signal output to LCD
         DC_NSO:                 out std_logic;
+        --! LCD reset output
         LcdReset_NRO:           out std_logic;
+        --! Interface mode signal output to LCD
         IM0_SO:                 out std_logic
+        --! @}
     );
 end LcdDriver;
 
 architecture LCD of LcdDriver is 
-    -- D-FlipFlop for input storage 
-    component D_FF is
-        generic (WIDTH:     natural := 16);
-        port
-        (
-            Reset_NRI:      in std_logic;
-            Set_SI:         in std_logic;
-            D_DI:           in std_logic_vector (WIDTH-1 downto 0);
-            Q_DO:           out std_logic_vector(WIDTH-1 downto 0)
-        );
-    end component;
-
-
-    -- State macine types & signals
-
+    --! State macine types & signals
     type State_T                is (StateReset,
                                     StateLcdReset,
-                                    StateLcdResetWait,
                                     StateIdle,
+                                    StateNextBurstItem,
+                                    StateEvalData,
                                     StateTxCmd,
                                     StateTxDataIdentifier,
                                     StatePostTxDataIdentifier,
-                                    StatePostTxDataIdentifierWait,
                                     StateTxData,
-                                    StatePostTx,
-                                    StatePostTxWait,
-                                    StatePostTxBurstWaitData,
-                                    StatePostTxBurstWaitCmd);
+                                    StatePostTx);
     
-                                    
+    --! Next state
     signal StateNext_D:             State_T := StateReset;
+    --! Present state
     signal StatePres_D:             State_T := StateReset;
-        
-    signal IsData_D:                std_logic := '0';
 
-    signal BurstCount_D:            std_logic_vector (7 downto 0) := (others => '0');
-    signal CurBurstCount_D:         std_logic_vector (7 downto 0);
-        
-    
-    signal ByteEnable_Persist_D:    std_logic_vector (1 downto 0) := (others => '0');
-    signal WriteData_Persist_D:     std_logic_vector (15 downto 0) := (others => '0');
-    signal BurstCount_Persist_D:    std_logic_vector (7 downto 0) := (others => '0');
-    signal CurBurstCount_Persist_D: std_logic_vector (7 downto 0) := (others => '0');
-    signal Address_Persist_D:       std_logic_vector (2 downto 0) := (others => '0');
-    
-    signal IdleCount_D:             std_logic_vector (7 downto 0) := (others => '0');
-    signal IdleCount_Persist_D:     std_logic_vector (7 downto 0) := (others => '0');
-    
-    signal SetByteEnable_S:         std_logic := '0';
-    signal SetWriteData_S:          std_logic := '0';
-    signal SetBurstCount_S:         std_logic := '0';
-    signal SetCurBurstCount_S:      std_logic := '0';
-    signal SetIdlecount_S:          std_logic := '0';
-    
+    --! Edge detection of Write_SI
+    signal Write_Edge_D:                std_logic := '0';
+    --! Last state of Write_SI
+    signal Write_Last_D:                std_logic := '0';
 
-    -- edge detection of Write_SI and Read_SI
-    -- signal Write_Edge_D:            std_logic := '0';
-    -- signal Write_Last_D:            std_logic := '0';
-        
-    -- signal Read_Edge_D:             std_logic := '0';
-    -- signal Read_Last_D:             std_logic := '0';
+    --! Edge detection of Read_SI    
+    signal Read_Edge_D:                 std_logic := '0';
+    --! Last state of Read_SI
+    signal Read_Last_D:                 std_logic := '0';
+            
+    --! @defgroup syncInp Synchronised input data
+    --! @{
+    
+    
+    --! Synchronised Address
+    signal Address_D:     	            std_logic_vector (2 downto 0) := (others => '0');
+    --! Synchronised Write
+    signal Write_S:       	            std_logic := '0';
+    --! Synchronised WriteData
+    signal WriteData_D:		            std_logic_vector (15 downto 0) := (others => '0');
+    --! Synchronised Read
+    signal Read_S:		                std_logic := '0';
+    --! Synchronised ByteEnable
+    signal ByteEnable_D:                std_logic_vector (1 downto 0) := (others => '0');
+    --! Synchronised BeginBurstTransfer
+    signal BeginBurstTransfer_S:        std_logic := '0';
+    --! Synchronised BurstCount
+    signal BurstCount_D:                std_logic_vector (7 downto 0) := (others => '0');
+    --! @}
 
+    --! @defgroup inpP Input delayed one step
+    --! @{
+    
+    
+    --! Address delayed one step
+    signal Address_P_D:     	        std_logic_vector (2 downto 0) := (others => '0');
+    --! Write delayed one step
+    signal Write_P_S:     	            std_logic := '0';
+    --! WriteData delayed one step
+    signal WriteData_P_D:		        std_logic_vector (15 downto 0) := (others => '0');
+    --! ByteEnable delayed one step
+    signal ByteEnable_P_D:              std_logic_vector (1 downto 0) := (others => '0');
+    --! BeginBurstTransfer delayed one step
+    signal BeginBurstTransfer_P_S:      std_logic := '0';
+    --! BurstCount delayed one step
+    signal BurstCount_P_D:              std_logic_vector (7 downto 0) := (others => '0');
+    --! @}
+
+    --! @defgroup inpPP Input delayed two steps
+    --! @{
+    
+    
+    --! Address delayed one step
+    signal Address_PP_D:     	        std_logic_vector (2 downto 0) := (others => '0');
+    --! Write delayed one step
+    signal Write_PP_S:     	            std_logic := '0';
+    --! WriteData delayed one step
+    signal WriteData_PP_D:		        std_logic_vector (15 downto 0) := (others => '0');
+    --! ByteEnable delayed one step
+    signal ByteEnable_PP_D:             std_logic_vector (1 downto 0) := (others => '0');
+    --! BeginBurstTransfer delayed one step
+    signal BeginBurstTransfer_PP_S:     std_logic := '0';
+    --! BurstCount delayed one step
+    signal BurstCount_PP_D:             std_logic_vector (7 downto 0) := (others => '0');
+    --! @}
+    
+    --! @defgroup myInp Input dedicated for LcdDriver
+    --! @{
+    
+    
+    --! Address dedicated for LcdDriver
+    signal MyAddress_D:     	        std_logic_vector (2 downto 0) := (others => '0');
+    --! WriteData dedicated for LcdDriver
+    signal MyWriteData_D:		        std_logic_vector (15 downto 0) := (others => '0');
+    --! ByteEnable dedicated for LcdDriver
+    signal MyByteEnable_D:              std_logic_vector (1 downto 0) := (others => '0');
+    --! BeginBurstTransfer dedicated for LcdDriver
+    signal MyBeginBurstTransfer_S:      std_logic := '0';
+    --! BurstCount dedicated for LcdDriver
+    signal MyBurstCount_D:              std_logic_vector (7 downto 0) := (others => '0');
+    --! @}
+        
+    --! @defgroup cnt counters
+    --! @{
+    signal BurstCountPres_D:            std_logic_vector (7 downto 0) := (others => '0');
+    signal BurstCountNext_D:            std_logic_vector (7 downto 0) := (others => '0');
+    signal IdleCountPres_D:             std_logic_vector (7 downto 0) := (others => '0');
+    signal IdleCountNext_D:             std_logic_vector (7 downto 0) := (others => '0');
+    signal BurstStreamCountPres_D:      std_logic_vector (7 downto 0) := (others => '0');
+    signal BurstStreamCountNext_D:      std_logic_vector (7 downto 0) := (others => '0');
+    --! @}
+    
+    --! Burst stream type
+    type stream_T                       is array (255 downto 0) of std_logic_vector (15 downto 0);
+    --! Burst stream 
+    signal BurstStream_D:               stream_T;
 begin
---------------------------------------------------------------------------------
----                                                                          ---
---- data storage                                                             ---
----                                                                          ---
---------------------------------------------------------------------------------
-WriteDataStorage: D_FF generic map(WIDTH => 16)
-                        port map
-                        (
-                            Reset_NRI   => Reset_NRI,
-                            Set_SI      => SetWriteData_S,
-                            D_DI        => WriteData_DI,
-                            Q_DO        => WriteData_Persist_D
-                        );
+    --! @brief This process synchronises input data with the clock 
+    syncData: process(Reset_NRI, Clk_CI)
+    begin
+        if(Reset_NRI = '0')then
+            Address_D <= (others => '0');    	    
+            Write_S <= '0';           	    
+            WriteData_D <= (others => '0');    		    
+            Read_S <= '0';    		        
+            ByteEnable_D <= (others => '0');            
+            BeginBurstTransfer_S <= '0';    
+            BurstCount_D <= (others => '0');          
+        elsif(Clk_CI'event and Clk_CI = '1')then
+            Address_D <= Address_DI;   	    
+            Write_S <= Write_SI;
+            WriteData_D <= WriteData_DI;    
+            Read_S <= Read_SI;
+            ByteEnable_D <= ByteEnable_DI;   
+            BeginBurstTransfer_S <= BeginBurstTransfer_SI;
+            BurstCount_D <= BurstCount_DI;
 
-BurstCountStorage: D_FF generic map(WIDTH => 8)
-                        port map
-                        (
-                            Reset_NRI   => Reset_NRI,
-                            Set_SI      => SetBurstCount_S,
-                            D_DI        => BurstCount_DI,
-                            Q_DO        => BurstCount_Persist_D
-                        );
+            Address_P_D <= Address_D;   	    
+            Write_P_S <= Write_S;
+            WriteData_P_D <= WriteData_D;    
+            ByteEnable_P_D <= ByteEnable_D;   
+            BeginBurstTransfer_P_S <= BeginBurstTransfer_S;
+            BurstCount_P_D <= BurstCount_D;
+            
+            Address_PP_D <= Address_P_D;   	    
+            Write_PP_S <= Write_P_S;
+            WriteData_PP_D <= WriteData_P_D;    
+            ByteEnable_PP_D <= ByteEnable_P_D;   
+            BeginBurstTransfer_PP_S <= BeginBurstTransfer_P_S;
+            BurstCount_PP_D <= BurstCount_P_D;
+        end if;
+    end process;
 
-CurBurstCountStorage: D_FF generic map(WIDTH => 8)
-                        port map
-                        (
-                            Reset_NRI   => Reset_NRI,
-                            Set_SI      => SetCurBurstCount_S,
-                            D_DI        => CurBurstCount_D,
-                            Q_DO        => CurBurstCount_Persist_D
-                        );
-                        
-IdleCountStorage: D_FF generic map(WIDTH => 8)
-                        port map
-                        (
-                            Reset_NRI   => Reset_NRI,
-                            Set_SI      => SetIdleCount_S,
-                            D_DI        => IdleCount_D,
-                            Q_DO        => IdleCount_Persist_D
-                        );
-                        
-ByteEnableStorage: D_FF generic map(WIDTH => 2)
-                        port map
-                        (
-                            Reset_NRI   => Reset_NRI,
-                            Set_SI      => SetByteEnable_S,
-                            D_DI        => ByteEnable_DI,
-                            Q_DO        => ByteEnable_Persist_D
-                        );
---------------------------------------------------------------------------------
----                                                                          ---
---- state machine                                                            ---
----                                                                          ---
---------------------------------------------------------------------------------
-    -- edgeDetect: process(Reset_NRI, Clk_CI)
-    -- begin
-        -- if(Clk_CI'event and Clk_CI = '1')then
-            -- if(Reset_NRI = '0')then
-                -- Read_Edge_D <= '0';
-                -- Write_Edge_D <= '0';
-                -- Read_Last_D <= '0';
-                -- Write_Last_D <= '0';
-            -- elsif(Clk_CI'event and Clk_CI = '1')then
-                -- Write_Edge_D <= Write_SI and (not Write_Last_D);
-                -- Write_Last_D <= Write_SI;
-                
-                -- Read_Edge_D <= Read_SI and (not Read_Last_D);
-                -- Read_Last_D <= Read_SI;
-            -- end if;
-        -- end if;
-    -- end process edgeDetect;
-    
-    captByteEnable: process(Clk_CI, Reset_NRI)
+    --! @brief This process detects positive edges of the Write_SI and Read_SI signals
+    edgeDetect: process(Reset_NRI, Clk_CI)
     begin
         if(Reset_NRI = '0')then
-            SetByteEnable_S <= '0';
+            Read_Edge_D <= '0';
+            Write_Edge_D <= '0';
+            Read_Last_D <= '0';
+            Write_Last_D <= '0';
         elsif(Clk_CI'event and Clk_CI = '1')then
-            if(Write_SI = '1')then
-                SetByteEnable_S <= '1';
+            if(Write_Last_D = '0' and Write_S = '1')then
+                Write_Edge_D <= '1';
             else
-                SetByteEnable_S <= '0';
+                Write_Edge_D <= '0';
             end if;
+            
+            Write_Last_D <= Write_S;
+            
+            if(Read_Last_D = '0' and Read_S = '1')then
+                Read_Edge_D <= '1';
+            else
+                Read_Edge_D <= '0';
+            end if;
+        end if;
+    end process edgeDetect;
+
+    --! @brief This process fills the burst stream array
+    burstStream: process(Reset_NRI, Clk_CI)
+    begin
+        if(Reset_NRI = '0')then
+            BurstStreamCountNext_D <= (others => '0');
+        elsif(Clk_CI'event and Clk_CI = '1')then
+            if(MyBeginBurstTransfer_S = '1')then
+                if((Write_PP_S = '1') and (to_integer(unsigned(BurstStreamCountPres_D)) < to_integer(unsigned(MyBurstCount_D))))then
+                    BurstStream_D(to_integer(unsigned(BurstStreamCountPres_D))) <= WriteData_PP_D;
+                    BurstStreamCountNext_D <= std_logic_vector(unsigned(BurstStreamCountPres_D) + to_unsigned(1, 8));
+                else
+                    BurstStreamCountNext_D <= BurstStreamCountPres_D;
+                end if;
+            else
+                BurstStreamCountNext_D <= (others => '0');
+            end if;
+        end if;
+    end process burstStream;
+    
+    --! @brief This process updates the values of the idle counter and burst counter
+    counters: process (Reset_NRI, Clk_CI)
+    begin
+        if(Reset_NRI = '0')then
+            BurstCountPres_D <= (others => '0');
+            IdleCountPres_D <= (others => '0');
+            BurstStreamCountPres_D <= (others => '0');
+        elsif(Clk_CI'event and Clk_CI = '1')then
+            BurstCountPres_D <= BurstCountNext_D;
+            IdleCountPres_D <= IdleCountNext_D;
+            BurstStreamCountPres_D <= BurstStreamCountNext_D;
         end if;
     end process;
     
-    captBurstCount: process(Clk_CI, Reset_NRI)
-    begin
-        if(Reset_NRI = '0')then
-            SetBurstCount_S <= '0';
-        elsif(Clk_CI'event and Clk_CI = '1')then
-            if(Write_SI = '1')then
-                SetBurstCount_S <= '1';
-            else
-                SetBurstCount_S <= '0';
-            end if;
-        end if;
-    end process;
-    
-    captWriteData: process(Clk_CI, Reset_NRI)
-    begin
-        if(Reset_NRI = '0')then
-            SetWriteData_S <= '0';
-        elsif(Clk_CI'event and Clk_CI = '1')then
-            if(Write_SI = '1')then
-                SetWriteData_S <= '1';
-            else
-                SetWriteData_S <= '0';
-            end if;
-        end if;
-    end process;
-    
+    --! @brief This process implements the next state logic
     nextState: process(Clk_CI, Reset_NRI)
     begin
         if(Reset_NRI = '0')then
@@ -222,35 +293,30 @@ ByteEnableStorage: D_FF generic map(WIDTH => 2)
         end if;
     end process;
     
-    
-    logic: process(Write_SI, StatePres_D)
-        -- storage for all input data on read/write cycles
-        variable Address_D:                 std_logic_vector (2 downto 0) := (others =>  '0');
-        variable BitEnable_D:               std_logic_vector (15 downto 0) := (others =>  '0');
-        variable BeginBurstTransfer_D:      std_logic := '0';
-
-    begin
+    --! @brief This process implements the present state logic    
+    logic: process(Write_Edge_D, StatePres_D, IdleCountPres_D)
+        variable BitEnable_D:       std_logic_vector (15 downto 0) := (others => '0');
+    begin        
         case StatePres_D is
             when StateReset =>
+                --! reset state
                 WaitReq_SO <= '0';
                 StateNext_D <= StateLcdReset;
-                IdleCount_D <= std_logic_vector(to_unsigned(5, 8));
-                
-                SetCurBurstCount_S <= '0';
-                
+                IdleCountNext_D <= std_logic_vector(to_unsigned(5, 8));
+                BurstCountNext_D <= BurstCountPres_D;
+
                 DB_DIO <= (others => '0');     
                 Rd_NSO <= '1';   
                 Wr_NSO <= '1';              
                 Cs_NSO <= '1';               
                 DC_NSO <= '1';
                 LcdReset_NRO <= '1';                
-                IM0_SO <= '0';        
+                IM0_SO <= '0';  
                 
                 LcdReset_NRO <= '0';
-                SetIdleCount_S <= '1';
                 
             when StateLcdReset =>
-                SetCurBurstCount_S <= '0';
+                --! reset LCD
                 DB_DIO <= (others => '0');     
                 Rd_NSO <= '1';   
                 Wr_NSO <= '1';              
@@ -259,39 +325,79 @@ ByteEnableStorage: D_FF generic map(WIDTH => 2)
                 LcdReset_NRO <= '0';                
                 IM0_SO <= '0';  
                 WaitReq_SO <= '1';
+                BurstCountNext_D <= BurstCountPres_D;
 
 
-                if(to_integer(unsigned(IdleCount_Persist_D)) > 0)then
-                    IdleCount_D <= std_logic_vector(unsigned(IdleCount_Persist_D) - to_unsigned(1, 8));
-                    StateNext_D <= StateLcdResetWait;
+                if(to_integer(unsigned(IdleCountPres_D)) > 0)then
+                    IdleCountNext_D <= std_logic_vector(unsigned(IdleCountPres_D) - to_unsigned(1, 8));
+                    StateNext_D <= StateLcdReset;
                 else
-                    IdleCount_D <= std_logic_vector(to_unsigned(0, 8));
+                    IdleCountNext_D <= (others => '0');
                     StateNext_D <= StateIdle;
                 end if;
-                SetIdleCount_S <= '1';
+                
+            when StateIdle =>
+                --! wait for data from CPU
+                IdleCountNext_D <= (others => '0');
+                BurstCountNext_D <= BurstCountPres_D;
 
-            when StateLcdResetWait =>
-                SetIdlecount_S <= '0';
-                SetCurBurstCount_S <= '0';
+                -- default values                
                 DB_DIO <= (others => '0');     
                 Rd_NSO <= '1';   
                 Wr_NSO <= '1';              
                 Cs_NSO <= '1';               
                 DC_NSO <= '1';
-                LcdReset_NRO <= '0';                
+                LcdReset_NRO <= '1';                
                 IM0_SO <= '0';  
-                WaitReq_SO <= '1';
                 
-                StateNext_D <= StateLcdReset;
+                WaitReq_SO <= '0';
 
+                if(Write_Edge_D = '1')then
+                    MyAddress_D <= Address_PP_D;
+                    MyBeginBurstTransfer_S <= BeginBurstTransfer_PP_S;
+                    MyBurstCount_D <= BurstCount_PP_D;
+                    MyWriteData_D <= WriteData_PP_D;
+
+                    if(BeginBurstTransfer_PP_S = '1')then
+                        MyByteEnable_D <= (others => '1');
+                    else
+                        MyByteEnable_D <= ByteEnable_PP_D;
+                    end if;
+                    
+                    StateNext_D <= StateEvalData;
+                else
+                    StateNext_D <= StateIdle;
+                end if;
                 
-            when StateIdle =>
-                -- store input values as early as possible
-                Address_D := Address_DI;
-                BeginBurstTransfer_D := BeginBurstTransfer_DI;
-                IdleCount_D <= std_logic_vector(to_unsigned(0, 8));
+            when StateNextBurstItem =>
+                --! wait for next burst data
+                IdleCountNext_D <= (others => '0');
+                BurstCountNext_D <= BurstCountPres_D;
 
-                -- default values
+                -- default values                
+                DB_DIO <= (others => '0');     
+                Rd_NSO <= '1';   
+                Wr_NSO <= '1';              
+                Cs_NSO <= '1';               
+                DC_NSO <= '1';
+                LcdReset_NRO <= '1';                
+                IM0_SO <= '0';  
+                
+                WaitReq_SO <= '0';
+
+                if(BurstStreamCountPres_D > BurstCountPres_D)then
+                    MyWriteData_D <= BurstStream_D(to_integer(unsigned(BurstCountPres_D)));
+                    MyByteEnable_D <= (others => '1');
+                    
+                    StateNext_D <= StateEvalData;
+                else
+                    StateNext_D <= StateNextBurstItem;
+
+                end if;
+                
+            when StateEvalData =>
+                --! evaluate data from CPU
+
                 WaitReq_SO <= '0';
                 
                 DB_DIO <= (others => '0');     
@@ -301,46 +407,29 @@ ByteEnableStorage: D_FF generic map(WIDTH => 2)
                 DC_NSO <= '1';
                 LcdReset_NRO <= '1';                
                 IM0_SO <= '0';  
-
-                SetIdleCount_S <= '0';
                 
-                if(Write_SI = '1')then                  
-                    case Address_D is
-                        when "000" => 
-                            IsData_D <= '1';
-                            StateNext_D <= StateTxDataIdentifier;
-                        when "010" =>
-                            IsData_D <= '0';
-                            StateNext_D <= StateTxCmd;
-                        when others =>
-                            IsData_D <= IsData_D;
-                            StateNext_D <= StateIdle;
-                    end case;
-                    
-                    if(BeginBurstTransfer_D = '1')then
-                        CurBurstCount_D <= BurstCount_Persist_D;
-                    else
-                        CurBurstCount_D <= (others => '0');
-                    end if;
-                    SetCurBurstCount_S <= '1';
+                IdleCountNext_D <= (others => '0');
+                BurstCountNext_D <= BurstCountPres_D;
+
+                if(MyBeginBurstTransfer_S = '1')then
+                    BurstCountNext_D <= MyBurstCount_D;
                 else
-                    IsData_D <= '0';
-                    SetCurBurstCount_S <= '0';
-
-                    StateNext_D <= StateIdle;
+                    BurstCountNext_D <= (others => '0');
                 end if;
-
+                
+                case MyAddress_D is
+                    when "000" => 
+                        StateNext_D <= StateTxDataIdentifier;
+                    when "010" =>
+                        StateNext_D <= StateTxCmd;
+                    when others =>
+                        StateNext_D <= StateIdle;
+                end case;
                 
             when StateTxCmd =>
-                SetIdleCount_S <= '0';
-                SetCurBurstCount_S <= '0';
-
-                -- -- debug begin
-                -- StateNext_D <= StateTxDataIdentifier;
-                -- -- debug end 
-                -- transfer to LCD
-                WaitReq_SO <= '1';
-                case ByteEnable_Persist_D is
+                --! transfer command identifier to LCD
+                WaitReq_SO <= '0';
+                case MyByteEnable_D is
                     when "00" => 
                         BitEnable_D := (others => '0');
                     when "01" =>
@@ -362,22 +451,16 @@ ByteEnableStorage: D_FF generic map(WIDTH => 2)
                 Wr_NSO <= '0';
                 IM0_SO <= '0';
                 
-                IdleCount_D <= std_logic_vector(to_unsigned(0, 8));
+                IdleCountNext_D <= std_logic_vector(to_unsigned(0, 8));
+                BurstCountNext_D <= BurstCountPres_D;
                 
-                DB_DIO <= WriteData_Persist_D and BitEnable_D;
+                DB_DIO <= MyWriteData_D and BitEnable_D;
                 
                 StateNext_D <= StatePostTx;
                 
             when StateTxDataIdentifier =>
-                SetIdleCount_S <= '0';
-                SetCurBurstCount_S <= '0';
-
-                
-                -- -- debug begin
-                -- StateNext_D <= StateRxPostPushDataIdentifier;
-                -- -- debug end 
-                -- transfer to LCD
-                WaitReq_SO <= '1';
+                --! transfer data identifier to LCD
+                WaitReq_SO <= '0';
                 DB_DIO <= x"002C";
 
                 DC_NSO <= '1';
@@ -387,62 +470,45 @@ ByteEnableStorage: D_FF generic map(WIDTH => 2)
                 Cs_NSO <= '0';
                 Wr_NSO <= '0';
                 IM0_SO <= '0';
-                
-                IdleCount_D <= std_logic_vector(to_unsigned(0, 8));
-
+                IdleCountNext_D <= std_logic_vector(to_unsigned(0, 8));
+                BurstCountNext_D <= BurstCountPres_D;
                 
                 StateNext_D <= StatePostTxDataIdentifier;
                 
             when StatePostTxDataIdentifier =>
+                --! wait for idle count to finish
+                BurstCountNext_D <= BurstCountPres_D;
                 WaitReq_SO <= '0';
-                SetCurBurstCount_S <= '0';
 
-                -- -- debug begin
-                -- StateNext_D <= StateIdle;
-                -- -- debug end 
-
+                if(to_integer(unsigned(IdleCountPres_D)) > 0)then
+                    IdleCountNext_D <= std_logic_vector(unsigned(IdleCountPres_D) - to_unsigned(1, 8));
+                    DB_DIO <= x"002C";
+                    DC_NSO <= '1';
                 
-                if(to_integer(unsigned(IdleCount_Persist_D)) > 0)then
-                    IdleCount_D <= std_logic_vector(unsigned(IdleCount_Persist_D) - to_unsigned(1, 8));                 DB_DIO <= x"002C";
+                    LcdReset_NRO <= '1';  
+                    Rd_NSO <= '1';
+                    Cs_NSO <= '0';
+                    Wr_NSO <= '0';
+                    IM0_SO <= '0';
 
-                    StateNext_D <= StatePostTxDataIdentifierWait;
+                    StateNext_D <= StatePostTxDataIdentifier;
                 else
+                    IdleCountNext_D <= (others => '0');
                     DB_DIO <= (others => '0');
-                    IdleCount_D <= std_logic_vector(to_unsigned(0, 8));
                     LcdReset_NRO <= '1';  
                     Rd_NSO <= '1';
                     Cs_NSO <= '1';
                     Wr_NSO <= '1';
                     IM0_SO <= '0';
+                    
                     StateNext_D <= StateTxData;
                 end if;
 
-                SetIdleCount_S <= '1';
-
-            when StatePostTxDataIdentifierWait =>
-                SetIdlecount_S <= '0';
-                SetCurBurstCount_S <= '0';
-                DB_DIO <= x"002C"; 
-                Rd_NSO <= '1';   
-                Wr_NSO <= '1';              
-                Cs_NSO <= '1';               
-                DC_NSO <= '1';
-                LcdReset_NRO <= '0';                
-                IM0_SO <= '0';  
-                WaitReq_SO <= '1';
-
                 
-                StateNext_D <= StatePostTxDataIdentifier;
-                
-            when StateTxData =>
-                SetCurBurstCount_S <= '0';
-                SetIdleCount_S <= '0';
-                -- -- debug begin
-                -- StateNext_D <= StateRxPostPush;
-                -- -- debug end                 
-                -- transfer to LCD
-                WaitReq_SO <= '1';
-                case ByteEnable_Persist_D is
+            when StateTxData =>             
+                --! transfer data to LCD
+                WaitReq_SO <= '0';
+                case MyByteEnable_D is
                     when "00" => 
                         BitEnable_D := (others => '0');
                     when "01" =>
@@ -463,27 +529,30 @@ ByteEnableStorage: D_FF generic map(WIDTH => 2)
                 Wr_NSO <= '0';
                 IM0_SO <= '0';
                 
-                IdleCount_D <= std_logic_vector(to_unsigned(0, 8));
-                
-                DB_DIO <= WriteData_Persist_D and BitEnable_D;
+                IdleCountNext_D <= std_logic_vector(to_unsigned(0, 8));
+                BurstCountNext_D <= BurstCountPres_D;
+
+                DB_DIO <= MyWriteData_D and BitEnable_D;
 
                 StateNext_D <= StatePostTx;
-
                 
             when StatePostTx =>
-                -- -- debug begin
-                -- StateNext_D <= StateIdle;
-                -- -- debug end 
-                if(IsData_D = '1')then
-                    DC_NSO <= '1';
-                else
-                    DC_NSO <= '0';
-                end if;
-                
-                if(to_integer(unsigned(IdleCount_Persist_D)) > 0)then
-                    IdleCount_D <= std_logic_vector(unsigned(IdleCount_Persist_D) - to_unsigned(1, 8));
+                --! wait for idle count to finish, then if this is a burst transfer, continue burst or go to idle
+                case MyAddress_D is
+                    when "000" => 
+                        DC_NSO <= '1';
+                    when "010" =>
+                        DC_NSO <= '0';
+                    when others =>
+                        DC_NSO <= '1';
+                end case;
+
+                if(to_integer(unsigned(IdleCountPres_D)) > 0)then
+                    IdleCountNext_D <= std_logic_vector(unsigned(IdleCountPres_D) - to_unsigned(1, 8));
+                    BurstCountNext_D <= BurstCountPres_D;
+
                     WaitReq_SO <= '0';
-                    case ByteEnable_Persist_D is
+                    case MyByteEnable_D is
                         when "00" => 
                             BitEnable_D := (others => '0');
                         when "01" =>
@@ -496,7 +565,7 @@ ByteEnableStorage: D_FF generic map(WIDTH => 2)
                             BitEnable_D := (others => '0');
                     end case;
                     
-                    DB_DIO <= WriteData_Persist_D and BitEnable_D;
+                    DB_DIO <= MyWriteData_D and BitEnable_D;
                     
                     LcdReset_NRO <= '1';  
                     Rd_NSO <= '1';
@@ -504,9 +573,10 @@ ByteEnableStorage: D_FF generic map(WIDTH => 2)
                     Wr_NSO <= '0';
                     IM0_SO <= '0';
                 
-                    StateNext_D <= StatePostTxWait;
-                elsif(to_integer(unsigned(CurBurstCount_Persist_D)) > 0)then
-                    CurBurstCount_D <= std_logic_vector(unsigned(CurBurstCount_Persist_D) - to_unsigned(1, 8));
+                    StateNext_D <= StatePostTx;
+                elsif(to_integer(unsigned(BurstCountPres_D)) > 0)then
+                    BurstCountNext_D <= std_logic_vector(unsigned(BurstCountPres_D) - to_unsigned(1, 8));                    
+                    IdleCountNext_D <= (others => '0');
                     WaitReq_SO <= '0';
                     DB_DIO <= (others => '0');
 
@@ -517,52 +587,24 @@ ByteEnableStorage: D_FF generic map(WIDTH => 2)
                     Wr_NSO <= '1';
                     IM0_SO <= '0';
                     
-                    if(IsData_D = '1')then
-                        StateNext_D <= StatePostTxBurstWaitData;
-                    else
-                        StateNext_D <= StatePostTxBurstWaitCmd;
-                    end if;
+                    StateNext_D <= StateNextBurstItem;
+
                 else                                
                     LcdReset_NRO <= '1';  
                     Rd_NSO <= '1';
                     Cs_NSO <= '1';
                     Wr_NSO <= '1';
                     IM0_SO <= '0';
-                    IdleCount_D <= std_logic_vector(to_unsigned(0, 8));
+                    BurstCountNext_D <= (others => '0');
+                    IdleCountNext_D <= (others => '0');
                     
                     WaitReq_SO <= '0';
                     DB_DIO <= (others => '0');
                     StateNext_D <= StateIdle;
                 end if;
-                SetIdleCount_S <= '1';
-                SetCurBurstCount_S <= '1';
-
-            when StatePostTxBurstWaitData =>
-                SetCurBurstCount_S <= '0';
-                StateNext_D <= StateTxDataIdentifier;
-
                 
-            when StatePostTxBurstWaitCmd =>
-                SetCurBurstCount_S <= '0';
-                StateNext_D <= StateTxCmd;
-                
-            when StatePostTxWait =>
-                SetIdlecount_S <= '0';
-                SetCurBurstCount_S <= '0';
-                DB_DIO <= x"002C"; 
-                Rd_NSO <= '1';   
-                Wr_NSO <= '1';              
-                Cs_NSO <= '1';               
-                DC_NSO <= '1';
-                LcdReset_NRO <= '0';                
-                IM0_SO <= '0';  
-                WaitReq_SO <= '1';
-                
-                StateNext_D <= StatePostTx;
             when others =>
-                SetCurBurstCount_S <= '0';
-                SetIdleCount_S <= '0';
-
+                --! this step should not occur
                 WaitReq_SO <= '0';
                 StateNext_D <= StateLcdReset;
                 DB_DIO <= (others => '0');     
@@ -572,8 +614,8 @@ ByteEnableStorage: D_FF generic map(WIDTH => 2)
                 DC_NSO <= '1';
                 LcdReset_NRO <= '1';                
                 IM0_SO <= '0';        
-                
-                IdleCount_D <= std_logic_vector(to_unsigned(0, 8));
+                BurstCountNext_D <= (others => '0');
+                IdleCountNext_D <= (others => '0');
                 LcdReset_NRO <= '0';
                 
                 StateNext_D <= StateReset;

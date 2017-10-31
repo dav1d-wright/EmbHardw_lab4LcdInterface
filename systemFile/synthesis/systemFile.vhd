@@ -9,14 +9,15 @@ use IEEE.numeric_std.all;
 entity systemFile is
 	port (
 		altpll_0_c2_clk            : out   std_logic;                                        --     altpll_0_c2.clk
+		altpll_1_c0_clk            : out   std_logic;                                        --     altpll_1_c0.clk
 		clk_clk                    : in    std_logic                     := '0';             --             clk.clk
 		lcd_conduit_end_cs_n       : out   std_logic;                                        -- lcd_conduit_end.cs_n
 		lcd_conduit_end_data       : inout std_logic_vector(15 downto 0) := (others => '0'); --                .data
-		lcd_conduit_end_dc_n       : out   std_logic;                                        --                .dc_n
-		lcd_conduit_end_im0        : out   std_logic;                                        --                .im0
-		lcd_conduit_end_lcdreset_n : out   std_logic;                                        --                .lcdreset_n
+		lcd_conduit_end_data_cmd_n : out   std_logic;                                        --                .data_cmd_n
+		lcd_conduit_end_mode       : out   std_logic;                                        --                .mode
 		lcd_conduit_end_rd_n       : out   std_logic;                                        --                .rd_n
 		lcd_conduit_end_wr_n       : out   std_logic;                                        --                .wr_n
+		lcd_conduit_end_lcdreset_n : out   std_logic;                                        --                .lcdreset_n
 		reset_reset_n              : in    std_logic                     := '0';             --           reset.reset_n
 		sdram_ctrl_wire_addr       : out   std_logic_vector(11 downto 0);                    -- sdram_ctrl_wire.addr
 		sdram_ctrl_wire_ba         : out   std_logic_vector(1 downto 0);                     --                .ba
@@ -79,7 +80,6 @@ architecture rtl of systemFile is
 		port (
 			WaitReq_SO            : out   std_logic;                                        -- waitrequest
 			Address_DI            : in    std_logic_vector(2 downto 0)  := (others => 'X'); -- address
-			BeginBurstTransfer_DI : in    std_logic                     := 'X';             -- beginbursttransfer
 			BurstCount_DI         : in    std_logic_vector(7 downto 0)  := (others => 'X'); -- burstcount
 			ByteEnable_DI         : in    std_logic_vector(1 downto 0)  := (others => 'X'); -- byteenable
 			WriteData_DI          : in    std_logic_vector(15 downto 0) := (others => 'X'); -- writedata
@@ -87,15 +87,16 @@ architecture rtl of systemFile is
 			Read_SI               : in    std_logic                     := 'X';             -- read
 			Write_SI              : in    std_logic                     := 'X';             -- write
 			ReadDataValid_SO      : out   std_logic;                                        -- readdatavalid
+			BeginBurstTransfer_SI : in    std_logic                     := 'X';             -- beginbursttransfer
 			Clk_CI                : in    std_logic                     := 'X';             -- clk
+			Reset_NRI             : in    std_logic                     := 'X';             -- reset_n
 			Cs_NSO                : out   std_logic;                                        -- cs_n
 			DB_DIO                : inout std_logic_vector(15 downto 0) := (others => 'X'); -- data
-			DC_NSO                : out   std_logic;                                        -- dc_n
-			IM0_SO                : out   std_logic;                                        -- im0
-			LcdReset_NRO          : out   std_logic;                                        -- lcdreset_n
+			DC_NSO                : out   std_logic;                                        -- data_cmd_n
+			IM0_SO                : out   std_logic;                                        -- mode
 			Rd_NSO                : out   std_logic;                                        -- rd_n
 			Wr_NSO                : out   std_logic;                                        -- wr_n
-			Reset_NRI             : in    std_logic                     := 'X'              -- reset_n
+			LcdReset_NRO          : out   std_logic                                         -- lcdreset_n
 		);
 	end component LcdDriver;
 
@@ -192,6 +193,31 @@ architecture rtl of systemFile is
 		);
 	end component systemFile_altpll_0;
 
+	component systemFile_altpll_signalTap is
+		port (
+			clk                : in  std_logic                     := 'X';             -- clk
+			reset              : in  std_logic                     := 'X';             -- reset
+			read               : in  std_logic                     := 'X';             -- read
+			write              : in  std_logic                     := 'X';             -- write
+			address            : in  std_logic_vector(1 downto 0)  := (others => 'X'); -- address
+			readdata           : out std_logic_vector(31 downto 0);                    -- readdata
+			writedata          : in  std_logic_vector(31 downto 0) := (others => 'X'); -- writedata
+			c0                 : out std_logic;                                        -- clk
+			scandone           : out std_logic;                                        -- export
+			scandataout        : out std_logic;                                        -- export
+			areset             : in  std_logic                     := 'X';             -- export
+			locked             : out std_logic;                                        -- export
+			phasedone          : out std_logic;                                        -- export
+			phasecounterselect : in  std_logic_vector(3 downto 0)  := (others => 'X'); -- export
+			phaseupdown        : in  std_logic                     := 'X';             -- export
+			phasestep          : in  std_logic                     := 'X';             -- export
+			scanclk            : in  std_logic                     := 'X';             -- export
+			scanclkena         : in  std_logic                     := 'X';             -- export
+			scandata           : in  std_logic                     := 'X';             -- export
+			configupdate       : in  std_logic                     := 'X'              -- export
+		);
+	end component systemFile_altpll_signalTap;
+
 	component systemFile_jtag_uart is
 		port (
 			clk            : in  std_logic                     := 'X';             -- clk
@@ -266,6 +292,11 @@ architecture rtl of systemFile is
 			altpll_0_pll_slave_read                                    : out std_logic;                                        -- read
 			altpll_0_pll_slave_readdata                                : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
 			altpll_0_pll_slave_writedata                               : out std_logic_vector(31 downto 0);                    -- writedata
+			altpll_signalTap_pll_slave_address                         : out std_logic_vector(1 downto 0);                     -- address
+			altpll_signalTap_pll_slave_write                           : out std_logic;                                        -- write
+			altpll_signalTap_pll_slave_read                            : out std_logic;                                        -- read
+			altpll_signalTap_pll_slave_readdata                        : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
+			altpll_signalTap_pll_slave_writedata                       : out std_logic_vector(31 downto 0);                    -- writedata
 			CPU_debug_mem_slave_address                                : out std_logic_vector(8 downto 0);                     -- address
 			CPU_debug_mem_slave_write                                  : out std_logic;                                        -- write
 			CPU_debug_mem_slave_read                                   : out std_logic;                                        -- read
@@ -503,7 +534,7 @@ architecture rtl of systemFile is
 		);
 	end component systemfile_rst_controller_001;
 
-	signal altpll_0_c0_clk                                                     : std_logic;                     -- altpll_0:c0 -> [CPU:clk, LCD:Clk_CI, SDRAM_ctrl:clk, TCDM:clk, TCIM:clk, TCIM:clk2, irq_mapper:clk, jtag_uart:clk, mm_interconnect_0:altpll_0_c0_clk, mm_interconnect_1:altpll_0_c0_clk, mm_interconnect_2:altpll_0_c0_clk, performance_counter_0:clk, rst_controller:clk, sysid:clock, timer_0:clk]
+	signal altpll_0_c0_clk                                                     : std_logic;                     -- altpll_0:c0 -> [CPU:clk, LCD:Clk_CI, SDRAM_ctrl:clk, TCDM:clk, TCIM:clk, TCIM:clk2, altpll_signalTap:clk, irq_mapper:clk, jtag_uart:clk, mm_interconnect_0:altpll_0_c0_clk, mm_interconnect_1:altpll_0_c0_clk, mm_interconnect_2:altpll_0_c0_clk, performance_counter_0:clk, rst_controller:clk, sysid:clock, timer_0:clk]
 	signal cpu_data_master_readdata                                            : std_logic_vector(31 downto 0); -- mm_interconnect_0:CPU_data_master_readdata -> CPU:d_readdata
 	signal cpu_data_master_waitrequest                                         : std_logic;                     -- mm_interconnect_0:CPU_data_master_waitrequest -> CPU:d_waitrequest
 	signal cpu_data_master_debugaccess                                         : std_logic;                     -- CPU:debug_mem_slave_debugaccess_to_roms -> mm_interconnect_0:CPU_data_master_debugaccess
@@ -525,7 +556,7 @@ architecture rtl of systemFile is
 	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_read                  : std_logic;                     -- mm_interconnect_0:jtag_uart_avalon_jtag_slave_read -> mm_interconnect_0_jtag_uart_avalon_jtag_slave_read:in
 	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_write                 : std_logic;                     -- mm_interconnect_0:jtag_uart_avalon_jtag_slave_write -> mm_interconnect_0_jtag_uart_avalon_jtag_slave_write:in
 	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_writedata             : std_logic_vector(31 downto 0); -- mm_interconnect_0:jtag_uart_avalon_jtag_slave_writedata -> jtag_uart:av_writedata
-	signal mm_interconnect_0_lcd_avalon_slave_beginbursttransfer               : std_logic;                     -- mm_interconnect_0:LCD_avalon_slave_beginbursttransfer -> LCD:BeginBurstTransfer_DI
+	signal mm_interconnect_0_lcd_avalon_slave_beginbursttransfer               : std_logic;                     -- mm_interconnect_0:LCD_avalon_slave_beginbursttransfer -> LCD:BeginBurstTransfer_SI
 	signal mm_interconnect_0_lcd_avalon_slave_readdata                         : std_logic_vector(15 downto 0); -- LCD:ReadData_DO -> mm_interconnect_0:LCD_avalon_slave_readdata
 	signal mm_interconnect_0_lcd_avalon_slave_waitrequest                      : std_logic;                     -- LCD:WaitReq_SO -> mm_interconnect_0:LCD_avalon_slave_waitrequest
 	signal mm_interconnect_0_lcd_avalon_slave_address                          : std_logic_vector(2 downto 0);  -- mm_interconnect_0:LCD_avalon_slave_address -> LCD:Address_DI
@@ -555,6 +586,11 @@ architecture rtl of systemFile is
 	signal mm_interconnect_0_altpll_0_pll_slave_read                           : std_logic;                     -- mm_interconnect_0:altpll_0_pll_slave_read -> altpll_0:read
 	signal mm_interconnect_0_altpll_0_pll_slave_write                          : std_logic;                     -- mm_interconnect_0:altpll_0_pll_slave_write -> altpll_0:write
 	signal mm_interconnect_0_altpll_0_pll_slave_writedata                      : std_logic_vector(31 downto 0); -- mm_interconnect_0:altpll_0_pll_slave_writedata -> altpll_0:writedata
+	signal mm_interconnect_0_altpll_signaltap_pll_slave_readdata               : std_logic_vector(31 downto 0); -- altpll_signalTap:readdata -> mm_interconnect_0:altpll_signalTap_pll_slave_readdata
+	signal mm_interconnect_0_altpll_signaltap_pll_slave_address                : std_logic_vector(1 downto 0);  -- mm_interconnect_0:altpll_signalTap_pll_slave_address -> altpll_signalTap:address
+	signal mm_interconnect_0_altpll_signaltap_pll_slave_read                   : std_logic;                     -- mm_interconnect_0:altpll_signalTap_pll_slave_read -> altpll_signalTap:read
+	signal mm_interconnect_0_altpll_signaltap_pll_slave_write                  : std_logic;                     -- mm_interconnect_0:altpll_signalTap_pll_slave_write -> altpll_signalTap:write
+	signal mm_interconnect_0_altpll_signaltap_pll_slave_writedata              : std_logic_vector(31 downto 0); -- mm_interconnect_0:altpll_signalTap_pll_slave_writedata -> altpll_signalTap:writedata
 	signal mm_interconnect_0_sdram_ctrl_s1_chipselect                          : std_logic;                     -- mm_interconnect_0:SDRAM_ctrl_s1_chipselect -> SDRAM_ctrl:az_cs
 	signal mm_interconnect_0_sdram_ctrl_s1_readdata                            : std_logic_vector(15 downto 0); -- SDRAM_ctrl:za_data -> mm_interconnect_0:SDRAM_ctrl_s1_readdata
 	signal mm_interconnect_0_sdram_ctrl_s1_waitrequest                         : std_logic;                     -- SDRAM_ctrl:za_waitrequest -> mm_interconnect_0:SDRAM_ctrl_s1_waitrequest
@@ -604,7 +640,7 @@ architecture rtl of systemFile is
 	signal irq_mapper_receiver0_irq                                            : std_logic;                     -- jtag_uart:av_irq -> irq_mapper:receiver0_irq
 	signal irq_mapper_receiver1_irq                                            : std_logic;                     -- timer_0:irq -> irq_mapper:receiver1_irq
 	signal cpu_irq_irq                                                         : std_logic_vector(31 downto 0); -- irq_mapper:sender_irq -> CPU:irq
-	signal rst_controller_reset_out_reset                                      : std_logic;                     -- rst_controller:reset_out -> [TCDM:reset, TCIM:reset, TCIM:reset2, irq_mapper:reset, mm_interconnect_0:CPU_reset_reset_bridge_in_reset_reset, mm_interconnect_1:CPU_reset_reset_bridge_in_reset_reset, mm_interconnect_2:CPU_reset_reset_bridge_in_reset_reset, rst_controller_reset_out_reset:in, rst_translator:in_reset]
+	signal rst_controller_reset_out_reset                                      : std_logic;                     -- rst_controller:reset_out -> [TCDM:reset, TCIM:reset, TCIM:reset2, altpll_signalTap:reset, irq_mapper:reset, mm_interconnect_0:CPU_reset_reset_bridge_in_reset_reset, mm_interconnect_1:CPU_reset_reset_bridge_in_reset_reset, mm_interconnect_2:CPU_reset_reset_bridge_in_reset_reset, rst_controller_reset_out_reset:in, rst_translator:in_reset]
 	signal rst_controller_reset_out_reset_req                                  : std_logic;                     -- rst_controller:reset_req -> [CPU:reset_req, TCDM:reset_req, TCIM:reset_req, TCIM:reset_req2, rst_translator:reset_req_in]
 	signal cpu_debug_reset_request_reset                                       : std_logic;                     -- CPU:debug_reset_request -> [rst_controller:reset_in1, rst_controller_001:reset_in1]
 	signal rst_controller_001_reset_out_reset                                  : std_logic;                     -- rst_controller_001:reset_out -> [altpll_0:reset, mm_interconnect_0:altpll_0_inclk_interface_reset_reset_bridge_in_reset_reset]
@@ -666,7 +702,6 @@ begin
 		port map (
 			WaitReq_SO            => mm_interconnect_0_lcd_avalon_slave_waitrequest,        -- avalon_slave.waitrequest
 			Address_DI            => mm_interconnect_0_lcd_avalon_slave_address,            --             .address
-			BeginBurstTransfer_DI => mm_interconnect_0_lcd_avalon_slave_beginbursttransfer, --             .beginbursttransfer
 			BurstCount_DI         => mm_interconnect_0_lcd_avalon_slave_burstcount,         --             .burstcount
 			ByteEnable_DI         => mm_interconnect_0_lcd_avalon_slave_byteenable,         --             .byteenable
 			WriteData_DI          => mm_interconnect_0_lcd_avalon_slave_writedata,          --             .writedata
@@ -674,15 +709,16 @@ begin
 			Read_SI               => mm_interconnect_0_lcd_avalon_slave_read,               --             .read
 			Write_SI              => mm_interconnect_0_lcd_avalon_slave_write,              --             .write
 			ReadDataValid_SO      => mm_interconnect_0_lcd_avalon_slave_readdatavalid,      --             .readdatavalid
+			BeginBurstTransfer_SI => mm_interconnect_0_lcd_avalon_slave_beginbursttransfer, --             .beginbursttransfer
 			Clk_CI                => altpll_0_c0_clk,                                       --   clock_sink.clk
+			Reset_NRI             => rst_controller_reset_out_reset_ports_inv,              --   reset_sink.reset_n
 			Cs_NSO                => lcd_conduit_end_cs_n,                                  --  conduit_end.cs_n
 			DB_DIO                => lcd_conduit_end_data,                                  --             .data
-			DC_NSO                => lcd_conduit_end_dc_n,                                  --             .dc_n
-			IM0_SO                => lcd_conduit_end_im0,                                   --             .im0
-			LcdReset_NRO          => lcd_conduit_end_lcdreset_n,                            --             .lcdreset_n
+			DC_NSO                => lcd_conduit_end_data_cmd_n,                            --             .data_cmd_n
+			IM0_SO                => lcd_conduit_end_mode,                                  --             .mode
 			Rd_NSO                => lcd_conduit_end_rd_n,                                  --             .rd_n
 			Wr_NSO                => lcd_conduit_end_wr_n,                                  --             .wr_n
-			Reset_NRI             => rst_controller_reset_out_reset_ports_inv               --   reset_sink.reset_n
+			LcdReset_NRO          => lcd_conduit_end_lcdreset_n                             --             .lcdreset_n
 		);
 
 	sdram_ctrl : component systemFile_SDRAM_ctrl
@@ -774,6 +810,30 @@ begin
 			configupdate       => '0'                                             --           (terminated)
 		);
 
+	altpll_signaltap : component systemFile_altpll_signalTap
+		port map (
+			clk                => altpll_0_c0_clk,                                        --       inclk_interface.clk
+			reset              => rst_controller_reset_out_reset,                         -- inclk_interface_reset.reset
+			read               => mm_interconnect_0_altpll_signaltap_pll_slave_read,      --             pll_slave.read
+			write              => mm_interconnect_0_altpll_signaltap_pll_slave_write,     --                      .write
+			address            => mm_interconnect_0_altpll_signaltap_pll_slave_address,   --                      .address
+			readdata           => mm_interconnect_0_altpll_signaltap_pll_slave_readdata,  --                      .readdata
+			writedata          => mm_interconnect_0_altpll_signaltap_pll_slave_writedata, --                      .writedata
+			c0                 => altpll_1_c0_clk,                                        --                    c0.clk
+			scandone           => open,                                                   --           (terminated)
+			scandataout        => open,                                                   --           (terminated)
+			areset             => '0',                                                    --           (terminated)
+			locked             => open,                                                   --           (terminated)
+			phasedone          => open,                                                   --           (terminated)
+			phasecounterselect => "0000",                                                 --           (terminated)
+			phaseupdown        => '0',                                                    --           (terminated)
+			phasestep          => '0',                                                    --           (terminated)
+			scanclk            => '0',                                                    --           (terminated)
+			scanclkena         => '0',                                                    --           (terminated)
+			scandata           => '0',                                                    --           (terminated)
+			configupdate       => '0'                                                     --           (terminated)
+		);
+
 	jtag_uart : component systemFile_jtag_uart
 		port map (
 			clk            => altpll_0_c0_clk,                                               --               clk.clk
@@ -844,6 +904,11 @@ begin
 			altpll_0_pll_slave_read                                    => mm_interconnect_0_altpll_0_pll_slave_read,                           --                                                     .read
 			altpll_0_pll_slave_readdata                                => mm_interconnect_0_altpll_0_pll_slave_readdata,                       --                                                     .readdata
 			altpll_0_pll_slave_writedata                               => mm_interconnect_0_altpll_0_pll_slave_writedata,                      --                                                     .writedata
+			altpll_signalTap_pll_slave_address                         => mm_interconnect_0_altpll_signaltap_pll_slave_address,                --                           altpll_signalTap_pll_slave.address
+			altpll_signalTap_pll_slave_write                           => mm_interconnect_0_altpll_signaltap_pll_slave_write,                  --                                                     .write
+			altpll_signalTap_pll_slave_read                            => mm_interconnect_0_altpll_signaltap_pll_slave_read,                   --                                                     .read
+			altpll_signalTap_pll_slave_readdata                        => mm_interconnect_0_altpll_signaltap_pll_slave_readdata,               --                                                     .readdata
+			altpll_signalTap_pll_slave_writedata                       => mm_interconnect_0_altpll_signaltap_pll_slave_writedata,              --                                                     .writedata
 			CPU_debug_mem_slave_address                                => mm_interconnect_0_cpu_debug_mem_slave_address,                       --                                  CPU_debug_mem_slave.address
 			CPU_debug_mem_slave_write                                  => mm_interconnect_0_cpu_debug_mem_slave_write,                         --                                                     .write
 			CPU_debug_mem_slave_read                                   => mm_interconnect_0_cpu_debug_mem_slave_read,                          --                                                     .read

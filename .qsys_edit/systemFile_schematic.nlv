@@ -3,29 +3,29 @@
 preplace inst systemFile.performance_counter_0 -pg 1 -lvl 2 -y 610
 preplace inst systemFile.LCD -pg 1 -lvl 3 -y 330
 preplace inst systemFile.jtag_uart -pg 1 -lvl 2 -y 250
-preplace inst systemFile.clk_0 -pg 1 -lvl 1 -y 410
+preplace inst systemFile.clk_0 -pg 1 -lvl 1 -y 430
 preplace inst systemFile -pg 1 -lvl 1 -y 40 -regy -20
 preplace inst systemFile.SDRAM_ctrl -pg 1 -lvl 2 -y 770
 preplace inst systemFile.CPU.cpu -pg 1
 preplace inst systemFile.CPU.reset_bridge -pg 1
 preplace inst systemFile.sysid -pg 1 -lvl 2 -y 690
 preplace inst systemFile.TCIM -pg 1 -lvl 2 -y 110
-preplace inst systemFile.altpll_0 -pg 1 -lvl 2 -y 410
+preplace inst systemFile.altpll_0 -pg 1 -lvl 2 -y 430
 preplace inst systemFile.CPU.clock_bridge -pg 1
 preplace inst systemFile.timer_0 -pg 1 -lvl 2 -y 510
 preplace inst systemFile.TCDM -pg 1 -lvl 2 -y 30
 preplace inst systemFile.CPU -pg 1 -lvl 1 -y 100
-preplace netloc EXPORT<net_container>systemFile</net_container>(SLAVE)systemFile.sdram_ctrl_wire,(SLAVE)SDRAM_ctrl.wire) 1 0 2 NJ 840 NJ
+preplace netloc EXPORT<net_container>systemFile</net_container>(MASTER)systemFile.altpll_0_c2,(MASTER)altpll_0.c2) 1 2 2 NJ 460 NJ
+preplace netloc FAN_OUT<net_container>systemFile</net_container>(SLAVE)jtag_uart.clk,(SLAVE)CPU.clk,(SLAVE)TCIM.clk1,(SLAVE)performance_counter_0.clk,(SLAVE)sysid.clk,(SLAVE)SDRAM_ctrl.clk,(SLAVE)timer_0.clk,(SLAVE)LCD.clock_sink,(MASTER)altpll_0.c0,(SLAVE)TCIM.clk2,(SLAVE)TCDM.clk1) 1 0 3 140 380 670 420 950
+preplace netloc EXPORT<net_container>systemFile</net_container>(SLAVE)LCD.conduit_end,(SLAVE)systemFile.lcd_conduit_end) 1 0 3 NJ 340 NJ 380 NJ
+preplace netloc INTERCONNECT<net_container>systemFile</net_container>(SLAVE)performance_counter_0.reset,(SLAVE)LCD.reset_sink,(SLAVE)sysid.reset,(SLAVE)TCDM.reset1,(SLAVE)TCIM.reset1,(SLAVE)jtag_uart.reset,(MASTER)CPU.debug_reset_request,(SLAVE)CPU.reset,(MASTER)clk_0.clk_reset,(SLAVE)altpll_0.inclk_interface_reset,(SLAVE)SDRAM_ctrl.reset,(SLAVE)TCIM.reset2,(SLAVE)timer_0.reset) 1 0 3 160 400 650 400 N
+preplace netloc EXPORT<net_container>systemFile</net_container>(SLAVE)clk_0.clk_in,(SLAVE)systemFile.clk) 1 0 1 NJ
 preplace netloc POINT_TO_POINT<net_container>systemFile</net_container>(SLAVE)altpll_0.inclk_interface,(MASTER)clk_0.clk) 1 1 1 N
-preplace netloc POINT_TO_POINT<net_container>systemFile</net_container>(SLAVE)TCDM.s1,(MASTER)CPU.tightly_coupled_data_master_0) 1 1 1 570
-preplace netloc EXPORT<net_container>systemFile</net_container>(SLAVE)systemFile.lcd_conduit_end,(SLAVE)LCD.conduit_end) 1 0 3 NJ 500 NJ 500 NJ
-preplace netloc EXPORT<net_container>systemFile</net_container>(MASTER)altpll_0.c2,(MASTER)systemFile.altpll_0_c2) 1 2 2 NJ 440 NJ
+preplace netloc FAN_OUT<net_container>systemFile</net_container>(SLAVE)timer_0.irq,(MASTER)CPU.irq,(SLAVE)jtag_uart.irq) 1 1 1 590
 preplace netloc EXPORT<net_container>systemFile</net_container>(SLAVE)systemFile.reset,(SLAVE)clk_0.clk_in_reset) 1 0 1 NJ
 preplace netloc POINT_TO_POINT<net_container>systemFile</net_container>(SLAVE)TCIM.s1,(MASTER)CPU.tightly_coupled_instruction_master_0) 1 1 1 610
-preplace netloc INTERCONNECT<net_container>systemFile</net_container>(SLAVE)sysid.reset,(SLAVE)timer_0.reset,(SLAVE)TCIM.reset2,(SLAVE)LCD.reset_sink,(MASTER)clk_0.clk_reset,(SLAVE)TCDM.reset1,(SLAVE)performance_counter_0.reset,(SLAVE)jtag_uart.reset,(SLAVE)TCIM.reset1,(MASTER)CPU.debug_reset_request,(SLAVE)altpll_0.inclk_interface_reset,(SLAVE)CPU.reset,(SLAVE)SDRAM_ctrl.reset) 1 0 3 160 320 650 400 N
-preplace netloc FAN_OUT<net_container>systemFile</net_container>(SLAVE)jtag_uart.clk,(SLAVE)sysid.clk,(SLAVE)performance_counter_0.clk,(SLAVE)SDRAM_ctrl.clk,(SLAVE)timer_0.clk,(SLAVE)CPU.clk,(SLAVE)LCD.clock_sink,(SLAVE)TCDM.clk1,(SLAVE)TCIM.clk2,(SLAVE)TCIM.clk1,(MASTER)altpll_0.c0) 1 0 3 140 300 670 380 930
-preplace netloc EXPORT<net_container>systemFile</net_container>(SLAVE)systemFile.clk,(SLAVE)clk_0.clk_in) 1 0 1 NJ
-preplace netloc FAN_OUT<net_container>systemFile</net_container>(SLAVE)timer_0.irq,(SLAVE)jtag_uart.irq,(MASTER)CPU.irq) 1 1 1 590
-preplace netloc INTERCONNECT<net_container>systemFile</net_container>(SLAVE)jtag_uart.avalon_jtag_slave,(SLAVE)CPU.debug_mem_slave,(SLAVE)performance_counter_0.control_slave,(SLAVE)SDRAM_ctrl.s1,(SLAVE)LCD.avalon_slave,(SLAVE)TCIM.s2,(SLAVE)sysid.control_slave,(SLAVE)timer_0.s1,(MASTER)CPU.data_master,(MASTER)CPU.instruction_master,(SLAVE)altpll_0.pll_slave) 1 0 3 180 280 630 360 910
+preplace netloc EXPORT<net_container>systemFile</net_container>(SLAVE)SDRAM_ctrl.wire,(SLAVE)systemFile.sdram_ctrl_wire) 1 0 2 NJ 840 NJ
+preplace netloc INTERCONNECT<net_container>systemFile</net_container>(SLAVE)LCD.avalon_slave,(MASTER)CPU.data_master,(SLAVE)CPU.debug_mem_slave,(SLAVE)performance_counter_0.control_slave,(SLAVE)SDRAM_ctrl.s1,(SLAVE)TCIM.s2,(SLAVE)altpll_0.pll_slave,(MASTER)CPU.instruction_master,(SLAVE)sysid.control_slave,(SLAVE)jtag_uart.avalon_jtag_slave,(SLAVE)timer_0.s1) 1 0 3 180 360 630 360 930
+preplace netloc POINT_TO_POINT<net_container>systemFile</net_container>(MASTER)CPU.tightly_coupled_data_master_0,(SLAVE)TCDM.s1) 1 1 1 570
 levelinfo -pg 1 0 110 1190
-levelinfo -hier systemFile 120 300 720 980 1090
+levelinfo -hier systemFile 120 300 740 980 1090
