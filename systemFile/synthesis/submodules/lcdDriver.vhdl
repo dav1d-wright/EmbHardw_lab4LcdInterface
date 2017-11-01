@@ -16,16 +16,13 @@ use ieee.std_logic_1164.all;
 --! Use numeric elements
 use ieee.numeric_std.all;
 
---! LCD driver
+--! @brief LCD driver
 
 --! Interface between Avalon bus
 --! and LCD
 entity LcdDriver is
     port
     (
-        --! @defgroup cpuLcdDriverComm communication between CPU and LcdDriver
-        --! @{
-        
         --! Clock input
         Clk_CI:         	    in std_logic;
         --! Reset input
@@ -51,11 +48,7 @@ entity LcdDriver is
         ReadData_DO:		    out std_logic_vector (15 downto 0);
         --! Read data valid signal output
         ReadDataValid_SO:       out std_logic;
-        --! @}
 
-        --! @defgroup lcdDriverLcdComm communication between LcdDriver and LCD
-        --! @{
-        
         --! data output to LCD
         DB_DIO:      		    inout std_logic_vector (15 downto 0);
         --! Read signal output to LCD
@@ -70,36 +63,46 @@ entity LcdDriver is
         LcdReset_NRO:           out std_logic;
         --! Interface mode signal output to LCD
         IM0_SO:                 out std_logic
-        --! @}
     );
 end LcdDriver;
 
 architecture LCD of LcdDriver is 
-    --! State macine types & signals
-    type State_T                is (StateReset,
+    --! @brief State machine states
+    type State_T                is (
+                                    --! Reset state
+                                    StateReset,
+                                    --! LCD reset state
                                     StateLcdReset,
+                                    --! Idle state
                                     StateIdle,
+                                    --! Next burst item state
                                     StateNextBurstItem,
+                                    --! Data evaluation state
                                     StateEvalData,
+                                    --! Command transmit state
                                     StateTxCmd,
+                                    --! Data identifier transmit state
                                     StateTxDataIdentifier,
+                                    --! Post data identifier transmit state
                                     StatePostTxDataIdentifier,
+                                    --! Data transmit state
                                     StateTxData,
+                                    --! Post transmit state
                                     StatePostTx);
     
-    --! Next state
+    --! @brief Next state
     signal StateNext_D:             State_T := StateReset;
-    --! Present state
+    --! @brief Present state
     signal StatePres_D:             State_T := StateReset;
 
-    --! Edge detection of Write_SI
+    --! @brief Edge detection of Write_SI
     signal Write_Edge_D:                std_logic := '0';
-    --! Last state of Write_SI
+    --! @brief Last state of Write_SI
     signal Write_Last_D:                std_logic := '0';
 
-    --! Edge detection of Read_SI    
+    --! @brief Edge detection of Read_SI    
     signal Read_Edge_D:                 std_logic := '0';
-    --! Last state of Read_SI
+    --! @brief Last state of Read_SI
     signal Read_Last_D:                 std_logic := '0';
             
     --! @defgroup syncInp Synchronised input data
@@ -108,17 +111,17 @@ architecture LCD of LcdDriver is
     
     --! Synchronised Address
     signal Address_D:     	            std_logic_vector (2 downto 0) := (others => '0');
-    --! Synchronised Write
+    --! @brief Synchronised Write
     signal Write_S:       	            std_logic := '0';
-    --! Synchronised WriteData
+    --! @brief Synchronised WriteData
     signal WriteData_D:		            std_logic_vector (15 downto 0) := (others => '0');
-    --! Synchronised Read
+    --! @brief Synchronised Read
     signal Read_S:		                std_logic := '0';
-    --! Synchronised ByteEnable
+    --! @brief Synchronised ByteEnable
     signal ByteEnable_D:                std_logic_vector (1 downto 0) := (others => '0');
-    --! Synchronised BeginBurstTransfer
+    --! @brief Synchronised BeginBurstTransfer
     signal BeginBurstTransfer_S:        std_logic := '0';
-    --! Synchronised BurstCount
+    --! @brief Synchronised BurstCount
     signal BurstCount_D:                std_logic_vector (7 downto 0) := (others => '0');
     --! @}
 
@@ -126,17 +129,17 @@ architecture LCD of LcdDriver is
     --! @{
     
     
-    --! Address delayed one step
+    --! @brief Address delayed one step
     signal Address_P_D:     	        std_logic_vector (2 downto 0) := (others => '0');
-    --! Write delayed one step
+    --! @brief Write delayed one step
     signal Write_P_S:     	            std_logic := '0';
-    --! WriteData delayed one step
+    --! @brief WriteData delayed one step
     signal WriteData_P_D:		        std_logic_vector (15 downto 0) := (others => '0');
-    --! ByteEnable delayed one step
+    --! @brief ByteEnable delayed one step
     signal ByteEnable_P_D:              std_logic_vector (1 downto 0) := (others => '0');
-    --! BeginBurstTransfer delayed one step
+    --! @brief BeginBurstTransfer delayed one step
     signal BeginBurstTransfer_P_S:      std_logic := '0';
-    --! BurstCount delayed one step
+    --! @brief BurstCount delayed one step
     signal BurstCount_P_D:              std_logic_vector (7 downto 0) := (others => '0');
     --! @}
 
@@ -144,17 +147,17 @@ architecture LCD of LcdDriver is
     --! @{
     
     
-    --! Address delayed one step
+    --! @brief Address delayed one step
     signal Address_PP_D:     	        std_logic_vector (2 downto 0) := (others => '0');
-    --! Write delayed one step
+    --! @brief Write delayed one step
     signal Write_PP_S:     	            std_logic := '0';
-    --! WriteData delayed one step
+    --! @brief WriteData delayed one step
     signal WriteData_PP_D:		        std_logic_vector (15 downto 0) := (others => '0');
-    --! ByteEnable delayed one step
+    --! @brief ByteEnable delayed one step
     signal ByteEnable_PP_D:             std_logic_vector (1 downto 0) := (others => '0');
-    --! BeginBurstTransfer delayed one step
+    --! @brief BeginBurstTransfer delayed one step
     signal BeginBurstTransfer_PP_S:     std_logic := '0';
-    --! BurstCount delayed one step
+    --! @brief BurstCount delayed one step
     signal BurstCount_PP_D:             std_logic_vector (7 downto 0) := (others => '0');
     --! @}
     
@@ -162,13 +165,13 @@ architecture LCD of LcdDriver is
     --! @{
     
     
-    --! Address dedicated for LcdDriver
+    --! @brief Address dedicated for LcdDriver
     signal MyAddress_D:     	        std_logic_vector (2 downto 0) := (others => '0');
-    --! WriteData dedicated for LcdDriver
+    --! @brief WriteData dedicated for LcdDriver
     signal MyWriteData_D:		        std_logic_vector (15 downto 0) := (others => '0');
-    --! ByteEnable dedicated for LcdDriver
+    --! @brief ByteEnable dedicated for LcdDriver
     signal MyByteEnable_D:              std_logic_vector (1 downto 0) := (others => '0');
-    --! BeginBurstTransfer dedicated for LcdDriver
+    --! @brief BeginBurstTransfer dedicated for LcdDriver
     signal MyBeginBurstTransfer_S:      std_logic := '0';
     --! BurstCount dedicated for LcdDriver
     signal MyBurstCount_D:              std_logic_vector (7 downto 0) := (others => '0');
@@ -184,9 +187,9 @@ architecture LCD of LcdDriver is
     signal BurstStreamCountNext_D:      std_logic_vector (7 downto 0) := (others => '0');
     --! @}
     
-    --! Burst stream type
+    --! @brief Burst stream type
     type stream_T                       is array (255 downto 0) of std_logic_vector (15 downto 0);
-    --! Burst stream 
+    --! @brief Burst stream 
     signal BurstStream_D:               stream_T;
 begin
     --! @brief This process synchronises input data with the clock 
@@ -296,13 +299,15 @@ begin
     --! @brief This process implements the present state logic    
     logic: process(Write_Edge_D, StatePres_D, IdleCountPres_D)
         variable BitEnable_D:       std_logic_vector (15 downto 0) := (others => '0');
-    begin        
+    begin  
+        --! State machine implementation
         case StatePres_D is
+            --! Label "StateReset"
             when StateReset =>
                 --! reset state
                 WaitReq_SO <= '0';
                 StateNext_D <= StateLcdReset;
-                IdleCountNext_D <= std_logic_vector(to_unsigned(5, 8));
+                IdleCountNext_D <= std_logic_vector(to_unsigned(10, 8));
                 BurstCountNext_D <= BurstCountPres_D;
 
                 DB_DIO <= (others => '0');     
@@ -311,7 +316,7 @@ begin
                 Cs_NSO <= '1';               
                 DC_NSO <= '1';
                 LcdReset_NRO <= '1';                
-                IM0_SO <= '0';  
+                IM0_SO <= '1';  
                 
                 LcdReset_NRO <= '0';
                 
@@ -323,7 +328,7 @@ begin
                 Cs_NSO <= '1';               
                 DC_NSO <= '1';
                 LcdReset_NRO <= '0';                
-                IM0_SO <= '0';  
+                IM0_SO <= '1';  
                 WaitReq_SO <= '1';
                 BurstCountNext_D <= BurstCountPres_D;
 
@@ -344,25 +349,25 @@ begin
                 -- default values                
                 DB_DIO <= (others => '0');     
                 Rd_NSO <= '1';   
-                Wr_NSO <= '1';              
+                Wr_NSO <= '0';              
                 Cs_NSO <= '1';               
                 DC_NSO <= '1';
                 LcdReset_NRO <= '1';                
-                IM0_SO <= '0';  
+                IM0_SO <= '1';  
                 
                 WaitReq_SO <= '0';
 
                 if(Write_Edge_D = '1')then
                     MyAddress_D <= Address_PP_D;
-                    MyBeginBurstTransfer_S <= BeginBurstTransfer_PP_S;
+                    MyBeginBurstTransfer_S <= '0'; --BeginBurstTransfer_PP_S;
                     MyBurstCount_D <= BurstCount_PP_D;
                     MyWriteData_D <= WriteData_PP_D;
 
-                    if(BeginBurstTransfer_PP_S = '1')then
-                        MyByteEnable_D <= (others => '1');
-                    else
+                    -- if(BeginBurstTransfer_PP_S = '1')then
+                        -- MyByteEnable_D <= (others => '1');
+                    -- else
                         MyByteEnable_D <= ByteEnable_PP_D;
-                    end if;
+                    -- end if;
                     
                     StateNext_D <= StateEvalData;
                 else
@@ -377,22 +382,23 @@ begin
                 -- default values                
                 DB_DIO <= (others => '0');     
                 Rd_NSO <= '1';   
-                Wr_NSO <= '1';              
+                Wr_NSO <= '0';              
                 Cs_NSO <= '1';               
                 DC_NSO <= '1';
                 LcdReset_NRO <= '1';                
-                IM0_SO <= '0';  
+                IM0_SO <= '1';  
+                MyByteEnable_D <= (others => '1');
                 
-                WaitReq_SO <= '0';
 
                 if(BurstStreamCountPres_D > BurstCountPres_D)then
+                    WaitReq_SO <= '1';
                     MyWriteData_D <= BurstStream_D(to_integer(unsigned(BurstCountPres_D)));
-                    MyByteEnable_D <= (others => '1');
                     
                     StateNext_D <= StateEvalData;
                 else
+                    WaitReq_SO <= '0';
+                    MyWriteData_D <= (others => '0');
                     StateNext_D <= StateNextBurstItem;
-
                 end if;
                 
             when StateEvalData =>
@@ -402,11 +408,11 @@ begin
                 
                 DB_DIO <= (others => '0');     
                 Rd_NSO <= '1';   
-                Wr_NSO <= '1';              
+                Wr_NSO <= '0';              
                 Cs_NSO <= '1';               
                 DC_NSO <= '1';
                 LcdReset_NRO <= '1';                
-                IM0_SO <= '0';  
+                IM0_SO <= '1';  
                 
                 IdleCountNext_D <= (others => '0');
                 BurstCountNext_D <= BurstCountPres_D;
@@ -448,10 +454,10 @@ begin
                 LcdReset_NRO <= '1';  
                 Rd_NSO <= '1';
                 Cs_NSO <= '0';
-                Wr_NSO <= '0';
-                IM0_SO <= '0';
+                Wr_NSO <= '1';
+                IM0_SO <= '1';
                 
-                IdleCountNext_D <= std_logic_vector(to_unsigned(0, 8));
+                IdleCountNext_D <= std_logic_vector(to_unsigned(4, 8));
                 BurstCountNext_D <= BurstCountPres_D;
                 
                 DB_DIO <= MyWriteData_D and BitEnable_D;
@@ -468,9 +474,9 @@ begin
                 LcdReset_NRO <= '1';  
                 Rd_NSO <= '1';
                 Cs_NSO <= '0';
-                Wr_NSO <= '0';
-                IM0_SO <= '0';
-                IdleCountNext_D <= std_logic_vector(to_unsigned(0, 8));
+                Wr_NSO <= '1';
+                IM0_SO <= '1';
+                IdleCountNext_D <= std_logic_vector(to_unsigned(4, 8));
                 BurstCountNext_D <= BurstCountPres_D;
                 
                 StateNext_D <= StatePostTxDataIdentifier;
@@ -479,32 +485,26 @@ begin
                 --! wait for idle count to finish
                 BurstCountNext_D <= BurstCountPres_D;
                 WaitReq_SO <= '0';
+                DB_DIO <= x"002C";
+                DC_NSO <= '1';
+            
+                LcdReset_NRO <= '1';  
+                Rd_NSO <= '1';
+                Cs_NSO <= '0';
+                IM0_SO <= '1';
 
                 if(to_integer(unsigned(IdleCountPres_D)) > 0)then
                     IdleCountNext_D <= std_logic_vector(unsigned(IdleCountPres_D) - to_unsigned(1, 8));
-                    DB_DIO <= x"002C";
-                    DC_NSO <= '1';
-                
-                    LcdReset_NRO <= '1';  
-                    Rd_NSO <= '1';
-                    Cs_NSO <= '0';
-                    Wr_NSO <= '0';
-                    IM0_SO <= '0';
+                    Wr_NSO <= '1';
 
                     StateNext_D <= StatePostTxDataIdentifier;
                 else
+                    Wr_NSO <= '0';
                     IdleCountNext_D <= (others => '0');
-                    DB_DIO <= (others => '0');
-                    LcdReset_NRO <= '1';  
-                    Rd_NSO <= '1';
-                    Cs_NSO <= '1';
-                    Wr_NSO <= '1';
-                    IM0_SO <= '0';
                     
                     StateNext_D <= StateTxData;
                 end if;
 
-                
             when StateTxData =>             
                 --! transfer data to LCD
                 WaitReq_SO <= '0';
@@ -526,10 +526,10 @@ begin
                 LcdReset_NRO <= '1';  
                 Rd_NSO <= '1';
                 Cs_NSO <= '0';
-                Wr_NSO <= '0';
-                IM0_SO <= '0';
+                Wr_NSO <= '1';
+                IM0_SO <= '1';
                 
-                IdleCountNext_D <= std_logic_vector(to_unsigned(0, 8));
+                IdleCountNext_D <= std_logic_vector(to_unsigned(4, 8));
                 BurstCountNext_D <= BurstCountPres_D;
 
                 DB_DIO <= MyWriteData_D and BitEnable_D;
@@ -547,59 +547,43 @@ begin
                         DC_NSO <= '1';
                 end case;
 
+                WaitReq_SO <= '0';
+                case MyByteEnable_D is
+                    when "00" => 
+                        BitEnable_D := (others => '0');
+                    when "01" =>
+                        BitEnable_D := "0000000011111111";
+                    when "10" =>
+                        BitEnable_D := "1111111100000000";
+                    when "11" =>
+                        BitEnable_D := (others => '1');
+                    when others =>
+                        BitEnable_D := (others => '0');
+                end case;
+                
+                DB_DIO <= MyWriteData_D and BitEnable_D;
+                
+                LcdReset_NRO <= '1';  
+                Rd_NSO <= '1';
+                Cs_NSO <= '0';
+                Wr_NSO <= '1';
+                IM0_SO <= '1';
+                
                 if(to_integer(unsigned(IdleCountPres_D)) > 0)then
                     IdleCountNext_D <= std_logic_vector(unsigned(IdleCountPres_D) - to_unsigned(1, 8));
                     BurstCountNext_D <= BurstCountPres_D;
-
-                    WaitReq_SO <= '0';
-                    case MyByteEnable_D is
-                        when "00" => 
-                            BitEnable_D := (others => '0');
-                        when "01" =>
-                            BitEnable_D := "0000000011111111";
-                        when "10" =>
-                            BitEnable_D := "1111111100000000";
-                        when "11" =>
-                            BitEnable_D := (others => '1');
-                        when others =>
-                            BitEnable_D := (others => '0');
-                    end case;
-                    
-                    DB_DIO <= MyWriteData_D and BitEnable_D;
-                    
-                    LcdReset_NRO <= '1';  
-                    Rd_NSO <= '1';
-                    Cs_NSO <= '0';
-                    Wr_NSO <= '0';
-                    IM0_SO <= '0';
                 
                     StateNext_D <= StatePostTx;
                 elsif(to_integer(unsigned(BurstCountPres_D)) > 0)then
                     BurstCountNext_D <= std_logic_vector(unsigned(BurstCountPres_D) - to_unsigned(1, 8));                    
                     IdleCountNext_D <= (others => '0');
-                    WaitReq_SO <= '0';
-                    DB_DIO <= (others => '0');
-
-                    
-                    LcdReset_NRO <= '1';  
-                    Rd_NSO <= '1';
-                    Cs_NSO <= '1';
-                    Wr_NSO <= '1';
-                    IM0_SO <= '0';
                     
                     StateNext_D <= StateNextBurstItem;
 
-                else                                
-                    LcdReset_NRO <= '1';  
-                    Rd_NSO <= '1';
-                    Cs_NSO <= '1';
-                    Wr_NSO <= '1';
-                    IM0_SO <= '0';
+                else
                     BurstCountNext_D <= (others => '0');
                     IdleCountNext_D <= (others => '0');
                     
-                    WaitReq_SO <= '0';
-                    DB_DIO <= (others => '0');
                     StateNext_D <= StateIdle;
                 end if;
                 
@@ -613,7 +597,7 @@ begin
                 Cs_NSO <= '1';               
                 DC_NSO <= '1';
                 LcdReset_NRO <= '1';                
-                IM0_SO <= '0';        
+                IM0_SO <= '1';        
                 BurstCountNext_D <= (others => '0');
                 IdleCountNext_D <= (others => '0');
                 LcdReset_NRO <= '0';

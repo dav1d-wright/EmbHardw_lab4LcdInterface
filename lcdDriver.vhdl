@@ -307,7 +307,7 @@ begin
                 --! reset state
                 WaitReq_SO <= '0';
                 StateNext_D <= StateLcdReset;
-                IdleCountNext_D <= std_logic_vector(to_unsigned(5, 8));
+                IdleCountNext_D <= std_logic_vector(to_unsigned(10, 8));
                 BurstCountNext_D <= BurstCountPres_D;
 
                 DB_DIO <= (others => '0');     
@@ -316,7 +316,7 @@ begin
                 Cs_NSO <= '1';               
                 DC_NSO <= '1';
                 LcdReset_NRO <= '1';                
-                IM0_SO <= '0';  
+                IM0_SO <= '1';  
                 
                 LcdReset_NRO <= '0';
                 
@@ -328,7 +328,7 @@ begin
                 Cs_NSO <= '1';               
                 DC_NSO <= '1';
                 LcdReset_NRO <= '0';                
-                IM0_SO <= '0';  
+                IM0_SO <= '1';  
                 WaitReq_SO <= '1';
                 BurstCountNext_D <= BurstCountPres_D;
 
@@ -349,11 +349,11 @@ begin
                 -- default values                
                 DB_DIO <= (others => '0');     
                 Rd_NSO <= '1';   
-                Wr_NSO <= '1';              
+                Wr_NSO <= '0';              
                 Cs_NSO <= '1';               
                 DC_NSO <= '1';
                 LcdReset_NRO <= '1';                
-                IM0_SO <= '0';  
+                IM0_SO <= '1';  
                 
                 WaitReq_SO <= '0';
 
@@ -382,20 +382,22 @@ begin
                 -- default values                
                 DB_DIO <= (others => '0');     
                 Rd_NSO <= '1';   
-                Wr_NSO <= '1';              
+                Wr_NSO <= '0';              
                 Cs_NSO <= '1';               
                 DC_NSO <= '1';
                 LcdReset_NRO <= '1';                
-                IM0_SO <= '0';  
+                IM0_SO <= '1';  
+                MyByteEnable_D <= (others => '1');
                 
-                WaitReq_SO <= '0';
 
                 if(BurstStreamCountPres_D > BurstCountPres_D)then
+                    WaitReq_SO <= '1';
                     MyWriteData_D <= BurstStream_D(to_integer(unsigned(BurstCountPres_D)));
-                    MyByteEnable_D <= (others => '1');
                     
                     StateNext_D <= StateEvalData;
                 else
+                    WaitReq_SO <= '0';
+                    MyWriteData_D <= (others => '0');
                     StateNext_D <= StateNextBurstItem;
                 end if;
                 
@@ -406,11 +408,11 @@ begin
                 
                 DB_DIO <= (others => '0');     
                 Rd_NSO <= '1';   
-                Wr_NSO <= '1';              
+                Wr_NSO <= '0';              
                 Cs_NSO <= '1';               
                 DC_NSO <= '1';
                 LcdReset_NRO <= '1';                
-                IM0_SO <= '0';  
+                IM0_SO <= '1';  
                 
                 IdleCountNext_D <= (others => '0');
                 BurstCountNext_D <= BurstCountPres_D;
@@ -452,10 +454,10 @@ begin
                 LcdReset_NRO <= '1';  
                 Rd_NSO <= '1';
                 Cs_NSO <= '0';
-                Wr_NSO <= '0';
-                IM0_SO <= '0';
+                Wr_NSO <= '1';
+                IM0_SO <= '1';
                 
-                IdleCountNext_D <= std_logic_vector(to_unsigned(2, 8));
+                IdleCountNext_D <= std_logic_vector(to_unsigned(4, 8));
                 BurstCountNext_D <= BurstCountPres_D;
                 
                 DB_DIO <= MyWriteData_D and BitEnable_D;
@@ -472,9 +474,9 @@ begin
                 LcdReset_NRO <= '1';  
                 Rd_NSO <= '1';
                 Cs_NSO <= '0';
-                Wr_NSO <= '0';
-                IM0_SO <= '0';
-                IdleCountNext_D <= std_logic_vector(to_unsigned(2, 8));
+                Wr_NSO <= '1';
+                IM0_SO <= '1';
+                IdleCountNext_D <= std_logic_vector(to_unsigned(4, 8));
                 BurstCountNext_D <= BurstCountPres_D;
                 
                 StateNext_D <= StatePostTxDataIdentifier;
@@ -489,14 +491,15 @@ begin
                 LcdReset_NRO <= '1';  
                 Rd_NSO <= '1';
                 Cs_NSO <= '0';
-                Wr_NSO <= '0';
-                IM0_SO <= '0';
+                IM0_SO <= '1';
 
                 if(to_integer(unsigned(IdleCountPres_D)) > 0)then
                     IdleCountNext_D <= std_logic_vector(unsigned(IdleCountPres_D) - to_unsigned(1, 8));
+                    Wr_NSO <= '1';
 
                     StateNext_D <= StatePostTxDataIdentifier;
                 else
+                    Wr_NSO <= '0';
                     IdleCountNext_D <= (others => '0');
                     
                     StateNext_D <= StateTxData;
@@ -523,15 +526,16 @@ begin
                 LcdReset_NRO <= '1';  
                 Rd_NSO <= '1';
                 Cs_NSO <= '0';
-                Wr_NSO <= '0';
-                IM0_SO <= '0';
+                Wr_NSO <= '1';
+                IM0_SO <= '1';
                 
-                IdleCountNext_D <= std_logic_vector(to_unsigned(2, 8));
+                IdleCountNext_D <= std_logic_vector(to_unsigned(4, 8));
                 BurstCountNext_D <= BurstCountPres_D;
 
                 DB_DIO <= MyWriteData_D and BitEnable_D;
 
                 StateNext_D <= StatePostTx;
+                
             when StatePostTx =>
                 --! wait for idle count to finish, then if this is a burst transfer, continue burst or go to idle
                 case MyAddress_D is
@@ -562,8 +566,8 @@ begin
                 LcdReset_NRO <= '1';  
                 Rd_NSO <= '1';
                 Cs_NSO <= '0';
-                Wr_NSO <= '0';
-                IM0_SO <= '0';
+                Wr_NSO <= '1';
+                IM0_SO <= '1';
                 
                 if(to_integer(unsigned(IdleCountPres_D)) > 0)then
                     IdleCountNext_D <= std_logic_vector(unsigned(IdleCountPres_D) - to_unsigned(1, 8));
@@ -593,7 +597,7 @@ begin
                 Cs_NSO <= '1';               
                 DC_NSO <= '1';
                 LcdReset_NRO <= '1';                
-                IM0_SO <= '0';        
+                IM0_SO <= '1';        
                 BurstCountNext_D <= (others => '0');
                 IdleCountNext_D <= (others => '0');
                 LcdReset_NRO <= '0';

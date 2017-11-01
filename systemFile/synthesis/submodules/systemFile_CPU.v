@@ -17,12 +17,14 @@ module systemFile_CPU (
 		input  wire        d_waitrequest,                       //                                     .waitrequest
 		output wire        d_write,                             //                                     .write
 		output wire [31:0] d_writedata,                         //                                     .writedata
+		output wire [3:0]  d_burstcount,                        //                                     .burstcount
 		input  wire        d_readdatavalid,                     //                                     .readdatavalid
 		output wire        debug_mem_slave_debugaccess_to_roms, //                                     .debugaccess
 		output wire [25:0] i_address,                           //                   instruction_master.address
 		output wire        i_read,                              //                                     .read
 		input  wire [31:0] i_readdata,                          //                                     .readdata
 		input  wire        i_waitrequest,                       //                                     .waitrequest
+		output wire [3:0]  i_burstcount,                        //                                     .burstcount
 		input  wire        i_readdatavalid,                     //                                     .readdatavalid
 		input  wire [31:0] dtcm0_readdata,                      //        tightly_coupled_data_master_0.readdata
 		output wire [25:0] dtcm0_address,                       //                                     .address
@@ -59,12 +61,14 @@ module systemFile_CPU (
 		.d_waitrequest                       (d_waitrequest),                       //                                     .waitrequest
 		.d_write                             (d_write),                             //                                     .write
 		.d_writedata                         (d_writedata),                         //                                     .writedata
+		.d_burstcount                        (d_burstcount),                        //                                     .burstcount
 		.d_readdatavalid                     (d_readdatavalid),                     //                                     .readdatavalid
 		.debug_mem_slave_debugaccess_to_roms (debug_mem_slave_debugaccess_to_roms), //                                     .debugaccess
 		.i_address                           (i_address),                           //                   instruction_master.address
 		.i_read                              (i_read),                              //                                     .read
 		.i_readdata                          (i_readdata),                          //                                     .readdata
 		.i_waitrequest                       (i_waitrequest),                       //                                     .waitrequest
+		.i_burstcount                        (i_burstcount),                        //                                     .burstcount
 		.i_readdatavalid                     (i_readdatavalid),                     //                                     .readdatavalid
 		.dtcm0_readdata                      (dtcm0_readdata),                      //        tightly_coupled_data_master_0.readdata
 		.dtcm0_address                       (dtcm0_address),                       //                                     .address

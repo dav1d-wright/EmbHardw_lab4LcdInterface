@@ -49,14 +49,14 @@ module systemFile_mm_interconnect_0_router_default_decode
                DEFAULT_RD_CHANNEL = -1,
                DEFAULT_DESTID = 2 
    )
-  (output [96 - 93 : 0] default_destination_id,
+  (output [99 - 96 : 0] default_destination_id,
    output [10-1 : 0] default_wr_channel,
    output [10-1 : 0] default_rd_channel,
    output [10-1 : 0] default_src_channel
   );
 
   assign default_destination_id = 
-    DEFAULT_DESTID[96 - 93 : 0];
+    DEFAULT_DESTID[99 - 96 : 0];
 
   generate
     if (DEFAULT_CHANNEL == -1) begin : no_default_channel_assignment
@@ -93,7 +93,7 @@ module systemFile_mm_interconnect_0_router
     // Command Sink (Input)
     // -------------------
     input                       sink_valid,
-    input  [110-1 : 0]    sink_data,
+    input  [113-1 : 0]    sink_data,
     input                       sink_startofpacket,
     input                       sink_endofpacket,
     output                      sink_ready,
@@ -102,7 +102,7 @@ module systemFile_mm_interconnect_0_router
     // Command Source (Output)
     // -------------------
     output                          src_valid,
-    output reg [110-1    : 0] src_data,
+    output reg [113-1    : 0] src_data,
     output reg [10-1 : 0] src_channel,
     output                          src_startofpacket,
     output                          src_endofpacket,
@@ -114,11 +114,11 @@ module systemFile_mm_interconnect_0_router
     // -------------------------------------------------------
     localparam PKT_ADDR_H = 61;
     localparam PKT_ADDR_L = 36;
-    localparam PKT_DEST_ID_H = 96;
-    localparam PKT_DEST_ID_L = 93;
-    localparam PKT_PROTECTION_H = 100;
-    localparam PKT_PROTECTION_L = 98;
-    localparam ST_DATA_W = 110;
+    localparam PKT_DEST_ID_H = 99;
+    localparam PKT_DEST_ID_L = 96;
+    localparam PKT_PROTECTION_H = 103;
+    localparam PKT_PROTECTION_L = 101;
+    localparam ST_DATA_W = 113;
     localparam ST_CHANNEL_W = 10;
     localparam DECODER_TYPE = 0;
 
@@ -234,20 +234,20 @@ module systemFile_mm_interconnect_0_router
 
     // ( 0x20030a0 .. 0x20030b0 )
     if ( {address[RG:PAD5],{PAD5{1'b0}}} == 26'h20030a0   ) begin
-            src_channel = 10'b0001000000;
-            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 5;
+            src_channel = 10'b0000000010;
+            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 1;
     end
 
     // ( 0x20030b0 .. 0x20030c0 )
     if ( {address[RG:PAD6],{PAD6{1'b0}}} == 26'h20030b0   ) begin
-            src_channel = 10'b0000100000;
-            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 4;
+            src_channel = 10'b0001000000;
+            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 5;
     end
 
     // ( 0x20030c0 .. 0x20030d0 )
     if ( {address[RG:PAD7],{PAD7{1'b0}}} == 26'h20030c0   ) begin
-            src_channel = 10'b0000000010;
-            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 1;
+            src_channel = 10'b0000100000;
+            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 4;
     end
 
     // ( 0x20030d8 .. 0x20030e0 )

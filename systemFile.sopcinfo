@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="systemFile" kind="systemFile" version="1.0" fabric="QSYS">
  <!-- Format version 17.0 595 (Future versions may contain additional information.) -->
- <!-- 2017.10.31.23:22:42 -->
+ <!-- 2017.11.01.12:05:26 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1509488562</value>
+  <value>1509534326</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -972,7 +972,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="icache_burstType">
    <type>java.lang.String</type>
-   <value>None</value>
+   <value>Sequential</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -980,7 +980,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="dcache_bursts">
    <type>java.lang.String</type>
-   <value>false</value>
+   <value>true</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -1484,7 +1484,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="dcache_bursts_derived">
    <type>java.lang.String</type>
-   <value>false</value>
+   <value>true</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -1730,7 +1730,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="dataSlaveMapParam">
    <type>java.lang.String</type>
-   <value><![CDATA[<address-map><slave name='SDRAM_ctrl.s1' start='0x1000000' end='0x2000000' type='altera_avalon_new_sdram_controller.s1' /><slave name='TCIM.s2' start='0x2000000' end='0x2001000' type='altera_avalon_onchip_memory2.s2' /><slave name='CPU.debug_mem_slave' start='0x2002800' end='0x2003000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='performance_counter_0.control_slave' start='0x2003000' end='0x2003080' type='altera_avalon_performance_counter.control_slave' /><slave name='timer_0.s1' start='0x2003080' end='0x20030A0' type='altera_avalon_timer.s1' /><slave name='altpll_signalTap.pll_slave' start='0x20030A0' end='0x20030B0' type='altpll.pll_slave' /><slave name='altpll_0.pll_slave' start='0x20030B0' end='0x20030C0' type='altpll.pll_slave' /><slave name='LCD.avalon_slave' start='0x20030C0' end='0x20030D0' type='LCD.avalon_slave' /><slave name='sysid.control_slave' start='0x20030D8' end='0x20030E0' type='altera_avalon_sysid_qsys.control_slave' /><slave name='jtag_uart.avalon_jtag_slave' start='0x20030E0' end='0x20030E8' type='altera_avalon_jtag_uart.avalon_jtag_slave' /></address-map>]]></value>
+   <value><![CDATA[<address-map><slave name='SDRAM_ctrl.s1' start='0x1000000' end='0x2000000' type='altera_avalon_new_sdram_controller.s1' /><slave name='TCIM.s2' start='0x2000000' end='0x2001000' type='altera_avalon_onchip_memory2.s2' /><slave name='CPU.debug_mem_slave' start='0x2002800' end='0x2003000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='performance_counter_0.control_slave' start='0x2003000' end='0x2003080' type='altera_avalon_performance_counter.control_slave' /><slave name='timer_0.s1' start='0x2003080' end='0x20030A0' type='altera_avalon_timer.s1' /><slave name='LCD.avalon_slave' start='0x20030A0' end='0x20030B0' type='LCD.avalon_slave' /><slave name='altpll_signalTap.pll_slave' start='0x20030B0' end='0x20030C0' type='altpll.pll_slave' /><slave name='altpll_0.pll_slave' start='0x20030C0' end='0x20030D0' type='altpll.pll_slave' /><slave name='sysid.control_slave' start='0x20030D8' end='0x20030E0' type='altera_avalon_sysid_qsys.control_slave' /><slave name='jtag_uart.avalon_jtag_slave' start='0x20030E0' end='0x20030E8' type='altera_avalon_jtag_uart.avalon_jtag_slave' /></address-map>]]></value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -2391,6 +2391,12 @@ parameters are a RESULT of the module parameters. -->
     <role>writedata</role>
    </port>
    <port>
+    <name>d_burstcount</name>
+    <direction>Output</direction>
+    <width>4</width>
+    <role>burstcount</role>
+   </port>
+   <port>
     <name>d_readdatavalid</name>
     <direction>Input</direction>
     <width>1</width>
@@ -2415,7 +2421,7 @@ parameters are a RESULT of the module parameters. -->
     <moduleName>LCD</moduleName>
     <slaveName>avalon_slave</slaveName>
     <name>LCD.avalon_slave</name>
-    <baseAddress>33566912</baseAddress>
+    <baseAddress>33566880</baseAddress>
     <span>16</span>
    </memoryBlock>
    <memoryBlock>
@@ -2447,7 +2453,7 @@ parameters are a RESULT of the module parameters. -->
     <moduleName>altpll_0</moduleName>
     <slaveName>pll_slave</slaveName>
     <name>altpll_0.pll_slave</name>
-    <baseAddress>33566896</baseAddress>
+    <baseAddress>33566912</baseAddress>
     <span>16</span>
    </memoryBlock>
    <memoryBlock>
@@ -2455,7 +2461,7 @@ parameters are a RESULT of the module parameters. -->
     <moduleName>altpll_signalTap</moduleName>
     <slaveName>pll_slave</slaveName>
     <name>altpll_signalTap.pll_slave</name>
-    <baseAddress>33566880</baseAddress>
+    <baseAddress>33566896</baseAddress>
     <span>16</span>
    </memoryBlock>
    <memoryBlock>
@@ -2768,6 +2774,12 @@ parameters are a RESULT of the module parameters. -->
     <direction>Input</direction>
     <width>1</width>
     <role>waitrequest</role>
+   </port>
+   <port>
+    <name>i_burstcount</name>
+    <direction>Output</direction>
+    <width>4</width>
+    <role>burstcount</role>
    </port>
    <port>
     <name>i_readdatavalid</name>
@@ -13214,7 +13226,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.TIMESTAMP</name>
-   <value>1509488562</value>
+   <value>1509534326</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.compatible</name>
@@ -13234,7 +13246,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.dts.params.timestamp</name>
-   <value>1509488562</value>
+   <value>1509534326</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.vendor</name>
@@ -13250,7 +13262,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="timestamp">
    <type>int</type>
-   <value>1509488562</value>
+   <value>1509534326</value>
    <derived>true</derived>
    <enabled>false</enabled>
    <visible>false</visible>
@@ -14540,7 +14552,7 @@ parameters are a RESULT of the module parameters. -->
   </parameter>
   <parameter name="baseAddress">
    <type>java.math.BigInteger</type>
-   <value>0x020030c0</value>
+   <value>0x020030a0</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -14744,7 +14756,7 @@ parameters are a RESULT of the module parameters. -->
   </parameter>
   <parameter name="baseAddress">
    <type>java.math.BigInteger</type>
-   <value>0x020030b0</value>
+   <value>0x020030c0</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -14795,7 +14807,7 @@ parameters are a RESULT of the module parameters. -->
   </parameter>
   <parameter name="baseAddress">
    <type>java.math.BigInteger</type>
-   <value>0x020030a0</value>
+   <value>0x020030b0</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>

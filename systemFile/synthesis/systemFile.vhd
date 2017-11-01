@@ -44,12 +44,14 @@ architecture rtl of systemFile is
 			d_waitrequest                       : in  std_logic                     := 'X';             -- waitrequest
 			d_write                             : out std_logic;                                        -- write
 			d_writedata                         : out std_logic_vector(31 downto 0);                    -- writedata
+			d_burstcount                        : out std_logic_vector(3 downto 0);                     -- burstcount
 			d_readdatavalid                     : in  std_logic                     := 'X';             -- readdatavalid
 			debug_mem_slave_debugaccess_to_roms : out std_logic;                                        -- debugaccess
 			i_address                           : out std_logic_vector(25 downto 0);                    -- address
 			i_read                              : out std_logic;                                        -- read
 			i_readdata                          : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
 			i_waitrequest                       : in  std_logic                     := 'X';             -- waitrequest
+			i_burstcount                        : out std_logic_vector(3 downto 0);                     -- burstcount
 			i_readdatavalid                     : in  std_logic                     := 'X';             -- readdatavalid
 			dtcm0_readdata                      : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
 			dtcm0_address                       : out std_logic_vector(25 downto 0);                    -- address
@@ -275,6 +277,7 @@ architecture rtl of systemFile is
 			CPU_reset_reset_bridge_in_reset_reset                      : in  std_logic                     := 'X';             -- reset
 			CPU_data_master_address                                    : in  std_logic_vector(25 downto 0) := (others => 'X'); -- address
 			CPU_data_master_waitrequest                                : out std_logic;                                        -- waitrequest
+			CPU_data_master_burstcount                                 : in  std_logic_vector(3 downto 0)  := (others => 'X'); -- burstcount
 			CPU_data_master_byteenable                                 : in  std_logic_vector(3 downto 0)  := (others => 'X'); -- byteenable
 			CPU_data_master_read                                       : in  std_logic                     := 'X';             -- read
 			CPU_data_master_readdata                                   : out std_logic_vector(31 downto 0);                    -- readdata
@@ -284,6 +287,7 @@ architecture rtl of systemFile is
 			CPU_data_master_debugaccess                                : in  std_logic                     := 'X';             -- debugaccess
 			CPU_instruction_master_address                             : in  std_logic_vector(25 downto 0) := (others => 'X'); -- address
 			CPU_instruction_master_waitrequest                         : out std_logic;                                        -- waitrequest
+			CPU_instruction_master_burstcount                          : in  std_logic_vector(3 downto 0)  := (others => 'X'); -- burstcount
 			CPU_instruction_master_read                                : in  std_logic                     := 'X';             -- read
 			CPU_instruction_master_readdata                            : out std_logic_vector(31 downto 0);                    -- readdata
 			CPU_instruction_master_readdatavalid                       : out std_logic;                                        -- readdatavalid
@@ -544,11 +548,13 @@ architecture rtl of systemFile is
 	signal cpu_data_master_readdatavalid                                       : std_logic;                     -- mm_interconnect_0:CPU_data_master_readdatavalid -> CPU:d_readdatavalid
 	signal cpu_data_master_write                                               : std_logic;                     -- CPU:d_write -> mm_interconnect_0:CPU_data_master_write
 	signal cpu_data_master_writedata                                           : std_logic_vector(31 downto 0); -- CPU:d_writedata -> mm_interconnect_0:CPU_data_master_writedata
+	signal cpu_data_master_burstcount                                          : std_logic_vector(3 downto 0);  -- CPU:d_burstcount -> mm_interconnect_0:CPU_data_master_burstcount
 	signal cpu_instruction_master_readdata                                     : std_logic_vector(31 downto 0); -- mm_interconnect_0:CPU_instruction_master_readdata -> CPU:i_readdata
 	signal cpu_instruction_master_waitrequest                                  : std_logic;                     -- mm_interconnect_0:CPU_instruction_master_waitrequest -> CPU:i_waitrequest
 	signal cpu_instruction_master_address                                      : std_logic_vector(25 downto 0); -- CPU:i_address -> mm_interconnect_0:CPU_instruction_master_address
 	signal cpu_instruction_master_read                                         : std_logic;                     -- CPU:i_read -> mm_interconnect_0:CPU_instruction_master_read
 	signal cpu_instruction_master_readdatavalid                                : std_logic;                     -- mm_interconnect_0:CPU_instruction_master_readdatavalid -> CPU:i_readdatavalid
+	signal cpu_instruction_master_burstcount                                   : std_logic_vector(3 downto 0);  -- CPU:i_burstcount -> mm_interconnect_0:CPU_instruction_master_burstcount
 	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_chipselect            : std_logic;                     -- mm_interconnect_0:jtag_uart_avalon_jtag_slave_chipselect -> jtag_uart:av_chipselect
 	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_readdata              : std_logic_vector(31 downto 0); -- jtag_uart:av_readdata -> mm_interconnect_0:jtag_uart_avalon_jtag_slave_readdata
 	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_waitrequest           : std_logic;                     -- jtag_uart:av_waitrequest -> mm_interconnect_0:jtag_uart_avalon_jtag_slave_waitrequest
@@ -667,12 +673,14 @@ begin
 			d_waitrequest                       => cpu_data_master_waitrequest,                       --                                     .waitrequest
 			d_write                             => cpu_data_master_write,                             --                                     .write
 			d_writedata                         => cpu_data_master_writedata,                         --                                     .writedata
+			d_burstcount                        => cpu_data_master_burstcount,                        --                                     .burstcount
 			d_readdatavalid                     => cpu_data_master_readdatavalid,                     --                                     .readdatavalid
 			debug_mem_slave_debugaccess_to_roms => cpu_data_master_debugaccess,                       --                                     .debugaccess
 			i_address                           => cpu_instruction_master_address,                    --                   instruction_master.address
 			i_read                              => cpu_instruction_master_read,                       --                                     .read
 			i_readdata                          => cpu_instruction_master_readdata,                   --                                     .readdata
 			i_waitrequest                       => cpu_instruction_master_waitrequest,                --                                     .waitrequest
+			i_burstcount                        => cpu_instruction_master_burstcount,                 --                                     .burstcount
 			i_readdatavalid                     => cpu_instruction_master_readdatavalid,              --                                     .readdatavalid
 			dtcm0_readdata                      => cpu_tightly_coupled_data_master_0_readdata,        --        tightly_coupled_data_master_0.readdata
 			dtcm0_address                       => cpu_tightly_coupled_data_master_0_address,         --                                     .address
@@ -887,6 +895,7 @@ begin
 			CPU_reset_reset_bridge_in_reset_reset                      => rst_controller_reset_out_reset,                                      --                      CPU_reset_reset_bridge_in_reset.reset
 			CPU_data_master_address                                    => cpu_data_master_address,                                             --                                      CPU_data_master.address
 			CPU_data_master_waitrequest                                => cpu_data_master_waitrequest,                                         --                                                     .waitrequest
+			CPU_data_master_burstcount                                 => cpu_data_master_burstcount,                                          --                                                     .burstcount
 			CPU_data_master_byteenable                                 => cpu_data_master_byteenable,                                          --                                                     .byteenable
 			CPU_data_master_read                                       => cpu_data_master_read,                                                --                                                     .read
 			CPU_data_master_readdata                                   => cpu_data_master_readdata,                                            --                                                     .readdata
@@ -896,6 +905,7 @@ begin
 			CPU_data_master_debugaccess                                => cpu_data_master_debugaccess,                                         --                                                     .debugaccess
 			CPU_instruction_master_address                             => cpu_instruction_master_address,                                      --                               CPU_instruction_master.address
 			CPU_instruction_master_waitrequest                         => cpu_instruction_master_waitrequest,                                  --                                                     .waitrequest
+			CPU_instruction_master_burstcount                          => cpu_instruction_master_burstcount,                                   --                                                     .burstcount
 			CPU_instruction_master_read                                => cpu_instruction_master_read,                                         --                                                     .read
 			CPU_instruction_master_readdata                            => cpu_instruction_master_readdata,                                     --                                                     .readdata
 			CPU_instruction_master_readdatavalid                       => cpu_instruction_master_readdatavalid,                                --                                                     .readdatavalid

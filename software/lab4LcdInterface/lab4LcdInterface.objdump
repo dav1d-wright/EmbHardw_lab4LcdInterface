@@ -83,7 +83,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
  31 .jdi          00005201  00000000  00000000  000a8c6c  2**0
                   CONTENTS, READONLY
- 32 .sopcinfo     0007743e  00000000  00000000  000ade6d  2**0
+ 32 .sopcinfo     0007754e  00000000  00000000  000ade6d  2**0
                   CONTENTS, READONLY
 SYMBOL TABLE:
 01000000 l    d  .entry	00000000 .entry
@@ -410,7 +410,7 @@ Disassembly of section .entry:
  1000014:	08409114 	ori	at,at,580
     jmp r1
  1000018:	0800683a 	jmp	at
- 100001c:	00000000 	call	0 <__alt_mem_SDRAM_ctrl-0x1000000>
+ 100001c:	00000000 	call	0 <__reset-0x1000000>
 
 Disassembly of section .exceptions:
 
@@ -1383,7 +1383,7 @@ void LCD_Write_Command(int command) {
  1000728:	e13fff15 	stw	r4,-4(fp)
   IOWR_16DIRECT(LCD_BASE,0x04,command);
  100072c:	00808034 	movhi	r2,512
- 1000730:	108c3104 	addi	r2,r2,12484
+ 1000730:	108c2904 	addi	r2,r2,12452
  1000734:	e0ffff0b 	ldhu	r3,-4(fp)
  1000738:	10c0002d 	sthio	r3,0(r2)
 }
@@ -1402,7 +1402,7 @@ void LCD_Write_Data(int data) {
  100075c:	e13fff15 	stw	r4,-4(fp)
   IOWR_16DIRECT(LCD_BASE,0x00,data);
  1000760:	00808034 	movhi	r2,512
- 1000764:	108c3004 	addi	r2,r2,12480
+ 1000764:	108c2804 	addi	r2,r2,12448
  1000768:	e0ffff0b 	ldhu	r3,-4(fp)
  100076c:	10c0002d 	sthio	r3,0(r2)
 }
@@ -9118,7 +9118,7 @@ alt_exception_cause_generated_bad_addr(alt_exception_cause cause)
  1005c44:	d9400015 	stw	r5,0(sp)
  1005c48:	d9800115 	stw	r6,4(sp)
  1005c4c:	d9c00215 	stw	r7,8(sp)
- 1005c50:	00000000 	call	0 <__alt_mem_SDRAM_ctrl-0x1000000>
+ 1005c50:	00000000 	call	0 <__reset-0x1000000>
  1005c54:	d9400017 	ldw	r5,0(sp)
  1005c58:	d9800117 	ldw	r6,4(sp)
  1005c5c:	d9c00217 	ldw	r7,8(sp)
@@ -9202,7 +9202,7 @@ alt_exception_cause_generated_bad_addr(alt_exception_cause cause)
  1005d8c:	10003226 	beq	r2,zero,1005e58 <__call_exitprocs+0x178>
  1005d90:	a009883a 	mov	r4,r20
  1005d94:	98800015 	stw	r2,0(r19)
- 1005d98:	00000000 	call	0 <__alt_mem_SDRAM_ctrl-0x1000000>
+ 1005d98:	00000000 	call	0 <__reset-0x1000000>
  1005d9c:	9d000017 	ldw	r20,0(r19)
  1005da0:	a03fe41e 	bne	r20,zero,1005d34 <__alt_mem_TCDM+0xff004d34>
  1005da4:	dfc00a17 	ldw	ra,40(sp)
