@@ -7,8 +7,7 @@
    <irq preferredWidth="34" />
   </columns>
  </systemtable>
- <library
-   expandedCategories="Library,Library/Basic Functions,Library/Interface Protocols,Library/Interface Protocols/PCI Express/QSYS Example Designs,Library/University Program/Audio &amp; Video/Video,Project,Library/Basic Functions/DMA/mSGDMA Sub-core,Library/University Program/Audio &amp; Video,Library/Basic Functions/DMA,Library/Interface Protocols/PCI Express,Library/University Program" />
+ <library expandedCategories="Project,Library" />
  <window width="1920" height="1040" x="0" y="0" />
  <generation synthesis="VHDL" />
 </preferences>

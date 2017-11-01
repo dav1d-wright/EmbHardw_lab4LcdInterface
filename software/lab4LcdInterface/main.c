@@ -48,52 +48,35 @@ int main()
 
   while (true)
   {
+	  LCD_Write_Command(0x002CU);
 	  for(int i = 0; i < picture_height_tuxAnimation_1; i++)
 	  {
 		  for(int j = 0; j < picture_width_tuxAnimation_1; j++)
 		  {
-			  if((i == 0) && (j == 0))
-			  {
-				  LCD_Write_Data(picture_array_tuxAnimation_1[i][j]);
-			  }
-			  else
-			  {
-				  LCD_Write_Command(picture_array_tuxAnimation_1[i][j]);
-			  }
+			  LCD_Write_Data(picture_array_tuxAnimation_1[i][j]);
 		  }
 	  }
 
 	  usleep(500E3);
 
+	  LCD_Write_Command(0x002CU);
 	  for(int i = 0; i < picture_height_tuxAnimation_2; i++)
 	  {
 		  for(int j = 0; j < picture_width_tuxAnimation_2; j++)
 		  {
-			  if((i == 0) && (j == 0))
-			  {
-				  LCD_Write_Data(picture_array_tuxAnimation_2[i][j]);
-			  }
-			  else
-			  {
-				  LCD_Write_Command(picture_array_tuxAnimation_2[i][j]);
-			  }
+			  LCD_Write_Data(picture_array_tuxAnimation_2[i][j]);
 		  }
 	  }
 
 	  usleep(500E3);
 
+	  LCD_Write_Command(0x002CU);
 	  for(int i = 0; i < picture_height_tuxAnimation_3; i++)
 	  {
 		  for(int j = 0; j < picture_width_tuxAnimation_3; j++)
 		  {
-			  if((i == 0) && (j == 0))
-			  {
-				  LCD_Write_Data(picture_array_tuxAnimation_3[i][j]);
-			  }
-			  else
-			  {
-				  LCD_Write_Command(picture_array_tuxAnimation_3[i][j]);
-			  }
+			  LCD_Write_Data(picture_array_tuxAnimation_3[i][j]);
+
 		  }
 	  }
 	  usleep(500E3);

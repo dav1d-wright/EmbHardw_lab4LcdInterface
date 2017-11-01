@@ -1,4 +1,4 @@
-12:09:21 **** Incremental Build of configuration Nios II for project lab4LcdInterface ****
+22:08:50 **** Incremental Build of configuration Nios II for project lab4LcdInterface ****
 make all 
 Info: Building ../lab4LcdInterface_bsp/
 D:/programs/intelFPGA_lite/17.0/nios2eds/bin/gnu/H-x86_64-mingw32/bin/make --no-print-directory -C ../lab4LcdInterface_bsp/
@@ -10,12 +10,12 @@ nios2-elf-ar -src libhal_bsp.a obj/HAL/src/alt_alarm_start.o obj/HAL/src/alt_bus
 [BSP build complete]
 Info: Linking lab4LcdInterface.elf
 nios2-elf-g++  -T'../lab4LcdInterface_bsp//linker.x' -msys-crt0='../lab4LcdInterface_bsp//obj/HAL/src/crt0.o' -msys-lib=hal_bsp -L../lab4LcdInterface_bsp/   -Wl,-Map=lab4LcdInterface.map   -O0 -g -Wall   -mno-hw-div -mhw-mul -mno-hw-mulx -mgpopt=global  -o lab4LcdInterface.elf obj/default/main.o -lm -msys-lib=m
-nios2-elf-insert lab4LcdInterface.elf --thread_model hal --cpu_name CPU --qsys true --simulation_enabled false --id 0 --sidp 0x20030d8 --timestamp 1509534326 --stderr_dev jtag_uart --stdin_dev jtag_uart --stdout_dev jtag_uart --sopc_system_name systemFile --quartus_project_dir "D:/syncplicity/z003nc3v/Documents/MSE/1Sem_HS17_18/TSM_EmbHardw/w4/exercises/lab4LcdInterface" --jdi ../..//output_files/mainRevision.jdi --sopcinfo D:/syncplicity/z003nc3v/Documents/MSE/1Sem_HS17_18/TSM_EmbHardw/w4/exercises/lab4LcdInterface/software/lab4LcdInterface_bsp/../../systemFile.sopcinfo
+nios2-elf-insert lab4LcdInterface.elf --thread_model hal --cpu_name CPU --qsys true --simulation_enabled false --id 0 --sidp 0x20030d8 --timestamp 1509570065 --stderr_dev jtag_uart --stdin_dev jtag_uart --stdout_dev jtag_uart --sopc_system_name systemFile --quartus_project_dir "D:/syncplicity/z003nc3v/Documents/MSE/1Sem_HS17_18/TSM_EmbHardw/w4/exercises/lab4LcdInterface" --jdi ../..//output_files/mainRevision.jdi --sopcinfo D:/syncplicity/z003nc3v/Documents/MSE/1Sem_HS17_18/TSM_EmbHardw/w4/exercises/lab4LcdInterface/software/lab4LcdInterface_bsp/../../systemFile.sopcinfo
 Info: (lab4LcdInterface.elf) 480 KBytes program size (code + initialized data).
 Info:                        15896 KBytes free for stack + heap.
 Info: Creating lab4LcdInterface.objdump
 nios2-elf-objdump --disassemble --syms --all-header --source lab4LcdInterface.elf >lab4LcdInterface.objdump
 [lab4LcdInterface build complete]
 
-12:09:24 Build Finished (took 2s.841ms)
+22:08:54 Build Finished (took 3s.144ms)
 
