@@ -28,9 +28,9 @@
 // ------------------------------------------
 // Generation parameters:
 //   output_name:         systemFile_mm_interconnect_0_rsp_demux
-//   ST_DATA_W:           113
+//   ST_DATA_W:           101
 //   ST_CHANNEL_W:        10
-//   NUM_OUTPUTS:         2
+//   NUM_OUTPUTS:         3
 //   VALID_WIDTH:         1
 // ------------------------------------------
 
@@ -46,7 +46,7 @@ module systemFile_mm_interconnect_0_rsp_demux
     // Sink
     // -------------------
     input  [1-1      : 0]   sink_valid,
-    input  [113-1    : 0]   sink_data, // ST_DATA_W=113
+    input  [101-1    : 0]   sink_data, // ST_DATA_W=101
     input  [10-1 : 0]   sink_channel, // ST_CHANNEL_W=10
     input                         sink_startofpacket,
     input                         sink_endofpacket,
@@ -56,18 +56,25 @@ module systemFile_mm_interconnect_0_rsp_demux
     // Sources 
     // -------------------
     output reg                      src0_valid,
-    output reg [113-1    : 0] src0_data, // ST_DATA_W=113
+    output reg [101-1    : 0] src0_data, // ST_DATA_W=101
     output reg [10-1 : 0] src0_channel, // ST_CHANNEL_W=10
     output reg                      src0_startofpacket,
     output reg                      src0_endofpacket,
     input                           src0_ready,
 
     output reg                      src1_valid,
-    output reg [113-1    : 0] src1_data, // ST_DATA_W=113
+    output reg [101-1    : 0] src1_data, // ST_DATA_W=101
     output reg [10-1 : 0] src1_channel, // ST_CHANNEL_W=10
     output reg                      src1_startofpacket,
     output reg                      src1_endofpacket,
     input                           src1_ready,
+
+    output reg                      src2_valid,
+    output reg [101-1    : 0] src2_data, // ST_DATA_W=101
+    output reg [10-1 : 0] src2_channel, // ST_CHANNEL_W=10
+    output reg                      src2_startofpacket,
+    output reg                      src2_endofpacket,
+    input                           src2_ready,
 
 
     // -------------------
@@ -80,7 +87,7 @@ module systemFile_mm_interconnect_0_rsp_demux
 
 );
 
-    localparam NUM_OUTPUTS = 2;
+    localparam NUM_OUTPUTS = 3;
     wire [NUM_OUTPUTS - 1 : 0] ready_vector;
 
     // -------------------
@@ -101,6 +108,13 @@ module systemFile_mm_interconnect_0_rsp_demux
 
         src1_valid         = sink_channel[1] && sink_valid;
 
+        src2_data          = sink_data;
+        src2_startofpacket = sink_startofpacket;
+        src2_endofpacket   = sink_endofpacket;
+        src2_channel       = sink_channel >> NUM_OUTPUTS;
+
+        src2_valid         = sink_channel[2] && sink_valid;
+
     end
 
     // -------------------
@@ -108,8 +122,9 @@ module systemFile_mm_interconnect_0_rsp_demux
     // -------------------
     assign ready_vector[0] = src0_ready;
     assign ready_vector[1] = src1_ready;
+    assign ready_vector[2] = src2_ready;
 
-    assign sink_ready = |(sink_channel & {{8{1'b0}},{ready_vector[NUM_OUTPUTS - 1 : 0]}});
+    assign sink_ready = |(sink_channel & {{7{1'b0}},{ready_vector[NUM_OUTPUTS - 1 : 0]}});
 
 endmodule
 

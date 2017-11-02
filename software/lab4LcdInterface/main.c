@@ -25,6 +25,18 @@
 #include "./inc/tuxAnimation_2.h"
 #include "./inc/tuxAnimation_3.h"
 
+#define LCD_REG_STATUS 		0x0000U
+#define LCD_REG_CTRL 		0x0004U
+#define LCD_REG_ERROR 		0x0008U
+#define LCD_REG_RES 		0x000CU
+#define LCD_REG_SRCMSW	 	0x0010U
+#define LCD_REG_SRCLSW		0x0014U
+#define LCD_REG_DESTMSW 	0x0018U
+#define LCD_REG_DESTLSW		0x001CU
+#define LCD_REG_DATA	 	0x0020U
+#define LCD_REG_WRITEDATA 	0x0024U
+#define LCD_REG_WRITECMD 	0x0028U
+
 void LCD_Write_Command(int command);
 void LCD_Write_Data(int data);
 void init_LCD();
@@ -35,9 +47,10 @@ int main()
 
 //  while (true)
 //  {
-//	  LCD_Write_Command(0xFFFFU);
-//
-//	  LCD_Write_Data(0xF0F0U);
+//	  for(int i = 0; i <= 0xFFFFU; i++)
+//	  {
+//		  IOWR_16DIRECT(LCD_BASE, i, i);
+//	  }
 //  }
 
 
@@ -53,7 +66,8 @@ int main()
 	  {
 		  for(int j = 0; j < picture_width_tuxAnimation_1; j++)
 		  {
-			  LCD_Write_Data(picture_array_tuxAnimation_1[i][j]);
+//			  LCD_Write_Data(0);
+			   LCD_Write_Data(picture_array_tuxAnimation_1[i][j]);
 		  }
 	  }
 
@@ -173,9 +187,9 @@ void init_LCD() {
 }
 
 void LCD_Write_Command(int command) {
-  IOWR_16DIRECT(LCD_BASE,0x04,command);
+  IOWR_16DIRECT(LCD_BASE, LCD_REG_WRITECMD, command);
 }
 
 void LCD_Write_Data(int data) {
-  IOWR_16DIRECT(LCD_BASE,0x00,data);
+  IOWR_16DIRECT(LCD_BASE, LCD_REG_WRITEDATA,data);
 }

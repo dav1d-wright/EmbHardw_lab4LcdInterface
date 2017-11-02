@@ -27,6 +27,13 @@ module systemFile (
 	);
 
 	wire         altpll_0_c0_clk;                                                     // altpll_0:c0 -> [CPU:clk, LCD:Clk_CI, SDRAM_ctrl:clk, TCDM:clk, TCIM:clk, TCIM:clk2, altpll_signalTap:clk, irq_mapper:clk, jtag_uart:clk, mm_interconnect_0:altpll_0_c0_clk, mm_interconnect_1:altpll_0_c0_clk, mm_interconnect_2:altpll_0_c0_clk, performance_counter_0:clk, rst_controller:clk, sysid:clock, timer_0:clk]
+	wire         lcd_avalon_master_waitrequest;                                       // mm_interconnect_0:LCD_avalon_master_waitrequest -> LCD:DMA_WaitReq_SI
+	wire  [15:0] lcd_avalon_master_readdata;                                          // mm_interconnect_0:LCD_avalon_master_readdata -> LCD:DMA_ReadData_DI
+	wire  [31:0] lcd_avalon_master_address;                                           // LCD:DMA_Address_DO -> mm_interconnect_0:LCD_avalon_master_address
+	wire         lcd_avalon_master_read;                                              // LCD:DMA_Read_SO -> mm_interconnect_0:LCD_avalon_master_read
+	wire         lcd_avalon_master_readdatavalid;                                     // mm_interconnect_0:LCD_avalon_master_readdatavalid -> LCD:DMA_ReadDataValid_SI
+	wire         lcd_avalon_master_write;                                             // LCD:DMA_Write_SO -> mm_interconnect_0:LCD_avalon_master_write
+	wire  [15:0] lcd_avalon_master_writedata;                                         // LCD:DMA_WriteData_DO -> mm_interconnect_0:LCD_avalon_master_writedata
 	wire  [31:0] cpu_data_master_readdata;                                            // mm_interconnect_0:CPU_data_master_readdata -> CPU:d_readdata
 	wire         cpu_data_master_waitrequest;                                         // mm_interconnect_0:CPU_data_master_waitrequest -> CPU:d_waitrequest
 	wire         cpu_data_master_debugaccess;                                         // CPU:debug_mem_slave_debugaccess_to_roms -> mm_interconnect_0:CPU_data_master_debugaccess
@@ -43,6 +50,15 @@ module systemFile (
 	wire         cpu_instruction_master_read;                                         // CPU:i_read -> mm_interconnect_0:CPU_instruction_master_read
 	wire         cpu_instruction_master_readdatavalid;                                // mm_interconnect_0:CPU_instruction_master_readdatavalid -> CPU:i_readdatavalid
 	wire   [3:0] cpu_instruction_master_burstcount;                                   // CPU:i_burstcount -> mm_interconnect_0:CPU_instruction_master_burstcount
+	wire         mm_interconnect_0_sdram_ctrl_s1_chipselect;                          // mm_interconnect_0:SDRAM_ctrl_s1_chipselect -> SDRAM_ctrl:az_cs
+	wire  [15:0] mm_interconnect_0_sdram_ctrl_s1_readdata;                            // SDRAM_ctrl:za_data -> mm_interconnect_0:SDRAM_ctrl_s1_readdata
+	wire         mm_interconnect_0_sdram_ctrl_s1_waitrequest;                         // SDRAM_ctrl:za_waitrequest -> mm_interconnect_0:SDRAM_ctrl_s1_waitrequest
+	wire  [22:0] mm_interconnect_0_sdram_ctrl_s1_address;                             // mm_interconnect_0:SDRAM_ctrl_s1_address -> SDRAM_ctrl:az_addr
+	wire         mm_interconnect_0_sdram_ctrl_s1_read;                                // mm_interconnect_0:SDRAM_ctrl_s1_read -> SDRAM_ctrl:az_rd_n
+	wire   [1:0] mm_interconnect_0_sdram_ctrl_s1_byteenable;                          // mm_interconnect_0:SDRAM_ctrl_s1_byteenable -> SDRAM_ctrl:az_be_n
+	wire         mm_interconnect_0_sdram_ctrl_s1_readdatavalid;                       // SDRAM_ctrl:za_valid -> mm_interconnect_0:SDRAM_ctrl_s1_readdatavalid
+	wire         mm_interconnect_0_sdram_ctrl_s1_write;                               // mm_interconnect_0:SDRAM_ctrl_s1_write -> SDRAM_ctrl:az_wr_n
+	wire  [15:0] mm_interconnect_0_sdram_ctrl_s1_writedata;                           // mm_interconnect_0:SDRAM_ctrl_s1_writedata -> SDRAM_ctrl:az_data
 	wire         mm_interconnect_0_jtag_uart_avalon_jtag_slave_chipselect;            // mm_interconnect_0:jtag_uart_avalon_jtag_slave_chipselect -> jtag_uart:av_chipselect
 	wire  [31:0] mm_interconnect_0_jtag_uart_avalon_jtag_slave_readdata;              // jtag_uart:av_readdata -> mm_interconnect_0:jtag_uart_avalon_jtag_slave_readdata
 	wire         mm_interconnect_0_jtag_uart_avalon_jtag_slave_waitrequest;           // jtag_uart:av_waitrequest -> mm_interconnect_0:jtag_uart_avalon_jtag_slave_waitrequest
@@ -50,10 +66,18 @@ module systemFile (
 	wire         mm_interconnect_0_jtag_uart_avalon_jtag_slave_read;                  // mm_interconnect_0:jtag_uart_avalon_jtag_slave_read -> jtag_uart:av_read_n
 	wire         mm_interconnect_0_jtag_uart_avalon_jtag_slave_write;                 // mm_interconnect_0:jtag_uart_avalon_jtag_slave_write -> jtag_uart:av_write_n
 	wire  [31:0] mm_interconnect_0_jtag_uart_avalon_jtag_slave_writedata;             // mm_interconnect_0:jtag_uart_avalon_jtag_slave_writedata -> jtag_uart:av_writedata
+	wire  [31:0] mm_interconnect_0_cpu_debug_mem_slave_readdata;                      // CPU:debug_mem_slave_readdata -> mm_interconnect_0:CPU_debug_mem_slave_readdata
+	wire         mm_interconnect_0_cpu_debug_mem_slave_waitrequest;                   // CPU:debug_mem_slave_waitrequest -> mm_interconnect_0:CPU_debug_mem_slave_waitrequest
+	wire         mm_interconnect_0_cpu_debug_mem_slave_debugaccess;                   // mm_interconnect_0:CPU_debug_mem_slave_debugaccess -> CPU:debug_mem_slave_debugaccess
+	wire   [8:0] mm_interconnect_0_cpu_debug_mem_slave_address;                       // mm_interconnect_0:CPU_debug_mem_slave_address -> CPU:debug_mem_slave_address
+	wire         mm_interconnect_0_cpu_debug_mem_slave_read;                          // mm_interconnect_0:CPU_debug_mem_slave_read -> CPU:debug_mem_slave_read
+	wire   [3:0] mm_interconnect_0_cpu_debug_mem_slave_byteenable;                    // mm_interconnect_0:CPU_debug_mem_slave_byteenable -> CPU:debug_mem_slave_byteenable
+	wire         mm_interconnect_0_cpu_debug_mem_slave_write;                         // mm_interconnect_0:CPU_debug_mem_slave_write -> CPU:debug_mem_slave_write
+	wire  [31:0] mm_interconnect_0_cpu_debug_mem_slave_writedata;                     // mm_interconnect_0:CPU_debug_mem_slave_writedata -> CPU:debug_mem_slave_writedata
 	wire         mm_interconnect_0_lcd_avalon_slave_beginbursttransfer;               // mm_interconnect_0:LCD_avalon_slave_beginbursttransfer -> LCD:BeginBurstTransfer_SI
 	wire  [15:0] mm_interconnect_0_lcd_avalon_slave_readdata;                         // LCD:ReadData_DO -> mm_interconnect_0:LCD_avalon_slave_readdata
 	wire         mm_interconnect_0_lcd_avalon_slave_waitrequest;                      // LCD:WaitReq_SO -> mm_interconnect_0:LCD_avalon_slave_waitrequest
-	wire   [2:0] mm_interconnect_0_lcd_avalon_slave_address;                          // mm_interconnect_0:LCD_avalon_slave_address -> LCD:Address_DI
+	wire  [15:0] mm_interconnect_0_lcd_avalon_slave_address;                          // mm_interconnect_0:LCD_avalon_slave_address -> LCD:Address_DI
 	wire         mm_interconnect_0_lcd_avalon_slave_read;                             // mm_interconnect_0:LCD_avalon_slave_read -> LCD:Read_SI
 	wire   [1:0] mm_interconnect_0_lcd_avalon_slave_byteenable;                       // mm_interconnect_0:LCD_avalon_slave_byteenable -> LCD:ByteEnable_DI
 	wire         mm_interconnect_0_lcd_avalon_slave_readdatavalid;                    // LCD:ReadDataValid_SO -> mm_interconnect_0:LCD_avalon_slave_readdatavalid
@@ -67,14 +91,6 @@ module systemFile (
 	wire         mm_interconnect_0_performance_counter_0_control_slave_begintransfer; // mm_interconnect_0:performance_counter_0_control_slave_begintransfer -> performance_counter_0:begintransfer
 	wire         mm_interconnect_0_performance_counter_0_control_slave_write;         // mm_interconnect_0:performance_counter_0_control_slave_write -> performance_counter_0:write
 	wire  [31:0] mm_interconnect_0_performance_counter_0_control_slave_writedata;     // mm_interconnect_0:performance_counter_0_control_slave_writedata -> performance_counter_0:writedata
-	wire  [31:0] mm_interconnect_0_cpu_debug_mem_slave_readdata;                      // CPU:debug_mem_slave_readdata -> mm_interconnect_0:CPU_debug_mem_slave_readdata
-	wire         mm_interconnect_0_cpu_debug_mem_slave_waitrequest;                   // CPU:debug_mem_slave_waitrequest -> mm_interconnect_0:CPU_debug_mem_slave_waitrequest
-	wire         mm_interconnect_0_cpu_debug_mem_slave_debugaccess;                   // mm_interconnect_0:CPU_debug_mem_slave_debugaccess -> CPU:debug_mem_slave_debugaccess
-	wire   [8:0] mm_interconnect_0_cpu_debug_mem_slave_address;                       // mm_interconnect_0:CPU_debug_mem_slave_address -> CPU:debug_mem_slave_address
-	wire         mm_interconnect_0_cpu_debug_mem_slave_read;                          // mm_interconnect_0:CPU_debug_mem_slave_read -> CPU:debug_mem_slave_read
-	wire   [3:0] mm_interconnect_0_cpu_debug_mem_slave_byteenable;                    // mm_interconnect_0:CPU_debug_mem_slave_byteenable -> CPU:debug_mem_slave_byteenable
-	wire         mm_interconnect_0_cpu_debug_mem_slave_write;                         // mm_interconnect_0:CPU_debug_mem_slave_write -> CPU:debug_mem_slave_write
-	wire  [31:0] mm_interconnect_0_cpu_debug_mem_slave_writedata;                     // mm_interconnect_0:CPU_debug_mem_slave_writedata -> CPU:debug_mem_slave_writedata
 	wire  [31:0] mm_interconnect_0_altpll_0_pll_slave_readdata;                       // altpll_0:readdata -> mm_interconnect_0:altpll_0_pll_slave_readdata
 	wire   [1:0] mm_interconnect_0_altpll_0_pll_slave_address;                        // mm_interconnect_0:altpll_0_pll_slave_address -> altpll_0:address
 	wire         mm_interconnect_0_altpll_0_pll_slave_read;                           // mm_interconnect_0:altpll_0_pll_slave_read -> altpll_0:read
@@ -85,15 +101,6 @@ module systemFile (
 	wire         mm_interconnect_0_altpll_signaltap_pll_slave_read;                   // mm_interconnect_0:altpll_signalTap_pll_slave_read -> altpll_signalTap:read
 	wire         mm_interconnect_0_altpll_signaltap_pll_slave_write;                  // mm_interconnect_0:altpll_signalTap_pll_slave_write -> altpll_signalTap:write
 	wire  [31:0] mm_interconnect_0_altpll_signaltap_pll_slave_writedata;              // mm_interconnect_0:altpll_signalTap_pll_slave_writedata -> altpll_signalTap:writedata
-	wire         mm_interconnect_0_sdram_ctrl_s1_chipselect;                          // mm_interconnect_0:SDRAM_ctrl_s1_chipselect -> SDRAM_ctrl:az_cs
-	wire  [15:0] mm_interconnect_0_sdram_ctrl_s1_readdata;                            // SDRAM_ctrl:za_data -> mm_interconnect_0:SDRAM_ctrl_s1_readdata
-	wire         mm_interconnect_0_sdram_ctrl_s1_waitrequest;                         // SDRAM_ctrl:za_waitrequest -> mm_interconnect_0:SDRAM_ctrl_s1_waitrequest
-	wire  [22:0] mm_interconnect_0_sdram_ctrl_s1_address;                             // mm_interconnect_0:SDRAM_ctrl_s1_address -> SDRAM_ctrl:az_addr
-	wire         mm_interconnect_0_sdram_ctrl_s1_read;                                // mm_interconnect_0:SDRAM_ctrl_s1_read -> SDRAM_ctrl:az_rd_n
-	wire   [1:0] mm_interconnect_0_sdram_ctrl_s1_byteenable;                          // mm_interconnect_0:SDRAM_ctrl_s1_byteenable -> SDRAM_ctrl:az_be_n
-	wire         mm_interconnect_0_sdram_ctrl_s1_readdatavalid;                       // SDRAM_ctrl:za_valid -> mm_interconnect_0:SDRAM_ctrl_s1_readdatavalid
-	wire         mm_interconnect_0_sdram_ctrl_s1_write;                               // mm_interconnect_0:SDRAM_ctrl_s1_write -> SDRAM_ctrl:az_wr_n
-	wire  [15:0] mm_interconnect_0_sdram_ctrl_s1_writedata;                           // mm_interconnect_0:SDRAM_ctrl_s1_writedata -> SDRAM_ctrl:az_data
 	wire         mm_interconnect_0_timer_0_s1_chipselect;                             // mm_interconnect_0:timer_0_s1_chipselect -> timer_0:chipselect
 	wire  [15:0] mm_interconnect_0_timer_0_s1_readdata;                               // timer_0:readdata -> mm_interconnect_0:timer_0_s1_readdata
 	wire   [2:0] mm_interconnect_0_timer_0_s1_address;                                // mm_interconnect_0:timer_0_s1_address -> timer_0:address
@@ -131,10 +138,11 @@ module systemFile (
 	wire         mm_interconnect_2_tcim_s1_write;                                     // mm_interconnect_2:TCIM_s1_write -> TCIM:write
 	wire  [31:0] mm_interconnect_2_tcim_s1_writedata;                                 // mm_interconnect_2:TCIM_s1_writedata -> TCIM:writedata
 	wire         mm_interconnect_2_tcim_s1_clken;                                     // mm_interconnect_2:TCIM_s1_clken -> TCIM:clken
-	wire         irq_mapper_receiver0_irq;                                            // jtag_uart:av_irq -> irq_mapper:receiver0_irq
-	wire         irq_mapper_receiver1_irq;                                            // timer_0:irq -> irq_mapper:receiver1_irq
+	wire         irq_mapper_receiver0_irq;                                            // LCD:DMA_IRQ_SO -> irq_mapper:receiver0_irq
+	wire         irq_mapper_receiver1_irq;                                            // jtag_uart:av_irq -> irq_mapper:receiver1_irq
+	wire         irq_mapper_receiver2_irq;                                            // timer_0:irq -> irq_mapper:receiver2_irq
 	wire  [31:0] cpu_irq_irq;                                                         // irq_mapper:sender_irq -> CPU:irq
-	wire         rst_controller_reset_out_reset;                                      // rst_controller:reset_out -> [CPU:reset_n, LCD:Reset_NRI, SDRAM_ctrl:reset_n, TCDM:reset, TCIM:reset, TCIM:reset2, altpll_signalTap:reset, irq_mapper:reset, jtag_uart:rst_n, mm_interconnect_0:CPU_reset_reset_bridge_in_reset_reset, mm_interconnect_1:CPU_reset_reset_bridge_in_reset_reset, mm_interconnect_2:CPU_reset_reset_bridge_in_reset_reset, performance_counter_0:reset_n, rst_translator:in_reset, sysid:reset_n, timer_0:reset_n]
+	wire         rst_controller_reset_out_reset;                                      // rst_controller:reset_out -> [CPU:reset_n, LCD:Reset_NRI, SDRAM_ctrl:reset_n, TCDM:reset, TCIM:reset, TCIM:reset2, altpll_signalTap:reset, irq_mapper:reset, jtag_uart:rst_n, mm_interconnect_0:LCD_reset_sink_reset_bridge_in_reset_reset, mm_interconnect_1:CPU_reset_reset_bridge_in_reset_reset, mm_interconnect_2:CPU_reset_reset_bridge_in_reset_reset, performance_counter_0:reset_n, rst_translator:in_reset, sysid:reset_n, timer_0:reset_n]
 	wire         rst_controller_reset_out_reset_req;                                  // rst_controller:reset_req -> [CPU:reset_req, TCDM:reset_req, TCIM:reset_req, TCIM:reset_req2, rst_translator:reset_req_in]
 	wire         cpu_debug_reset_request_reset;                                       // CPU:debug_reset_request -> [rst_controller:reset_in1, rst_controller_001:reset_in1]
 	wire         rst_controller_001_reset_out_reset;                                  // rst_controller_001:reset_out -> [altpll_0:reset, mm_interconnect_0:altpll_0_inclk_interface_reset_reset_bridge_in_reset_reset]
@@ -184,25 +192,33 @@ module systemFile (
 	);
 
 	LcdDriver lcd (
-		.WaitReq_SO            (mm_interconnect_0_lcd_avalon_slave_waitrequest),        // avalon_slave.waitrequest
-		.Address_DI            (mm_interconnect_0_lcd_avalon_slave_address),            //             .address
-		.BurstCount_DI         (mm_interconnect_0_lcd_avalon_slave_burstcount),         //             .burstcount
-		.ByteEnable_DI         (mm_interconnect_0_lcd_avalon_slave_byteenable),         //             .byteenable
-		.WriteData_DI          (mm_interconnect_0_lcd_avalon_slave_writedata),          //             .writedata
-		.ReadData_DO           (mm_interconnect_0_lcd_avalon_slave_readdata),           //             .readdata
-		.Read_SI               (mm_interconnect_0_lcd_avalon_slave_read),               //             .read
-		.Write_SI              (mm_interconnect_0_lcd_avalon_slave_write),              //             .write
-		.ReadDataValid_SO      (mm_interconnect_0_lcd_avalon_slave_readdatavalid),      //             .readdatavalid
-		.BeginBurstTransfer_SI (mm_interconnect_0_lcd_avalon_slave_beginbursttransfer), //             .beginbursttransfer
-		.Clk_CI                (altpll_0_c0_clk),                                       //   clock_sink.clk
-		.Reset_NRI             (~rst_controller_reset_out_reset),                       //   reset_sink.reset_n
-		.Cs_NSO                (lcd_conduit_end_cs_n),                                  //  conduit_end.cs_n
-		.DB_DIO                (lcd_conduit_end_data),                                  //             .data
-		.DC_NSO                (lcd_conduit_end_data_cmd_n),                            //             .data_cmd_n
-		.IM0_SO                (lcd_conduit_end_mode),                                  //             .mode
-		.Rd_NSO                (lcd_conduit_end_rd_n),                                  //             .rd_n
-		.Wr_NSO                (lcd_conduit_end_wr_n),                                  //             .wr_n
-		.LcdReset_NRO          (lcd_conduit_end_lcdreset_n)                             //             .lcdreset_n
+		.WaitReq_SO            (mm_interconnect_0_lcd_avalon_slave_waitrequest),        //     avalon_slave.waitrequest
+		.Address_DI            (mm_interconnect_0_lcd_avalon_slave_address),            //                 .address
+		.BurstCount_DI         (mm_interconnect_0_lcd_avalon_slave_burstcount),         //                 .burstcount
+		.ByteEnable_DI         (mm_interconnect_0_lcd_avalon_slave_byteenable),         //                 .byteenable
+		.WriteData_DI          (mm_interconnect_0_lcd_avalon_slave_writedata),          //                 .writedata
+		.ReadData_DO           (mm_interconnect_0_lcd_avalon_slave_readdata),           //                 .readdata
+		.Read_SI               (mm_interconnect_0_lcd_avalon_slave_read),               //                 .read
+		.Write_SI              (mm_interconnect_0_lcd_avalon_slave_write),              //                 .write
+		.ReadDataValid_SO      (mm_interconnect_0_lcd_avalon_slave_readdatavalid),      //                 .readdatavalid
+		.BeginBurstTransfer_SI (mm_interconnect_0_lcd_avalon_slave_beginbursttransfer), //                 .beginbursttransfer
+		.Clk_CI                (altpll_0_c0_clk),                                       //       clock_sink.clk
+		.Reset_NRI             (~rst_controller_reset_out_reset),                       //       reset_sink.reset_n
+		.Cs_NSO                (lcd_conduit_end_cs_n),                                  //      conduit_end.cs_n
+		.DB_DIO                (lcd_conduit_end_data),                                  //                 .data
+		.DC_NSO                (lcd_conduit_end_data_cmd_n),                            //                 .data_cmd_n
+		.IM0_SO                (lcd_conduit_end_mode),                                  //                 .mode
+		.Rd_NSO                (lcd_conduit_end_rd_n),                                  //                 .rd_n
+		.Wr_NSO                (lcd_conduit_end_wr_n),                                  //                 .wr_n
+		.LcdReset_NRO          (lcd_conduit_end_lcdreset_n),                            //                 .lcdreset_n
+		.DMA_WaitReq_SI        (lcd_avalon_master_waitrequest),                         //    avalon_master.waitrequest
+		.DMA_Address_DO        (lcd_avalon_master_address),                             //                 .address
+		.DMA_Read_SO           (lcd_avalon_master_read),                                //                 .read
+		.DMA_ReadData_DI       (lcd_avalon_master_readdata),                            //                 .readdata
+		.DMA_ReadDataValid_SI  (lcd_avalon_master_readdatavalid),                       //                 .readdatavalid
+		.DMA_Write_SO          (lcd_avalon_master_write),                               //                 .write
+		.DMA_WriteData_DO      (lcd_avalon_master_writedata),                           //                 .writedata
+		.DMA_IRQ_SO            (irq_mapper_receiver0_irq)                               // interrupt_sender.irq
 	);
 
 	systemFile_SDRAM_ctrl sdram_ctrl (
@@ -323,7 +339,7 @@ module systemFile (
 		.av_write_n     (~mm_interconnect_0_jtag_uart_avalon_jtag_slave_write),      //                  .write_n
 		.av_writedata   (mm_interconnect_0_jtag_uart_avalon_jtag_slave_writedata),   //                  .writedata
 		.av_waitrequest (mm_interconnect_0_jtag_uart_avalon_jtag_slave_waitrequest), //                  .waitrequest
-		.av_irq         (irq_mapper_receiver0_irq)                                   //               irq.irq
+		.av_irq         (irq_mapper_receiver1_irq)                                   //               irq.irq
 	);
 
 	systemFile_performance_counter_0 performance_counter_0 (
@@ -351,14 +367,14 @@ module systemFile (
 		.readdata   (mm_interconnect_0_timer_0_s1_readdata),   //      .readdata
 		.chipselect (mm_interconnect_0_timer_0_s1_chipselect), //      .chipselect
 		.write_n    (~mm_interconnect_0_timer_0_s1_write),     //      .write_n
-		.irq        (irq_mapper_receiver1_irq)                 //   irq.irq
+		.irq        (irq_mapper_receiver2_irq)                 //   irq.irq
 	);
 
 	systemFile_mm_interconnect_0 mm_interconnect_0 (
 		.altpll_0_c0_clk                                            (altpll_0_c0_clk),                                                     //                                          altpll_0_c0.clk
 		.clk_0_clk_clk                                              (clk_clk),                                                             //                                            clk_0_clk.clk
 		.altpll_0_inclk_interface_reset_reset_bridge_in_reset_reset (rst_controller_001_reset_out_reset),                                  // altpll_0_inclk_interface_reset_reset_bridge_in_reset.reset
-		.CPU_reset_reset_bridge_in_reset_reset                      (rst_controller_reset_out_reset),                                      //                      CPU_reset_reset_bridge_in_reset.reset
+		.LCD_reset_sink_reset_bridge_in_reset_reset                 (rst_controller_reset_out_reset),                                      //                 LCD_reset_sink_reset_bridge_in_reset.reset
 		.CPU_data_master_address                                    (cpu_data_master_address),                                             //                                      CPU_data_master.address
 		.CPU_data_master_waitrequest                                (cpu_data_master_waitrequest),                                         //                                                     .waitrequest
 		.CPU_data_master_burstcount                                 (cpu_data_master_burstcount),                                          //                                                     .burstcount
@@ -375,6 +391,13 @@ module systemFile (
 		.CPU_instruction_master_read                                (cpu_instruction_master_read),                                         //                                                     .read
 		.CPU_instruction_master_readdata                            (cpu_instruction_master_readdata),                                     //                                                     .readdata
 		.CPU_instruction_master_readdatavalid                       (cpu_instruction_master_readdatavalid),                                //                                                     .readdatavalid
+		.LCD_avalon_master_address                                  (lcd_avalon_master_address),                                           //                                    LCD_avalon_master.address
+		.LCD_avalon_master_waitrequest                              (lcd_avalon_master_waitrequest),                                       //                                                     .waitrequest
+		.LCD_avalon_master_read                                     (lcd_avalon_master_read),                                              //                                                     .read
+		.LCD_avalon_master_readdata                                 (lcd_avalon_master_readdata),                                          //                                                     .readdata
+		.LCD_avalon_master_readdatavalid                            (lcd_avalon_master_readdatavalid),                                     //                                                     .readdatavalid
+		.LCD_avalon_master_write                                    (lcd_avalon_master_write),                                             //                                                     .write
+		.LCD_avalon_master_writedata                                (lcd_avalon_master_writedata),                                         //                                                     .writedata
 		.altpll_0_pll_slave_address                                 (mm_interconnect_0_altpll_0_pll_slave_address),                        //                                   altpll_0_pll_slave.address
 		.altpll_0_pll_slave_write                                   (mm_interconnect_0_altpll_0_pll_slave_write),                          //                                                     .write
 		.altpll_0_pll_slave_read                                    (mm_interconnect_0_altpll_0_pll_slave_read),                           //                                                     .read
@@ -480,6 +503,7 @@ module systemFile (
 		.reset         (rst_controller_reset_out_reset), // clk_reset.reset
 		.receiver0_irq (irq_mapper_receiver0_irq),       // receiver0.irq
 		.receiver1_irq (irq_mapper_receiver1_irq),       // receiver1.irq
+		.receiver2_irq (irq_mapper_receiver2_irq),       // receiver2.irq
 		.sender_irq    (cpu_irq_irq)                     //    sender.irq
 	);
 

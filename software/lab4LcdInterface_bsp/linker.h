@@ -4,7 +4,7 @@
  * Machine generated for CPU 'CPU' in SOPC Builder design 'systemFile'
  * SOPC Builder design path: ../../systemFile.sopcinfo
  *
- * Generated: Sun Oct 29 21:26:32 CET 2017
+ * Generated: Thu Nov 02 11:10:05 CET 2017
  */
 
 /*
@@ -69,11 +69,11 @@
 #define RESET_REGION_SPAN 32
 #define SDRAM_CTRL_REGION_BASE 0x1000020
 #define SDRAM_CTRL_REGION_SPAN 16777184
-#define TCDM_REGION_BASE 0x2001000
+#define TCDM_REGION_BASE 0x2021000
 #define TCDM_REGION_SPAN 4096
-#define TCIM_BEFORE_EXCEPTION_REGION_BASE 0x2000000
+#define TCIM_BEFORE_EXCEPTION_REGION_BASE 0x2020000
 #define TCIM_BEFORE_EXCEPTION_REGION_SPAN 32
-#define TCIM_REGION_BASE 0x2000020
+#define TCIM_REGION_BASE 0x2020020
 #define TCIM_REGION_SPAN 4064
 
 

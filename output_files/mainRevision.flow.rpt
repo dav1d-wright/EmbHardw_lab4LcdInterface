@@ -1,5 +1,5 @@
 Flow report for mainRevision
-Wed Nov 01 22:24:13 2017
+Thu Nov 02 21:33:15 2017
 Quartus Prime Version 17.0.0 Build 595 04/25/2017 SJ Lite Edition
 
 
@@ -41,20 +41,20 @@ agreement for further details.
 +----------------------------------------------------------------------------------+
 ; Flow Summary                                                                     ;
 +------------------------------------+---------------------------------------------+
-; Flow Status                        ; Successful - Wed Nov 01 22:24:06 2017       ;
+; Flow Status                        ; Successful - Thu Nov 02 21:33:07 2017       ;
 ; Quartus Prime Version              ; 17.0.0 Build 595 04/25/2017 SJ Lite Edition ;
 ; Revision Name                      ; mainRevision                                ;
 ; Top-level Entity Name              ; topLevelEntity                              ;
 ; Family                             ; Cyclone IV E                                ;
 ; Device                             ; EP4CE30F23C7                                ;
 ; Timing Models                      ; Final                                       ;
-; Total logic elements               ; 9,838 / 28,848 ( 34 % )                     ;
-;     Total combinational functions  ; 7,797 / 28,848 ( 27 % )                     ;
-;     Dedicated logic registers      ; 6,419 / 28,848 ( 22 % )                     ;
-; Total registers                    ; 6487                                        ;
+; Total logic elements               ; 10,642 / 28,848 ( 37 % )                    ;
+;     Total combinational functions  ; 8,029 / 28,848 ( 28 % )                     ;
+;     Dedicated logic registers      ; 7,095 / 28,848 ( 25 % )                     ;
+; Total registers                    ; 7163                                        ;
 ; Total pins                         ; 62 / 329 ( 19 % )                           ;
 ; Total virtual pins                 ; 0                                           ;
-; Total memory bits                  ; 361,024 / 608,256 ( 59 % )                  ;
+; Total memory bits                  ; 465,472 / 608,256 ( 77 % )                  ;
 ; Embedded Multiplier 9-bit elements ; 6 / 132 ( 5 % )                             ;
 ; Total PLLs                         ; 2 / 4 ( 50 % )                              ;
 +------------------------------------+---------------------------------------------+
@@ -65,7 +65,7 @@ agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 11/01/2017 22:20:56 ;
+; Start date & time ; 11/02/2017 21:30:06 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; mainRevision        ;
 +-------------------+---------------------+
@@ -76,7 +76,7 @@ agreement for further details.
 +--------------------------------------+------------------------------------------------------------------------------------+---------------+----------------+------------------+
 ; Assignment Name                      ; Value                                                                              ; Default Value ; Entity Name    ; Section Id       ;
 +--------------------------------------+------------------------------------------------------------------------------------+---------------+----------------+------------------+
-; COMPILER_SIGNATURE_ID                ; 138937773953391.150957125612764                                                    ; --            ; --             ; --               ;
+; COMPILER_SIGNATURE_ID                ; 138937773953391.150965460612736                                                    ; --            ; --             ; --               ;
 ; EDA_DESIGN_INSTANCE_NAME             ; testbench                                                                          ; --            ; --             ; testbench        ;
 ; EDA_NATIVELINK_SIMULATION_TEST_BENCH ; testbench                                                                          ; --            ; --             ; eda_simulation   ;
 ; EDA_TEST_BENCH_ENABLE_STATUS         ; TEST_BENCH_MODE                                                                    ; --            ; --             ; eda_simulation   ;
@@ -118,10 +118,10 @@ agreement for further details.
 ; SLD_NODE_PARAMETER_ASSIGNMENT        ; SLD_INVERSION_MASK=000000000000000000000000                                        ; --            ; --             ; auto_signaltap_0 ;
 ; SLD_NODE_PARAMETER_ASSIGNMENT        ; SLD_INVERSION_MASK_LENGTH=24                                                       ; --            ; --             ; auto_signaltap_0 ;
 ; SLD_NODE_PARAMETER_ASSIGNMENT        ; SLD_ENABLE_ADVANCED_TRIGGER=1                                                      ; --            ; --             ; auto_signaltap_0 ;
-; SLD_NODE_PARAMETER_ASSIGNMENT        ; SLD_DATA_BITS=221                                                                  ; --            ; --             ; auto_signaltap_0 ;
-; SLD_NODE_PARAMETER_ASSIGNMENT        ; SLD_STORAGE_QUALIFIER_BITS=221                                                     ; --            ; --             ; auto_signaltap_0 ;
 ; SLD_NODE_PARAMETER_ASSIGNMENT        ; SLD_TRIGGER_BITS=2                                                                 ; --            ; --             ; auto_signaltap_0 ;
 ; SLD_NODE_PARAMETER_ASSIGNMENT        ; SLD_ADVANCED_TRIGGER_ENTITY=sld_reserved_lab4LcdInterface_auto_signaltap_0_1_f84a, ; --            ; --             ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT        ; SLD_DATA_BITS=327                                                                  ; --            ; --             ; auto_signaltap_0 ;
+; SLD_NODE_PARAMETER_ASSIGNMENT        ; SLD_STORAGE_QUALIFIER_BITS=327                                                     ; --            ; --             ; auto_signaltap_0 ;
 ; TOP_LEVEL_ENTITY                     ; topLevelEntity                                                                     ; mainRevision  ; --             ; --               ;
 ; USE_SIGNALTAP_FILE                   ; output_files/stp.stp                                                               ; --            ; --             ; --               ;
 +--------------------------------------+------------------------------------------------------------------------------------+---------------+----------------+------------------+
@@ -132,11 +132,11 @@ agreement for further details.
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name               ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis      ; 00:02:07     ; 1.0                     ; 925 MB              ; 00:03:08                           ;
-; Fitter                    ; 00:00:42     ; 1.1                     ; 1620 MB             ; 00:01:02                           ;
-; Assembler                 ; 00:00:03     ; 1.0                     ; 594 MB              ; 00:00:03                           ;
-; TimeQuest Timing Analyzer ; 00:00:06     ; 1.3                     ; 759 MB              ; 00:00:07                           ;
-; Total                     ; 00:02:58     ; --                      ; --                  ; 00:04:20                           ;
+; Analysis & Synthesis      ; 00:02:01     ; 1.0                     ; 945 MB              ; 00:02:53                           ;
+; Fitter                    ; 00:00:45     ; 1.1                     ; 1635 MB             ; 00:01:07                           ;
+; Assembler                 ; 00:00:03     ; 1.0                     ; 595 MB              ; 00:00:03                           ;
+; TimeQuest Timing Analyzer ; 00:00:07     ; 1.3                     ; 769 MB              ; 00:00:07                           ;
+; Total                     ; 00:02:56     ; --                      ; --                  ; 00:04:10                           ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 

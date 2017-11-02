@@ -13,13 +13,6 @@ state.ST_COMP_TRANS 1 0 0 1
 state.ST_UNCOMP_TRANS 1 0 1 0 
 state.ST_UNCOMP_WR_SUBBURST 1 1 0 0 
 
-State Machine - |topLevelEntity|systemFile:inst|systemFile_mm_interconnect_0:mm_interconnect_0|altera_merlin_burst_adapter:sdram_ctrl_s1_burst_adapter|altera_merlin_burst_adapter_13_1:altera_merlin_burst_adapter_13_1.burst_adapter|state
-Name state.ST_IDLE state.ST_UNCOMP_WR_SUBBURST state.ST_UNCOMP_TRANS state.ST_COMP_TRANS 
-state.ST_IDLE 0 0 0 0 
-state.ST_COMP_TRANS 1 0 0 1 
-state.ST_UNCOMP_TRANS 1 0 1 0 
-state.ST_UNCOMP_WR_SUBBURST 1 1 0 0 
-
 State Machine - |topLevelEntity|systemFile:inst|systemFile_mm_interconnect_0:mm_interconnect_0|altera_merlin_burst_adapter:altpll_signaltap_pll_slave_burst_adapter|altera_merlin_burst_adapter_13_1:altera_merlin_burst_adapter_13_1.burst_adapter|state
 Name state.ST_IDLE state.ST_UNCOMP_WR_SUBBURST state.ST_UNCOMP_TRANS state.ST_COMP_TRANS 
 state.ST_IDLE 0 0 0 0 
@@ -28,13 +21,6 @@ state.ST_UNCOMP_TRANS 1 0 1 0
 state.ST_UNCOMP_WR_SUBBURST 1 1 0 0 
 
 State Machine - |topLevelEntity|systemFile:inst|systemFile_mm_interconnect_0:mm_interconnect_0|altera_merlin_burst_adapter:altpll_0_pll_slave_burst_adapter|altera_merlin_burst_adapter_13_1:altera_merlin_burst_adapter_13_1.burst_adapter|state
-Name state.ST_IDLE state.ST_UNCOMP_WR_SUBBURST state.ST_UNCOMP_TRANS state.ST_COMP_TRANS 
-state.ST_IDLE 0 0 0 0 
-state.ST_COMP_TRANS 1 0 0 1 
-state.ST_UNCOMP_TRANS 1 0 1 0 
-state.ST_UNCOMP_WR_SUBBURST 1 1 0 0 
-
-State Machine - |topLevelEntity|systemFile:inst|systemFile_mm_interconnect_0:mm_interconnect_0|altera_merlin_burst_adapter:cpu_debug_mem_slave_burst_adapter|altera_merlin_burst_adapter_13_1:altera_merlin_burst_adapter_13_1.burst_adapter|state
 Name state.ST_IDLE state.ST_UNCOMP_WR_SUBBURST state.ST_UNCOMP_TRANS state.ST_COMP_TRANS 
 state.ST_IDLE 0 0 0 0 
 state.ST_COMP_TRANS 1 0 0 1 
@@ -55,7 +41,21 @@ state.ST_COMP_TRANS 1 0 0 1
 state.ST_UNCOMP_TRANS 1 0 1 0 
 state.ST_UNCOMP_WR_SUBBURST 1 1 0 0 
 
+State Machine - |topLevelEntity|systemFile:inst|systemFile_mm_interconnect_0:mm_interconnect_0|altera_merlin_burst_adapter:cpu_debug_mem_slave_burst_adapter|altera_merlin_burst_adapter_13_1:altera_merlin_burst_adapter_13_1.burst_adapter|state
+Name state.ST_IDLE state.ST_UNCOMP_WR_SUBBURST state.ST_UNCOMP_TRANS state.ST_COMP_TRANS 
+state.ST_IDLE 0 0 0 0 
+state.ST_COMP_TRANS 1 0 0 1 
+state.ST_UNCOMP_TRANS 1 0 1 0 
+state.ST_UNCOMP_WR_SUBBURST 1 1 0 0 
+
 State Machine - |topLevelEntity|systemFile:inst|systemFile_mm_interconnect_0:mm_interconnect_0|altera_merlin_burst_adapter:jtag_uart_avalon_jtag_slave_burst_adapter|altera_merlin_burst_adapter_13_1:altera_merlin_burst_adapter_13_1.burst_adapter|state
+Name state.ST_IDLE state.ST_UNCOMP_WR_SUBBURST state.ST_UNCOMP_TRANS state.ST_COMP_TRANS 
+state.ST_IDLE 0 0 0 0 
+state.ST_COMP_TRANS 1 0 0 1 
+state.ST_UNCOMP_TRANS 1 0 1 0 
+state.ST_UNCOMP_WR_SUBBURST 1 1 0 0 
+
+State Machine - |topLevelEntity|systemFile:inst|systemFile_mm_interconnect_0:mm_interconnect_0|altera_merlin_burst_adapter:sdram_ctrl_s1_burst_adapter|altera_merlin_burst_adapter_13_1:altera_merlin_burst_adapter_13_1.burst_adapter|state
 Name state.ST_IDLE state.ST_UNCOMP_WR_SUBBURST state.ST_UNCOMP_TRANS state.ST_COMP_TRANS 
 state.ST_IDLE 0 0 0 0 
 state.ST_COMP_TRANS 1 0 0 1 
@@ -98,15 +98,16 @@ i_state.101 0 1 0 0 0 1
 i_state.111 1 0 0 0 0 1 
 
 State Machine - |topLevelEntity|systemFile:inst|LcdDriver:lcd|StatePres_D
-Name StatePres_D.StatePostTx StatePres_D.StateTxData StatePres_D.StateTxCmd StatePres_D.StateEvalData StatePres_D.StateNextBurstItem StatePres_D.StateIdle StatePres_D.StateLcdReset StatePres_D.StateReset 
-StatePres_D.StateReset 0 0 0 0 0 0 0 0 
-StatePres_D.StateLcdReset 0 0 0 0 0 0 1 1 
-StatePres_D.StateIdle 0 0 0 0 0 1 0 1 
-StatePres_D.StateNextBurstItem 0 0 0 0 1 0 0 1 
-StatePres_D.StateEvalData 0 0 0 1 0 0 0 1 
-StatePres_D.StateTxCmd 0 0 1 0 0 0 0 1 
-StatePres_D.StateTxData 0 1 0 0 0 0 0 1 
-StatePres_D.StatePostTx 1 0 0 0 0 0 0 1 
+Name StatePres_D.StateTx StatePres_D.StatePrepareTx StatePres_D.StateEvalData StatePres_D.StateNextBurstItem StatePres_D.StateDmaRead StatePres_D.StateIdle StatePres_D.StateResetIntRegData StatePres_D.StateLcdReset StatePres_D.StateReset 
+StatePres_D.StateReset 0 0 0 0 0 0 0 0 0 
+StatePres_D.StateLcdReset 0 0 0 0 0 0 0 1 1 
+StatePres_D.StateResetIntRegData 0 0 0 0 0 0 1 0 1 
+StatePres_D.StateIdle 0 0 0 0 0 1 0 0 1 
+StatePres_D.StateDmaRead 0 0 0 0 1 0 0 0 1 
+StatePres_D.StateNextBurstItem 0 0 0 1 0 0 0 0 1 
+StatePres_D.StateEvalData 0 0 1 0 0 0 0 0 1 
+StatePres_D.StatePrepareTx 0 1 0 0 0 0 0 0 1 
+StatePres_D.StateTx 1 0 0 0 0 0 0 0 1 
 
 State Machine - |topLevelEntity|systemFile:inst|systemFile_CPU:cpu|systemFile_CPU_cpu:cpu|systemFile_CPU_cpu_nios2_oci:the_systemFile_CPU_cpu_nios2_oci|systemFile_CPU_cpu_debug_slave_wrapper:the_systemFile_CPU_cpu_debug_slave_wrapper|systemFile_CPU_cpu_debug_slave_tck:the_systemFile_CPU_cpu_debug_slave_tck|DRsize
 Name DRsize.101 DRsize.100 DRsize.011 DRsize.010 DRsize.001 DRsize.000 
