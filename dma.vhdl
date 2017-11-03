@@ -17,6 +17,11 @@ use ieee.numeric_std.all;
 --! Interface between Avalon bus
 --! and DMA
 entity DmaMaster is
+    generic
+    (
+        PICSIZE_BIN:                    natural := 17;
+        PICSIZE_DEC:                    natural := 76800
+    );
     port
     (
         --! Clock input
@@ -36,7 +41,7 @@ entity DmaMaster is
         --! Begin burst transfer signal input
         BeginBurstTransfer_SI:      in std_logic;
         --! Burst count data input
-        BurstCount_DI:              in std_logic_vector (7 downto 0);
+        BurstCount_DI:              in std_logic_vector (16 downto 0);
         
         --! Wait request signal output
         WaitReq_SO:                 out std_logic;
@@ -45,22 +50,25 @@ entity DmaMaster is
         --! Read data valid signal output
         ReadDataValid_SO:           out std_logic;
         
-        --! Wait request signal input for DMA Master output
+        --! Wait request signal input for DMA Master
         Master_WaitReq_SI:             in std_logic;
-        --! Address data output for DMA Master output
+        --! Address data output for DMA Master
         Master_Address_DO:             out std_logic_vector (31 downto 0);
-        --! Read signal output for DMA Master output
+        --! Read signal output for DMA Master
         Master_Read_SO:                out std_logic;
-        --! Read data input for DMA Master output
+        --! Read data input for DMA Master
         Master_ReadData_DI:            in std_logic_vector (15 downto 0);
-        --! Write signal output for DMA Master output
+        --! Write signal output for DMA Master
         Master_Write_SO:               out std_logic;
-        --! Write data output for DMA Master output
+        --! Write data output for DMA Master
         Master_WriteData_DO:           out std_logic_vector (15 downto 0);
-        --! Interrupt request output for DMA Master output
+        --! Interrupt request output for DMA Master
         Master_IRQ_SO:                 out std_logic;
-        --! Read data valid signal input for DMA Master output
-        Master_ReadDataValid_SI:       in std_logic
+        --! Read data valid signal input for DMA Master
+        Master_ReadDataValid_SI:       in std_logic;
+        Master_WriteResponseValid_SI:   in std_logic;
+        Master_BurstCount_DO:           out std_logic_vector (16 downto 0);
+        Master_Response_DI:             in std_logic_vector (1 downto 0)
     );
 end DmaMaster;
 
@@ -127,8 +135,8 @@ architecture DMA of DmaMaster is
     signal RegBeginBurstTransferNext_S:      std_logic := '0';
     signal RegBeginBurstTransferPres_S:      std_logic := '0';
 
-    signal RegBurstCountNext_D:              std_logic_vector (7 downto 0) := (others => '0');
-    signal RegBurstCountPres_D:              std_logic_vector (7 downto 0) := (others => '0');
+    signal RegBurstCountNext_D:              std_logic_vector (PICSIZE_BIN-1 downto 0) := (others => '0');
+    signal RegBurstCountPres_D:              std_logic_vector (PICSIZE_BIN-1 downto 0) := (others => '0');
     --! @}
     
     
@@ -172,10 +180,10 @@ architecture DMA of DmaMaster is
                                     StateReset,
                                     StateResetIntRegData,
                                     StateIdle,
+                                    StateNextBurstItem,
                                     StateEvalData,
-                                    StateDmaRequestRx,
-                                    StateDmaRx,
-                                    StatePrepareTx,
+                                    StateRequestRx,
+                                    StateRx,
                                     StateTx);
     
     --! @brief Next state
@@ -211,13 +219,16 @@ architecture DMA of DmaMaster is
     --! @brief Synchronised BeginBurstTransfer
     signal BeginBurstTransfer_S:        std_logic := '0';
     --! @brief Synchronised BurstCount
-    signal BurstCount_D:                std_logic_vector (7 downto 0) := (others => '0');
+    signal BurstCount_D:                std_logic_vector (PICSIZE_BIN-1 downto 0) := (others => '0');
     --! @brief Synchronised wait request signal input for DMA Master output
     signal Master_WaitReq_S:               std_logic := '0';
     --! @brief Synchronised read data input for DMA Master output
     signal Master_ReadData_D:              std_logic_vector (15 downto 0) := (others => '0');
     --! @brief Synchronised read data valid signal input for DMA Master output
     signal Master_ReadDataValid_S:         std_logic := '0';
+    signal Master_Response_D:             std_logic_vector (1 downto 0)
+    signal Master_WriteResponseValid_S:     std_logic;
+
     --! @}
 
     --! @defgroup inpP Input delayed one step
@@ -235,11 +246,13 @@ architecture DMA of DmaMaster is
     --! @brief BeginBurstTransfer delayed one step
     signal BeginBurstTransfer_P_S:      std_logic := '0';
     --! @brief BurstCount delayed one step
-    signal BurstCount_P_D:              std_logic_vector (7 downto 0) := (others => '0');
+    signal BurstCount_P_D:              std_logic_vector (PICSIZE_BIN-1 downto 0) := (others => '0');
     --! @brief Read data input for DMA Master output delayed one step
     signal Master_ReadData_P_D:            std_logic_vector (15 downto 0) := (others => '0');
     --! @brief Synchronised read data valid signal input for DMA Master output delayed one step
     signal Master_ReadDataValid_P_S:       std_logic := '0';
+    signal Master_Response_P_D:             std_logic_vector (1 downto 0)
+    signal Master_WriteResponseValid_P_S:     std_logic;
     --! @}
 
     --! @defgroup inpPP Input delayed two steps
@@ -257,25 +270,27 @@ architecture DMA of DmaMaster is
     --! @brief BeginBurstTransfer delayed two steps
     signal BeginBurstTransfer_PP_S:     std_logic := '0';
     --! @brief BurstCount delayed two steps
-    signal BurstCount_PP_D:             std_logic_vector (7 downto 0) := (others => '0');
+    signal BurstCount_PP_D:             std_logic_vector (PICSIZE_BIN-1 downto 0) := (others => '0');
     --! @brief Read data input for DMA Master output delayed two steps
     signal Master_ReadData_PP_D:           std_logic_vector (15 downto 0) := (others => '0');
     --! @brief Synchronised read data valid signal input for DMA Master output delayed two steps
     signal Master_ReadDataValid_PP_S:      std_logic := '0';
+    signal Master_Response_PP_D:             std_logic_vector (1 downto 0)
+    signal Master_WriteResponseValid_PP_S:     std_logic;
     --! @}
         
     --! @defgroup cnt counters
     --! @{
-    signal BurstCountPres_D:            std_logic_vector (7 downto 0) := (others => '0');
-    signal BurstCountNext_D:            std_logic_vector (7 downto 0) := (others => '0');
+    signal BurstCountPres_D:            std_logic_vector (PICSIZE_BIN-1 downto 0) := (others => '0');
+    signal BurstCountNext_D:            std_logic_vector (PICSIZE_BIN-1 downto 0) := (others => '0');
     signal IdleCountPres_D:             std_logic_vector (31 downto 0) := (others => '0');
     signal IdleCountNext_D:             std_logic_vector (31 downto 0) := (others => '0');
-    signal BurstStreamCountPres_D:      std_logic_vector (7 downto 0) := (others => '0');
-    signal BurstStreamCountNext_D:      std_logic_vector (7 downto 0) := (others => '0');
+    signal BurstStreamCountPres_D:      std_logic_vector (PICSIZE_BIN-1 downto 0) := (others => '0');
+    signal BurstStreamCountNext_D:      std_logic_vector (PICSIZE_BIN-1 downto 0) := (others => '0');
     --! @}
     
     --! @brief Burst stream type
-    type stream_T                       is array (255 downto 0) of std_logic_vector (15 downto 0);
+    type stream_T                       is array (PICSIZE_DEC-1 downto 0) of std_logic_vector (15 downto 0);
     --! @brief Burst stream 
     signal BurstStream_D:               stream_T;
 begin
@@ -293,6 +308,8 @@ begin
             Master_ReadDataValid_S <= '0';
             Master_ReadData_D <= (others => '0');
             Master_WaitReq_S <= '0';
+            Master_Response_D <= (others => '0');
+            Master_WriteResponseValid_S <= '0';
             
             Address_P_D <= (others => '0');    	    
             Write_P_S <= '0';           	    
@@ -302,6 +319,8 @@ begin
             BurstCount_P_D <= (others => '0');          
             Master_ReadDataValid_P_S <= '0';
             Master_ReadData_P_D <= (others => '0');
+            Master_Response_P_D <= (others => '0');
+            Master_WriteResponseValid_P_S <= '0';
             
             Address_PP_D <= (others => '0');    	    
             Write_PP_S <= '0';           	    
@@ -311,6 +330,8 @@ begin
             BurstCount_PP_D <= (others => '0');          
             Master_ReadDataValid_PP_S <= '0';
             Master_ReadData_PP_D <= (others => '0');
+            Master_Response_PP_D <= (others => '0');
+            Master_WriteResponseValid_PP_S <= '0';
             
         elsif(Clk_CI'event and Clk_CI = '1')then
             Address_D <= Address_DI;   	    
@@ -323,6 +344,8 @@ begin
             Master_ReadDataValid_S <= Master_ReadDataValid_SI;
             Master_ReadData_D <= Master_ReadData_DI;              	    
             Master_WaitReq_S <= Master_WaitReq_SI;
+            Master_Response_D <= Master_Response_DI;
+            Master_WriteResponseValid_S <= Master_WriteResponseValid_SI;
 
             Address_P_D <= Address_D;
             Write_P_S <= Write_S;
@@ -331,7 +354,9 @@ begin
             BeginBurstTransfer_P_S <= BeginBurstTransfer_S;
             BurstCount_P_D <= BurstCount_D;
             Master_ReadDataValid_P_S <= Master_ReadDataValid_S;
-            Master_ReadData_P_D <= Master_ReadData_D;              	    
+            Master_ReadData_P_D <= Master_ReadData_D;
+            Master_Response_P_D <= Master_Response_D;
+            Master_WriteResponseValid_P_S <= Master_WriteResponseValid_S;
             
             Address_PP_D <= Address_P_D;   	    
             Write_PP_S <= Write_P_S;
@@ -340,7 +365,9 @@ begin
             BeginBurstTransfer_PP_S <= BeginBurstTransfer_P_S;
             BurstCount_PP_D <= BurstCount_P_D;
             Master_ReadDataValid_PP_S <= Master_ReadDataValid_P_S;
-            Master_ReadData_PP_D <= Master_ReadData_P_D;              	    
+            Master_ReadData_PP_D <= Master_ReadData_P_D;
+            Master_Response_PP_D <= Master_Response_P_D;
+            Master_WriteResponseValid_PP_S <= Master_WriteResponseValid_P_S;
         end if;
     end process;
 
@@ -369,25 +396,25 @@ begin
         end if;
     end process edgeDetect;
 
-    -- --! @brief This process fills the burst stream array
-    -- --! @todo Implement Rx and Tx burst!!
-    -- burstStream: process(Reset_NRI, Clk_CI)
-    -- begin
-        -- if(Reset_NRI = '0')then
-            -- BurstStreamCountNext_D <= (others => '0');
-        -- elsif(Clk_CI'event and Clk_CI = '1')then
-            -- if(RegBeginBurstTransferPres_S = '1')then
-                -- if((Write_PP_S = '1') and (unsigned(BurstStreamCountPres_D) < unsigned(RegBurstCountPres_D)))then
-                    -- BurstStream_D(to_integer(unsigned(BurstStreamCountPres_D))) <= WriteData_PP_D;
-                    -- BurstStreamCountNext_D <= std_logic_vector(unsigned(BurstStreamCountPres_D) + to_unsigned(1, 8));
-                -- else
-                    -- BurstStreamCountNext_D <= BurstStreamCountPres_D;
-                -- end if;
-            -- else
-                -- BurstStreamCountNext_D <= (others => '0');
-            -- end if;
-        -- end if;
-    -- end process burstStream;
+    --! @brief This process fills the burst stream array
+    --! @todo Implement Rx and Tx burst!!
+    burstStream: process(Reset_NRI, Clk_CI)
+    begin
+        if(Reset_NRI = '0')then
+            BurstStreamCountNext_D <= (others => '0');
+        elsif(Clk_CI'event and Clk_CI = '1')then
+            if(StatePres_D = StateRx)then
+                if((Master_ReadDataValid_S = '1') and (unsigned(BurstStreamCountPres_D) < unsigned(RegBurstCountPres_D)))then
+                    BurstStream_D(to_integer(unsigned(BurstStreamCountPres_D))) <= WriteData_PP_D;
+                    BurstStreamCountNext_D <= std_logic_vector(unsigned(BurstStreamCountPres_D) + to_unsigned(1, PICSIZE_BIN-1));
+                else
+                    BurstStreamCountNext_D <= BurstStreamCountPres_D;
+                end if;
+            else
+                BurstStreamCountNext_D <= (others => '0');
+            end if;
+        end if;
+    end process burstStream;
     
     --! @brief This process updates the values of the idle counter and burst counter
     counters: process (Reset_NRI, Clk_CI)
@@ -455,9 +482,9 @@ begin
             when StateReset =>
                 --! reset state
                 WaitReq_SO <= '0';
-                StateNext_D <= StateDMAReset;
+                StateNext_D <= StateIdle;
                 IdleCountNext_D <= std_logic_vector(to_unsigned(500000000, 32));
-                BurstCountNext_D <= BurstCountPres_D;
+                BurstCountNext_D <= (others => '0');
                 
                 Master_Address_DO <= (others => '0');
                 Master_IRQ_SO <= '0';
@@ -478,8 +505,8 @@ begin
                 RegDataNext_D <= (others => '0');
                 
             when StateResetIntRegData =>
-                BurstCountNext_D <= std_logic_vector(to_unsigned(0, 8));
-                IdleCountNext_D <= std_logic_vector(to_unsigned(0, 32));
+                BurstCountNext_D <= (others => '0');
+                IdleCountNext_D <= (others => '0');
                 RegAddressNext_D <= (others => '1');
                 RegBeginBurstTransferNext_S <= '0';
                 RegBurstCountNext_D <= (others => '0');
@@ -508,59 +535,28 @@ begin
                 RegSrcNext_D <= RegSrcPres_D;
                 RegDestNext_D <= RegDestPres_D;
                 RegDataNext_D <= RegDataPres_D;
-                RegWriteDataNext_D <= RegWriteDataPres_D;
-                RegWriteCmdNext_D <= RegWriteCmdPres_D; 
-                
-                if(Write_Edge_D = '1')then
+                                
+                if(Read_Edge_D = '1')then
                     RegAddressNext_D <= Address_P_D;
                     RegBeginBurstTransferNext_S <= BeginBurstTransfer_P_S;
                     RegBurstCountNext_D <= BurstCount_P_D;
                     RegRxDataNext_D <= WriteData_P_D;
 
-                    -- if(BeginBurstTransfer_P_S = '1')then
-                        -- RegByteEnable_D <= (others => '1');
-                        -- BurstCountNext_D <= BurstCount_P_D;
-                    -- else
-                        BurstCountNext_D <= (others => '0');
+                    if(BeginBurstTransfer_P_S = '1')then
+                        RegByteEnableNext_D <= (others => '1');
+                        BurstCountNext_D <= BurstCount_P_D;
+                    else
+                        BurstCountNext_D <= BurstCount_P_D;
                         RegByteEnableNext_D <= ByteEnable_P_D;
-                    -- end if;
+                    end if;
                     
                     StateNext_D <= StateEvalData;
+                elsif((RegCtrlPres_D and RegCtrlGo) /= x"0000")then
+                    StateNext_D <= StateRequestRx;
                 else
                     StateNext_D <= StateIdle;
                 end if;
-                
-            when StateDmaRequestRead =>
-                -- default values                
-                IdleCountNext_D <= std_logic_vector(to_unsigned(2, 32));
-                BurstCountNext_D <= BurstCountPres_D;
-                
-                Master_Address_DO <= (others => '0');
-                Master_IRQ_SO <= '0';
-                Master_Read_SO <= '0';
-                Master_Write_SO <= '0';
-                Master_WriteData_DO <= (others => '0');
-                
-                RegAddressNext_D <= RegAddressPres_D;
-                RegRxDataNext_D <= RegRxDataPres_D;
-                RegByteEnableNext_D <= RegByteEnablePres_D;
-                RegBeginBurstTransferNext_S <= RegBeginBurstTransferPres_S;
-                RegBurstCountNext_D <= RegBurstCountPres_D;
-                RegStateNext_D <= RegStatePres_D;
-                RegCtrlNext_D <= RegCtrlPres_D;
-                RegErrorNext_D <= RegErrorPres_D;
-                RegSrcNext_D <= RegSrcPres_D;
-                RegDestNext_D <= RegDestPres_D;
-                RegDataNext_D <= RegDataPres_D;
-                
-                if(Master_WaitReq_S = '0')then
-                    
-                
-                end if;
-                
-                
-                
-                
+            
             when StateNextBurstItem =>
                 --! wait for next burst data
                 IdleCountNext_D <= std_logic_vector(to_unsigned(2, 32));
@@ -654,55 +650,95 @@ begin
                         StateNext_D <= StateIdle;
                 end case;
                 
-            -- when StatePrepareTx =>
-                -- WaitReq_SO <= '0';
-                
-                -- Rd_NSO <= '1';   
-                -- Wr_NSO <= '0';              
-                -- Cs_NSO <= '0';               
-                -- DMAReset_NRO <= '1';                
-                -- IM0_SO <= '0';
-                
-                -- DB_DIO <= RegDataPres_D and BitEnable_D;
+            when StateRequestRx =>
+                -- default values                
+                IdleCountNext_D <= std_logic_vector(to_unsigned(2, 32));
+                BurstCountNext_D <= BurstCountPres_D;
 
-                -- Master_Address_DO <= (others => '0');
-                -- Master_IRQ_SO <= '0';
-                -- Master_Read_SO <= '0';
-                -- Master_Write_SO <= '0';
-                -- Master_WriteData_DO <= (others => '0');
+                Master_Address_DO <= RegSrcPres_D;
+                Master_IRQ_SO <= '0';
+                Master_Read_SO <= '1';
+                Master_Write_SO <= '0';
+                Master_WriteData_DO <= (others => '0');
                 
-                -- BurstCountNext_D <= BurstCountPres_D;
+                RegAddressNext_D <= RegAddressPres_D;
+                RegRxDataNext_D <= RegRxDataPres_D;
+                RegByteEnableNext_D <= RegByteEnablePres_D;
+                RegBeginBurstTransferNext_S <= RegBeginBurstTransferPres_S;
+                RegBurstCountNext_D <= RegBurstCountPres_D;
+                RegStateNext_D <= RegStatePres_D;
+                RegCtrlNext_D <= RegCtrlPres_D;
+                RegErrorNext_D <= RegErrorPres_D;
+                RegSrcNext_D <= RegSrcPres_D;
+                RegDestNext_D <= RegDestPres_D;
+                RegDataNext_D <= RegDataPres_D;
                 
-                -- RegAddressNext_D <= RegAddressPres_D;
-                -- RegRxDataNext_D <= RegRxDataPres_D;
-                -- RegByteEnableNext_D <= RegByteEnablePres_D;
-                -- RegBeginBurstTransferNext_S <= RegBeginBurstTransferPres_S;
-                -- RegBurstCountNext_D <= RegBurstCountPres_D;
-                -- RegStateNext_D <= RegStatePres_D;
-                -- RegCtrlNext_D <= RegCtrlPres_D;
-                -- RegErrorNext_D <= RegErrorPres_D;
-                -- RegSrcNext_D <= RegSrcPres_D;
-                -- RegDestNext_D <= RegDestPres_D;
-                -- RegDataNext_D <= RegDataPres_D;
-                -- RegWriteDataNext_D <= RegWriteDataPres_D;
-                -- RegWriteCmdNext_D <= RegWriteCmdPres_D; 
+                if(Master_WaitReq_S = '1')then
+                    StateNext_D <= StateRx;
+                else
+                    StateNext_D <= StateRequestRx;
+                end if;
                 
-                -- case RegAddressPres_D is
-                    -- when RegWriteDataAddr =>
-                        -- DC_NSO <= '1';
-                    -- when RegWriteCmdAddr =>
-                        -- DC_NSO <= '0';
-                    -- when others =>
-                        -- DC_NSO <= '1';
-                -- end case;
+            when StateRx =>
+                -- default values                
+                IdleCountNext_D <= std_logic_vector(to_unsigned(2, 32));
+                BurstCountNext_D <= BurstCountPres_D;
+
+                Master_Address_DO <= RegSrcPres_D;
+                Master_IRQ_SO <= '0';
+                Master_Read_SO <= '1';
+                Master_Write_SO <= '0';
+                Master_WriteData_DO <= (others => '0');
                 
-                -- if(to_integer(unsigned(IdleCountPres_D)) > 0)then
-                    -- IdleCountNext_D <= std_logic_vector(unsigned(IdleCountPres_D) - to_unsigned(1, 32));
-                    -- StateNext_D <= StatePrepareTx;
-                -- else
-                    -- IdleCountNext_D <= std_logic_vector(to_unsigned(3, 32));                    
-                    -- StateNext_D <= StateTx;
-                -- end if;
+                RegAddressNext_D <= RegAddressPres_D;
+                RegRxDataNext_D <= RegRxDataPres_D;
+                RegByteEnableNext_D <= RegByteEnablePres_D;
+                RegBeginBurstTransferNext_S <= RegBeginBurstTransferPres_S;
+                RegBurstCountNext_D <= RegBurstCountPres_D;
+                RegStateNext_D <= RegStatePres_D;
+                RegCtrlNext_D <= RegCtrlPres_D;
+                RegErrorNext_D <= RegErrorPres_D;
+                RegSrcNext_D <= RegSrcPres_D;
+                RegDestNext_D <= RegDestPres_D;
+                RegDataNext_D <= RegDataPres_D;
+                
+                if(Master_ReadDataValid_S = '1')then
+                    RegDataNext_D <= Master_ReadData_D;
+                    StateNext_D <= StateTx;
+                else
+                    RegDataNext_D <= RegDataPres_D;
+                    StateNext_D <= StateRequestRx;
+                end if;
+                
+                
+            when StateTx =>
+                WaitReq_SO <= '0';
+
+                Master_Address_DO <= RegDestPres_D;
+                Master_IRQ_SO <= '0';
+                Master_Read_SO <= '0';
+                Master_Write_SO <= '1';
+                Master_WriteData_DO <= RegDataPres_D;
+                
+                BurstCountNext_D <= BurstCountPres_D;
+                
+                RegAddressNext_D <= RegAddressPres_D;
+                RegRxDataNext_D <= RegRxDataPres_D;
+                RegByteEnableNext_D <= RegByteEnablePres_D;
+                RegBeginBurstTransferNext_S <= RegBeginBurstTransferPres_S;
+                RegBurstCountNext_D <= RegBurstCountPres_D;
+                RegStateNext_D <= RegStatePres_D;
+                RegCtrlNext_D <= RegCtrlPres_D;
+                RegErrorNext_D <= RegErrorPres_D;
+                RegSrcNext_D <= RegSrcPres_D;
+                RegDestNext_D <= RegDestPres_D;
+                RegDataNext_D <= RegDataPres_D;
+                
+                if(Master_WaitReq_S = '1')then
+                    StateNext_D <= StateTx;
+                else
+                    StateNext_D <= StateIdle;
+                end if;
 
                 
             -- when StateTx =>
@@ -770,48 +806,34 @@ begin
                     -- StateNext_D <= StateNextBurstItem;
 
                 -- else    
-                    -- BurstCountNext_D <= std_logic_vector(to_unsigned(0, 8));                    
+                    -- BurstCountNext_D <= (others => '0');                    
                     -- IdleCountNext_D <= (others => '0');
                     -- StateNext_D <= StateResetIntRegData;
                 -- end if;
                 
-            -- when others =>
-                -- --! this state should not occur
-                -- WaitReq_SO <= '0';
-                -- StateNext_D <= StateDMAReset;
-                -- DB_DIO <= (others => '0');     
-                -- Rd_NSO <= '1';   
-                -- Wr_NSO <= '1';              
-                -- Cs_NSO <= '1';               
-                -- DC_NSO <= '1';
-                -- DMAReset_NRO <= '1';                
-                -- IM0_SO <= '0';    
-                -- Master_Address_DO <= (others => '0');
-                -- Master_IRQ_SO <= '0';
-                -- Master_Read_SO <= '0';
-                -- Master_Write_SO <= '0';
-                -- Master_WriteData_DO <= (others => '0');
+            when others =>
+                --! this state should not occur
+                WaitReq_SO <= '0';
+                Master_Address_DO <= (others => '0');
+                Master_IRQ_SO <= '0';
+                Master_Read_SO <= '0';
+                Master_Write_SO <= '0';
+                Master_WriteData_DO <= (others => '0');
                 
-                -- RegAddressNext_D <= (others => '0');
-                -- RegRxDataNext_D <= (others => '0');
-                -- RegByteEnableNext_D <= (others => '0');
-                -- RegBeginBurstTransferNext_S <= '0';
-                -- RegBurstCountNext_D <= (others => '0');
-                -- RegStateNext_D <= (others => '0');
-                -- RegCtrlNext_D <=(others => '0');
-                -- RegErrorNext_D <=(others => '0');
-                -- RegSrcNext_D <=(others => '0');
-                -- RegDestNext_D <= (others => '0');
-                -- RegDataNext_D <= (others => '0');
-                -- RegWriteDataNext_D <= (others => '0');
-                -- RegWriteCmdNext_D <= (others => '0');
+                RegAddressNext_D <= (others => '0');
+                RegRxDataNext_D <= (others => '0');
+                RegByteEnableNext_D <= (others => '0');
+                RegBeginBurstTransferNext_S <= '0';
+                RegBurstCountNext_D <= (others => '0');
+                RegStateNext_D <= (others => '0');
+                RegCtrlNext_D <=(others => '0');
+                RegErrorNext_D <=(others => '0');
+                RegSrcNext_D <=(others => '0');
+                RegDestNext_D <= (others => '0');
+                RegDataNext_D <= (others => '0');
                 
-                -- BurstCountNext_D <= (others => '0');
-                -- IdleCountNext_D <= (others => '0');
-                
-                -- BurstCountNext_D <= (others => '0');
-                -- IdleCountNext_D <= (others => '0');
-                -- DMAReset_NRO <= '0';
+                BurstCountNext_D <= (others => '0');
+                IdleCountNext_D <= (others => '0');
                 
                 StateNext_D <= StateReset;
         end case;

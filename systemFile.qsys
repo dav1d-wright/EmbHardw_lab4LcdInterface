@@ -21,7 +21,23 @@
    {
       datum baseAddress
       {
-         value = "33695744";
+         value = "33826816";
+         type = "String";
+      }
+   }
+   element DMA
+   {
+      datum _sortIndex
+      {
+         value = "12";
+         type = "int";
+      }
+   }
+   element DMA.avalon_slave
+   {
+      datum baseAddress
+      {
+         value = "33554432";
          type = "String";
       }
    }
@@ -32,12 +48,17 @@
          value = "11";
          type = "int";
       }
+      datum sopceditor_expanded
+      {
+         value = "1";
+         type = "boolean";
+      }
    }
    element LCD.avalon_slave
    {
       datum baseAddress
       {
-         value = "33554432";
+         value = "33685504";
          type = "String";
       }
    }
@@ -69,7 +90,7 @@
    {
       datum baseAddress
       {
-         value = "33689600";
+         value = "33820672";
          type = "String";
       }
    }
@@ -90,7 +111,7 @@
    {
       datum baseAddress
       {
-         value = "33685504";
+         value = "33816576";
          type = "String";
       }
    }
@@ -98,7 +119,7 @@
    {
       datum baseAddress
       {
-         value = "33685504";
+         value = "33816576";
          type = "String";
       }
    }
@@ -114,7 +135,7 @@
    {
       datum baseAddress
       {
-         value = "33697968";
+         value = "33829040";
          type = "String";
       }
    }
@@ -130,7 +151,7 @@
    {
       datum baseAddress
       {
-         value = "33697952";
+         value = "33829024";
          type = "String";
       }
    }
@@ -154,7 +175,7 @@
    {
       datum baseAddress
       {
-         value = "33698000";
+         value = "33829072";
          type = "String";
       }
    }
@@ -170,7 +191,7 @@
    {
       datum baseAddress
       {
-         value = "33697792";
+         value = "33828864";
          type = "String";
       }
    }
@@ -186,7 +207,39 @@
    {
       datum baseAddress
       {
-         value = "33697992";
+         value = "33829064";
+         type = "String";
+      }
+   }
+   element systemFile
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone IV E";
+         type = "String";
+      }
+   }
+   element systemFile
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone IV E";
+         type = "String";
+      }
+   }
+   element systemFile
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone IV E";
+         type = "String";
+      }
+   }
+   element systemFile
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone IV E";
          type = "String";
       }
    }
@@ -274,7 +327,7 @@
    {
       datum baseAddress
       {
-         value = "33697920";
+         value = "33828992";
          type = "String";
       }
    }
@@ -337,7 +390,7 @@
   <parameter name="dataAddrWidth" value="26" />
   <parameter name="dataMasterHighPerformanceAddrWidth" value="1" />
   <parameter name="dataMasterHighPerformanceMapParam" value="" />
-  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='SDRAM_ctrl.s1' start='0x1000000' end='0x2000000' type='altera_avalon_new_sdram_controller.s1' /><slave name='LCD.avalon_slave' start='0x2000000' end='0x2020000' type='LCD.avalon_slave' /><slave name='TCIM.s2' start='0x2020000' end='0x2021000' type='altera_avalon_onchip_memory2.s2' /><slave name='CPU.debug_mem_slave' start='0x2022800' end='0x2023000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='performance_counter_0.control_slave' start='0x2023000' end='0x2023080' type='altera_avalon_performance_counter.control_slave' /><slave name='timer_0.s1' start='0x2023080' end='0x20230A0' type='altera_avalon_timer.s1' /><slave name='altpll_signalTap.pll_slave' start='0x20230A0' end='0x20230B0' type='altpll.pll_slave' /><slave name='altpll_0.pll_slave' start='0x20230B0' end='0x20230C0' type='altpll.pll_slave' /><slave name='sysid.control_slave' start='0x20230C8' end='0x20230D0' type='altera_avalon_sysid_qsys.control_slave' /><slave name='jtag_uart.avalon_jtag_slave' start='0x20230D0' end='0x20230D8' type='altera_avalon_jtag_uart.avalon_jtag_slave' /></address-map>]]></parameter>
+  <parameter name="dataSlaveMapParam"><![CDATA[<address-map><slave name='SDRAM_ctrl.s1' start='0x1000000' end='0x2000000' type='altera_avalon_new_sdram_controller.s1' /><slave name='DMA.avalon_slave' start='0x2000000' end='0x2020000' type='DMAMaster.avalon_slave' /><slave name='LCD.avalon_slave' start='0x2020000' end='0x2040000' type='LCD.avalon_slave' /><slave name='TCIM.s2' start='0x2040000' end='0x2041000' type='altera_avalon_onchip_memory2.s2' /><slave name='CPU.debug_mem_slave' start='0x2042800' end='0x2043000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='performance_counter_0.control_slave' start='0x2043000' end='0x2043080' type='altera_avalon_performance_counter.control_slave' /><slave name='timer_0.s1' start='0x2043080' end='0x20430A0' type='altera_avalon_timer.s1' /><slave name='altpll_signalTap.pll_slave' start='0x20430A0' end='0x20430B0' type='altpll.pll_slave' /><slave name='altpll_0.pll_slave' start='0x20430B0' end='0x20430C0' type='altpll.pll_slave' /><slave name='sysid.control_slave' start='0x20430C8' end='0x20430D0' type='altera_avalon_sysid_qsys.control_slave' /><slave name='jtag_uart.avalon_jtag_slave' start='0x20430D0' end='0x20430D8' type='altera_avalon_jtag_uart.avalon_jtag_slave' /></address-map>]]></parameter>
   <parameter name="data_master_high_performance_paddr_base" value="0" />
   <parameter name="data_master_high_performance_paddr_size" value="0" />
   <parameter name="data_master_paddr_base" value="0" />
@@ -376,7 +429,7 @@
   <parameter name="icache_tagramBlockType" value="Automatic" />
   <parameter name="impl" value="Fast" />
   <parameter name="instAddrWidth" value="26" />
-  <parameter name="instSlaveMapParam"><![CDATA[<address-map><slave name='SDRAM_ctrl.s1' start='0x1000000' end='0x2000000' type='altera_avalon_new_sdram_controller.s1' /><slave name='CPU.debug_mem_slave' start='0x2022800' end='0x2023000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='jtag_uart.avalon_jtag_slave' start='0x20230D0' end='0x20230D8' type='altera_avalon_jtag_uart.avalon_jtag_slave' /></address-map>]]></parameter>
+  <parameter name="instSlaveMapParam"><![CDATA[<address-map><slave name='SDRAM_ctrl.s1' start='0x1000000' end='0x2000000' type='altera_avalon_new_sdram_controller.s1' /><slave name='CPU.debug_mem_slave' start='0x2042800' end='0x2043000' type='altera_nios2_gen2.debug_mem_slave' /><slave name='jtag_uart.avalon_jtag_slave' start='0x20430D0' end='0x20430D8' type='altera_avalon_jtag_uart.avalon_jtag_slave' /></address-map>]]></parameter>
   <parameter name="instructionMasterHighPerformanceAddrWidth" value="1" />
   <parameter name="instructionMasterHighPerformanceMapParam" value="" />
   <parameter name="instruction_master_high_performance_paddr_base" value="0" />
@@ -460,7 +513,7 @@
   <parameter name="setting_usedesignware" value="false" />
   <parameter name="shift_rot_impl" value="1" />
   <parameter name="tightlyCoupledDataMaster0AddrWidth" value="26" />
-  <parameter name="tightlyCoupledDataMaster0MapParam"><![CDATA[<address-map><slave name='TCDM.s1' start='0x2021000' end='0x2022000' type='altera_avalon_onchip_memory2.s1' /></address-map>]]></parameter>
+  <parameter name="tightlyCoupledDataMaster0MapParam"><![CDATA[<address-map><slave name='TCDM.s1' start='0x2041000' end='0x2042000' type='altera_avalon_onchip_memory2.s1' /></address-map>]]></parameter>
   <parameter name="tightlyCoupledDataMaster1AddrWidth" value="1" />
   <parameter name="tightlyCoupledDataMaster1MapParam" value="" />
   <parameter name="tightlyCoupledDataMaster2AddrWidth" value="1" />
@@ -468,7 +521,7 @@
   <parameter name="tightlyCoupledDataMaster3AddrWidth" value="1" />
   <parameter name="tightlyCoupledDataMaster3MapParam" value="" />
   <parameter name="tightlyCoupledInstructionMaster0AddrWidth" value="26" />
-  <parameter name="tightlyCoupledInstructionMaster0MapParam"><![CDATA[<address-map><slave name='TCIM.s1' start='0x2020000' end='0x2021000' type='altera_avalon_onchip_memory2.s1' /></address-map>]]></parameter>
+  <parameter name="tightlyCoupledInstructionMaster0MapParam"><![CDATA[<address-map><slave name='TCIM.s1' start='0x2040000' end='0x2041000' type='altera_avalon_onchip_memory2.s1' /></address-map>]]></parameter>
   <parameter name="tightlyCoupledInstructionMaster1AddrWidth" value="1" />
   <parameter name="tightlyCoupledInstructionMaster1MapParam" value="" />
   <parameter name="tightlyCoupledInstructionMaster2AddrWidth" value="1" />
@@ -495,7 +548,14 @@
   <parameter name="tracefilename" value="" />
   <parameter name="userDefinedSettings" value="" />
  </module>
- <module name="LCD" kind="LCD" version="1.0" enabled="1" />
+ <module name="DMA" kind="DMAMaster" version="1.0" enabled="1">
+  <parameter name="PICSIZE_BIN" value="17" />
+  <parameter name="PICSIZE_DEC" value="76800" />
+ </module>
+ <module name="LCD" kind="LCD" version="1.0" enabled="1">
+  <parameter name="PICSIZE_BIN" value="17" />
+  <parameter name="PICSIZE_DEC" value="76800" />
+ </module>
  <module
    name="SDRAM_ctrl"
    kind="altera_avalon_new_sdram_controller"
@@ -977,7 +1037,16 @@
  <connection
    kind="avalon"
    version="17.0"
-   start="LCD.avalon_master"
+   start="DMA.avalon_master"
+   end="LCD.avalon_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x02020000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
+   start="DMA.avalon_master"
    end="SDRAM_ctrl.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x01000000" />
@@ -989,7 +1058,7 @@
    start="CPU.data_master"
    end="jtag_uart.avalon_jtag_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x020230d0" />
+  <parameter name="baseAddress" value="0x020430d0" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -997,6 +1066,15 @@
    version="17.0"
    start="CPU.data_master"
    end="LCD.avalon_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x02020000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="17.0"
+   start="CPU.data_master"
+   end="DMA.avalon_slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x02000000" />
   <parameter name="defaultConnection" value="false" />
@@ -1007,7 +1085,7 @@
    start="CPU.data_master"
    end="sysid.control_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x020230c8" />
+  <parameter name="baseAddress" value="0x020430c8" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1016,7 +1094,7 @@
    start="CPU.data_master"
    end="performance_counter_0.control_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x02023000" />
+  <parameter name="baseAddress" value="0x02043000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1025,7 +1103,7 @@
    start="CPU.data_master"
    end="CPU.debug_mem_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x02022800" />
+  <parameter name="baseAddress" value="0x02042800" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1034,7 +1112,7 @@
    start="CPU.data_master"
    end="altpll_0.pll_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x020230b0" />
+  <parameter name="baseAddress" value="0x020430b0" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1043,7 +1121,7 @@
    start="CPU.data_master"
    end="altpll_signalTap.pll_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x020230a0" />
+  <parameter name="baseAddress" value="0x020430a0" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1057,12 +1135,12 @@
  </connection>
  <connection kind="avalon" version="17.0" start="CPU.data_master" end="timer_0.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x02023080" />
+  <parameter name="baseAddress" value="0x02043080" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection kind="avalon" version="17.0" start="CPU.data_master" end="TCIM.s2">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x02020000" />
+  <parameter name="baseAddress" value="0x02040000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1071,7 +1149,7 @@
    start="CPU.instruction_master"
    end="jtag_uart.avalon_jtag_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x020230d0" />
+  <parameter name="baseAddress" value="0x020430d0" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1080,7 +1158,7 @@
    start="CPU.instruction_master"
    end="CPU.debug_mem_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x02022800" />
+  <parameter name="baseAddress" value="0x02042800" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1098,7 +1176,7 @@
    start="CPU.tightly_coupled_data_master_0"
    end="TCDM.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x02021000" />
+  <parameter name="baseAddress" value="0x02041000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1107,7 +1185,7 @@
    start="CPU.tightly_coupled_instruction_master_0"
    end="TCIM.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x02020000" />
+  <parameter name="baseAddress" value="0x02040000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection kind="clock" version="17.0" start="altpll_0.c0" end="CPU.clk" />
@@ -1124,6 +1202,7 @@
  <connection kind="clock" version="17.0" start="altpll_0.c0" end="TCIM.clk1" />
  <connection kind="clock" version="17.0" start="altpll_0.c0" end="TCIM.clk2" />
  <connection kind="clock" version="17.0" start="altpll_0.c0" end="LCD.clock_sink" />
+ <connection kind="clock" version="17.0" start="altpll_0.c0" end="DMA.clock_sink" />
  <connection
    kind="clock"
    version="17.0"
@@ -1138,7 +1217,7 @@
    kind="interrupt"
    version="17.0"
    start="CPU.irq"
-   end="LCD.interrupt_sender">
+   end="DMA.interrupt_sender">
   <parameter name="irqNumber" value="2" />
  </connection>
  <connection kind="interrupt" version="17.0" start="CPU.irq" end="jtag_uart.irq">
@@ -1187,6 +1266,11 @@
    version="17.0"
    start="clk_0.clk_reset"
    end="LCD.reset_sink" />
+ <connection
+   kind="reset"
+   version="17.0"
+   start="clk_0.clk_reset"
+   end="DMA.reset_sink" />
  <connection
    kind="reset"
    version="17.0"
@@ -1247,6 +1331,11 @@
    version="17.0"
    start="CPU.debug_reset_request"
    end="LCD.reset_sink" />
+ <connection
+   kind="reset"
+   version="17.0"
+   start="CPU.debug_reset_request"
+   end="DMA.reset_sink" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />

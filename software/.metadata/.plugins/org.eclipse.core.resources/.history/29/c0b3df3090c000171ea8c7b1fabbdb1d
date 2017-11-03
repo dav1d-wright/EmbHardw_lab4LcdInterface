@@ -1,0 +1,195 @@
+/*
+ * "Hello World" example.
+ *
+ * This example prints 'Hello from Nios II' to the STDOUT stream. It runs on
+ * the Nios II 'standard', 'full_featured', 'fast', and 'low_cost' example
+ * designs. It runs with or without the MicroC/OS-II RTOS and requires a STDOUT
+ * device in your system's hardware.
+ * The memory footprint of this hosted application is ~69 kbytes by default
+ * using the standard reference design.
+ *
+ * For a reduced footprint version of this template, and an explanation of how
+ * to reduce the memory footprint for a given application, see the
+ * "small_hello_world" template.
+ *
+ */
+
+#include <stdio.h>
+#include <stdbool.h>
+#include "io.h"
+#include "system.h"
+#include "alt_types.h"
+#include "sys/alt_sys_wrappers.h"
+
+#include "./inc/tuxAnimation_1.h"
+#include "./inc/tuxAnimation_2.h"
+#include "./inc/tuxAnimation_3.h"
+
+#define LCD_REG_STATUS 		0x0000U
+#define LCD_REG_CTRL 		0x0004U
+#define LCD_REG_ERROR 		0x0008U
+#define LCD_REG_RES 		0x000CU
+#define LCD_REG_SRCMSW	 	0x0010U
+#define LCD_REG_SRCLSW		0x0014U
+#define LCD_REG_DESTMSW 	0x0018U
+#define LCD_REG_DESTLSW		0x001CU
+#define LCD_REG_DATA	 	0x0020U
+#define LCD_REG_WRITEDATA 	0x0024U
+#define LCD_REG_WRITECMD 	0x0028U
+
+void LCD_Write_Command(int command);
+void LCD_Write_Data(int data);
+void init_LCD();
+
+int main()
+{
+  printf("Hello from Nios II!\n");
+
+//  while (true)
+//  {
+//	  for(int i = 0; i <= 0xFFFFU; i++)
+//	  {
+//		  IOWR_16DIRECT(LCD_BASE, i, i);
+//	  }
+//  }
+
+
+  init_LCD();
+
+  usleep(500E3);
+
+
+  while (true)
+  {
+	  LCD_Write_Command(0x002CU);
+	  for(int i = 0; i < picture_height_tuxAnimation_1; i++)
+	  {
+		  for(int j = 0; j < picture_width_tuxAnimation_1; j++)
+		  {
+//			  LCD_Write_Data(0);
+			   LCD_Write_Data(picture_array_tuxAnimation_1[i][j]);
+		  }
+	  }
+
+	  usleep(500E3);
+
+	  LCD_Write_Command(0x002CU);
+	  for(int i = 0; i < picture_height_tuxAnimation_2; i++)
+	  {
+		  for(int j = 0; j < picture_width_tuxAnimation_2; j++)
+		  {
+			  LCD_Write_Data(picture_array_tuxAnimation_2[i][j]);
+		  }
+	  }
+
+	  usleep(500E3);
+
+	  LCD_Write_Command(0x002CU);
+	  for(int i = 0; i < picture_height_tuxAnimation_3; i++)
+	  {
+		  for(int j = 0; j < picture_width_tuxAnimation_3; j++)
+		  {
+			  LCD_Write_Data(picture_array_tuxAnimation_3[i][j]);
+
+		  }
+	  }
+	  usleep(500E3);
+  }
+
+
+
+  return 0;
+}
+
+void init_LCD() {
+	usleep(500E3);
+
+	LCD_Write_Command(0x0028);     //display OFF
+	LCD_Write_Command(0x0011);     //exit SLEEP mode
+	LCD_Write_Data(0x0000);
+
+	LCD_Write_Command(0x00CB);     //Power Control A
+	LCD_Write_Data(0x0039);     //always 0x39
+	LCD_Write_Data(0x002C);     //always 0x2C
+	LCD_Write_Data(0x0000);     //always 0x00
+	LCD_Write_Data(0x0034);     //Vcore = 1.6V
+	LCD_Write_Data(0x0002);     //DDVDH = 5.6V
+
+	LCD_Write_Command(0x00CF);     //Power Control B
+	LCD_Write_Data(0x0000);     //always 0x00
+	LCD_Write_Data(0x0081);     //PCEQ off
+	LCD_Write_Data(0x0030);     //ESD protection
+
+	LCD_Write_Command(0x00E8);     //Driver timing control A
+	LCD_Write_Data(0x0085);     //non - overlap
+	LCD_Write_Data(0x0001);     //EQ timing
+	LCD_Write_Data(0x0079);     //Pre-chargetiming
+	LCD_Write_Command(0x00EA);     //Driver timing control B
+	LCD_Write_Data(0x0000);        //Gate driver timing
+	LCD_Write_Data(0x0000);        //always 0x00
+
+	LCD_Write_Data(0x0064);        //soft start
+	LCD_Write_Data(0x0003);        //power on sequence
+	LCD_Write_Data(0x0012);        //power on sequence
+	LCD_Write_Data(0x0081);        //DDVDH enhance on
+
+	LCD_Write_Command(0x00F7);     //Pump ratio control
+	LCD_Write_Data(0x0020);     //DDVDH=2xVCI
+
+	LCD_Write_Command(0x00C0);    //power control 1
+	LCD_Write_Data(0x0026);
+	LCD_Write_Data(0x0004);     //second parameter for ILI9340 (ignored by ILI9341)
+
+	LCD_Write_Command(0x00C1);     //power control 2
+	LCD_Write_Data(0x0011);
+
+	LCD_Write_Command(0x00C5);     //VCOM control 1
+	LCD_Write_Data(0x0035);
+	LCD_Write_Data(0x003E);
+
+	LCD_Write_Command(0x00C7);     //VCOM control 2
+	LCD_Write_Data(0x00BE);
+
+	LCD_Write_Command(0x00B1);     //frame rate control
+	LCD_Write_Data(0x0000);
+	LCD_Write_Data(0x0010);
+
+	LCD_Write_Command(0x003A);    //pixel format = 16 bit per pixel
+	LCD_Write_Data(0x0055);
+
+	LCD_Write_Command(0x00B6);     //display function control
+	LCD_Write_Data(0x000A);
+	LCD_Write_Data(0x00A2);
+
+	LCD_Write_Command(0x00F2);     //3G Gamma control
+	LCD_Write_Data(0x0002);         //off
+
+	LCD_Write_Command(0x0026);     //Gamma curve 3
+	LCD_Write_Data(0x0001);
+
+	LCD_Write_Command(0x0036);     //memory access control = BGR
+	LCD_Write_Data(0x0000);
+
+	LCD_Write_Command(0x002A);     //column address set
+	LCD_Write_Data(0x0000);
+	LCD_Write_Data(0x0000);        //start 0x0000
+	LCD_Write_Data(0x0000);
+	LCD_Write_Data(0x00EF);        //end 0x00EF
+
+	LCD_Write_Command(0x002B);    //page address set
+	LCD_Write_Data(0x0000);
+	LCD_Write_Data(0x0000);        //start 0x0000
+	LCD_Write_Data(0x0001);
+	LCD_Write_Data(0x003F);        //end 0x013F
+
+	LCD_Write_Command(0x0029);
+
+}
+
+void LCD_Write_Command(int command) {
+  IOWR_16DIRECT(LCD_BASE, LCD_REG_WRITECMD, command);
+}
+
+void LCD_Write_Data(int data) {
+  IOWR_16DIRECT(LCD_BASE, LCD_REG_WRITEDATA,data);
+}

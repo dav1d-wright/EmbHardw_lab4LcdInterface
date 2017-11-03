@@ -3,7 +3,7 @@
 # Machine generated for CPU 'CPU' in SOPC Builder design 'systemFile'
 # SOPC Builder design path: ../../systemFile.sopcinfo
 #
-# Generated: Thu Nov 02 11:10:05 CET 2017
+# Generated: Fri Nov 03 16:51:33 CET 2017
 
 # DO NOT MODIFY THIS FILE
 #
@@ -50,7 +50,7 @@
 memory 0x1000000 0x2000000 cache
 
 # TCIM
-memory 0x2020000 0x2021000 cache
+memory 0x2040000 0x2041000 cache
 
 # TCDM
-memory 0x2021000 0x2022000 cache
+memory 0x2041000 0x2042000 cache

@@ -343,7 +343,7 @@ agreement for further details.
 	(text "VCC" (rect 152 7 172 17)(font "Arial" (font_size 6)))
 )
 (symbol
-	(rect 600 128 1000 576)
+	(rect 608 128 1008 576)
 	(text "systemFile" (rect 169 -1 244 15)(font "Arial" (font_size 10)))
 	(text "inst" (rect 8 432 25 444)(font "Arial" ))
 	(port
@@ -537,83 +537,83 @@ agreement for further details.
 	)
 )
 (connector
-	(pt 600 200)
+	(pt 1104 200)
+	(pt 1008 200)
+)
+(connector
 	(pt 528 200)
+	(pt 608 200)
+)
+(connector
+	(pt 528 376)
+	(pt 608 376)
 )
 (connector
 	(pt 528 240)
-	(pt 600 240)
-)
-(connector
-	(pt 600 376)
-	(pt 528 376)
-)
-(connector
-	(pt 528 336)
-	(pt 600 336)
-)
-(connector
-	(pt 528 320)
-	(pt 600 320)
-)
-(connector
-	(pt 528 304)
-	(pt 600 304)
-)
-(connector
-	(pt 600 288)
-	(pt 528 288)
+	(pt 608 240)
 )
 (connector
 	(pt 528 272)
-	(pt 600 272)
+	(pt 608 272)
 )
 (connector
-	(pt 600 256)
-	(pt 528 256)
-	(bus)
+	(pt 528 288)
+	(pt 608 288)
 )
 (connector
-	(pt 600 416)
+	(pt 528 304)
+	(pt 608 304)
+)
+(connector
+	(pt 528 320)
+	(pt 608 320)
+)
+(connector
+	(pt 528 336)
+	(pt 608 336)
+)
+(connector
 	(pt 528 416)
+	(pt 608 416)
 	(bus)
 )
 (connector
-	(pt 600 432)
 	(pt 528 432)
+	(pt 608 432)
 	(bus)
 )
 (connector
 	(pt 528 448)
-	(pt 600 448)
+	(pt 608 448)
 )
 (connector
-	(pt 600 464)
 	(pt 528 464)
+	(pt 608 464)
 )
 (connector
-	(pt 600 480)
 	(pt 528 480)
+	(pt 608 480)
 )
 (connector
-	(pt 600 496)
-	(pt 528 496)
-	(bus)
-)
-(connector
-	(pt 600 512)
 	(pt 528 512)
+	(pt 608 512)
 	(bus)
 )
 (connector
-	(pt 600 528)
 	(pt 528 528)
+	(pt 608 528)
 )
 (connector
-	(pt 600 544)
 	(pt 528 544)
+	(pt 608 544)
 )
 (connector
-	(pt 1104 200)
-	(pt 1000 200)
+	(pt 528 256)
+	(pt 608 256)
+	(bus)
+)
+(connector
+	(pt 528 496)
+	(pt 608 496)
+	(bus)
 )

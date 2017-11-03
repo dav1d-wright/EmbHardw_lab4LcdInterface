@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include "io.h"
 #include "system.h"
 #include "alt_types.h"
@@ -25,17 +26,19 @@
 #include "./inc/tuxAnimation_2.h"
 #include "./inc/tuxAnimation_3.h"
 
-#define LCD_REG_STATUS 		0x0000U
-#define LCD_REG_CTRL 		0x0004U
-#define LCD_REG_ERROR 		0x0008U
-#define LCD_REG_RES 		0x000CU
-#define LCD_REG_SRCMSW	 	0x0010U
-#define LCD_REG_SRCLSW		0x0014U
-#define LCD_REG_DESTMSW 	0x0018U
-#define LCD_REG_DESTLSW		0x001CU
-#define LCD_REG_DATA	 	0x0020U
-#define LCD_REG_WRITEDATA 	0x0024U
-#define LCD_REG_WRITECMD 	0x0028U
+#define DMA_REG_STATUS 				0x0000U
+#define DMA_REG_CTRL 				0x0004U
+#define DMA_REG_CTRL_Mask_GO		0x0008U
+#define DMA_REG_ERROR 				0x0008U
+#define DMA_REG_RES 				0x000CU
+#define DMA_REG_SRCMSW	 			0x0010U
+#define DMA_REG_SRCLSW				0x0014U
+#define DMA_REG_DESTMSW 			0x0018U
+#define DMA_REG_DESTLSW				0x001CU
+#define DMA_REG_DATA	 			0x0020U
+
+#define LCD_REG_WRITEDATA 			0x0000U
+#define LCD_REG_WRITECMD 			0x0004U
 
 void LCD_Write_Command(int command);
 void LCD_Write_Data(int data);
@@ -53,11 +56,16 @@ int main()
 //	  }
 //  }
 
+  uint16_t uTestVal = 0xDEADU;
+  uint16_t uSrcLsw = (uint16_t)(((uint32_t)(&uTestVal)) & 0x0000FFFFU);
+  uint16_t uSrcMsw = (uint16_t)((((uint32_t)(&uTestVal)) & 0xFFFF0000U) >> 16U);
 
   init_LCD();
 
   usleep(500E3);
 
+
+//  IOWR_16DIRECT(DMA_BASE, DMA_REG_SRCLSW, )
 
   while (true)
   {

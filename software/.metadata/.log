@@ -5192,3 +5192,36 @@ java.lang.Exception: System timestamp mismatch - connected: "1509654625", expect
 
 !ENTRY com.altera.sbtgui.launch 1 0 2017-11-02 21:53:11.938
 !MESSAGE Executing: [D:/programs/intelfpga_lite/17.0/quartus\bin64\cygwin\bin\bash.exe, -c, nios2-download '--cable=USB-Blaster on localhost [USB-0]' --device=1 --instance=0 --tcpport=auto --sidp=0x20230c8 --id=0x0 --timestamp=1509654625]
+!SESSION 2017-11-03 08:35:50.240 -----------------------------------------------
+eclipse.buildId=4.3.2.M20140221-1700
+java.version=1.8.0_05
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Framework arguments:  -product org.eclipse.epp.package.cpp.product -pluginCustomization D:/programs/intelfpga_lite/17.0/nios2eds/bin/eclipse_nios2/plugin_customization.ini
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.cpp.product -pluginCustomization D:/programs/intelfpga_lite/17.0/nios2eds/bin/eclipse_nios2/plugin_customization.ini
+
+!ENTRY org.eclipse.egit.ui 2 0 2017-11-03 13:06:24.737
+!MESSAGE Warning: EGit couldn't detect the installation path "gitPrefix" of native Git. Hence EGit can't respect system level
+Git settings which might be configured in ${gitPrefix}/etc/gitconfig under the native Git installation directory.
+The most important of these settings is core.autocrlf. Git for Windows by default sets this parameter to true in
+this system level configuration. The Git installation location can be configured on the
+Team > Git > Configuration preference page's 'System Settings' tab.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY com.altera.sbtgui.launch 1 0 2017-11-03 13:08:46.552
+!MESSAGE Executing: [D:/programs/intelfpga_lite/17.0/quartus\bin64\cygwin\bin\bash.exe, -c, nios2-download '--cable=USB-Blaster on localhost [USB-0]' --device=1 --instance=0 --sidp=0x20230c8 --id=0x0 --timestamp=1509710100 /cygdrive/d/syncplicity/z003nc3v/Documents/MSE/1Sem_HS17_18/TSM_EmbHardw/w4/exercises/lab4LcdInterface/software/lab4LcdInterface/lab4LcdInterface.elf]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2017-11-03 13:08:59.920
+!MESSAGE Executing: [D:/programs/intelfpga_lite/17.0/quartus\bin64\cygwin\bin\bash.exe, -c, nios2-download '--cable=USB-Blaster on localhost [USB-0]' --device=1 --instance=0 --tcpport=auto --sidp=0x20230c8 --id=0x0 --timestamp=1509710100]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2017-11-03 13:14:31.598
+!MESSAGE Executing: [D:/programs/intelfpga_lite/17.0/quartus\bin64\cygwin\bin\bash.exe, -c, nios2-download '--cable=USB-Blaster on localhost [USB-0]' --device=1 --instance=0 --sidp=0x20230c8 --id=0x0 --timestamp=1509710100 /cygdrive/d/syncplicity/z003nc3v/Documents/MSE/1Sem_HS17_18/TSM_EmbHardw/w4/exercises/lab4LcdInterface/software/lab4LcdInterface/lab4LcdInterface.elf]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2017-11-03 13:14:45.442
+!MESSAGE Executing: [D:/programs/intelfpga_lite/17.0/quartus\bin64\cygwin\bin\bash.exe, -c, nios2-download '--cable=USB-Blaster on localhost [USB-0]' --device=1 --instance=0 --tcpport=auto --sidp=0x20230c8 --id=0x0 --timestamp=1509710100]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2017-11-03 14:14:38.770
+!MESSAGE Executing: [D:/programs/intelfpga_lite/17.0/quartus\bin64\cygwin\bin\bash.exe, -c, nios2-download '--cable=USB-Blaster on localhost [USB-0]' --device=1 --instance=0 --sidp=0x20230c8 --id=0x0 --timestamp=1509713128 /cygdrive/d/syncplicity/z003nc3v/Documents/MSE/1Sem_HS17_18/TSM_EmbHardw/w4/exercises/lab4LcdInterface/software/lab4LcdInterface/lab4LcdInterface.elf]
+
+!ENTRY com.altera.sbtgui.launch 1 0 2017-11-03 14:14:52.913
+!MESSAGE Executing: [D:/programs/intelfpga_lite/17.0/quartus\bin64\cygwin\bin\bash.exe, -c, nios2-download '--cable=USB-Blaster on localhost [USB-0]' --device=1 --instance=0 --tcpport=auto --sidp=0x20230c8 --id=0x0 --timestamp=1509713128]

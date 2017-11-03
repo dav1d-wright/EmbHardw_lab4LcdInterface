@@ -4,7 +4,7 @@
  * Machine generated for CPU 'CPU' in SOPC Builder design 'systemFile'
  * SOPC Builder design path: ../../systemFile.sopcinfo
  *
- * Generated: Thu Nov 02 11:10:05 CET 2017
+ * Generated: Fri Nov 03 16:51:33 CET 2017
  */
 
 /*
@@ -52,15 +52,15 @@ MEMORY
 {
     reset : ORIGIN = 0x1000000, LENGTH = 32
     SDRAM_ctrl : ORIGIN = 0x1000020, LENGTH = 16777184
-    TCIM_BEFORE_EXCEPTION : ORIGIN = 0x2020000, LENGTH = 32
-    TCIM : ORIGIN = 0x2020020, LENGTH = 4064
-    TCDM : ORIGIN = 0x2021000, LENGTH = 4096
+    TCIM_BEFORE_EXCEPTION : ORIGIN = 0x2040000, LENGTH = 32
+    TCIM : ORIGIN = 0x2040020, LENGTH = 4064
+    TCDM : ORIGIN = 0x2041000, LENGTH = 4096
 }
 
 /* Define symbols for each memory base-address */
 __alt_mem_SDRAM_ctrl = 0x1000000;
-__alt_mem_TCIM = 0x2020000;
-__alt_mem_TCDM = 0x2021000;
+__alt_mem_TCIM = 0x2040000;
+__alt_mem_TCDM = 0x2041000;
 
 OUTPUT_FORMAT( "elf32-littlenios2",
                "elf32-littlenios2",

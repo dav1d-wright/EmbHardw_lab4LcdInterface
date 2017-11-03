@@ -25,6 +25,11 @@ use ieee.numeric_std.all;
 --! Interface between Avalon bus
 --! and LCD
 entity LcdDriver is
+    generic
+    (
+        PICSIZE_BIN:                    natural := 17;
+        PICSIZE_DEC:                    natural := 76800
+    );
     port
     (
         --! Clock input
@@ -44,7 +49,7 @@ entity LcdDriver is
         --! Begin burst transfer signal input
         BeginBurstTransfer_SI:      in std_logic;
         --! Burst count data input
-        BurstCount_DI:              in std_logic_vector (7 downto 0);
+        BurstCount_DI:              in std_logic_vector (PICSIZE_BIN-1 downto 0);
         
         --! Wait request signal output
         WaitReq_SO:                 out std_logic;
@@ -100,8 +105,8 @@ architecture LCD of LcdDriver is
     signal RegBeginBurstTransferNext_S:      std_logic := '0';
     signal RegBeginBurstTransferPres_S:      std_logic := '0';
 
-    signal RegBurstCountNext_D:              std_logic_vector (7 downto 0) := (others => '0');
-    signal RegBurstCountPres_D:              std_logic_vector (7 downto 0) := (others => '0');
+    signal RegBurstCountNext_D:              std_logic_vector (PICSIZE_BIN-1 downto 0) := (others => '0');
+    signal RegBurstCountPres_D:              std_logic_vector (PICSIZE_BIN-1 downto 0) := (others => '0');
     --! @}
     
     
@@ -182,7 +187,7 @@ architecture LCD of LcdDriver is
     --! @brief Synchronised BeginBurstTransfer
     signal BeginBurstTransfer_S:        std_logic := '0';
     --! @brief Synchronised BurstCount
-    signal BurstCount_D:                std_logic_vector (7 downto 0) := (others => '0');
+    signal BurstCount_D:                std_logic_vector (PICSIZE_BIN-1 downto 0) := (others => '0');
     --! @}
 
     --! @defgroup inpP Input delayed one step
@@ -200,7 +205,7 @@ architecture LCD of LcdDriver is
     --! @brief BeginBurstTransfer delayed one step
     signal BeginBurstTransfer_P_S:      std_logic := '0';
     --! @brief BurstCount delayed one step
-    signal BurstCount_P_D:              std_logic_vector (7 downto 0) := (others => '0');
+    signal BurstCount_P_D:              std_logic_vector (PICSIZE_BIN-1 downto 0) := (others => '0');
     --! @}
 
     --! @defgroup inpPP Input delayed two steps
@@ -218,24 +223,27 @@ architecture LCD of LcdDriver is
     --! @brief BeginBurstTransfer delayed two steps
     signal BeginBurstTransfer_PP_S:     std_logic := '0';
     --! @brief BurstCount delayed two steps
-    signal BurstCount_PP_D:             std_logic_vector (7 downto 0) := (others => '0');
+    signal BurstCount_PP_D:             std_logic_vector (PICSIZE_BIN-1 downto 0) := (others => '0');
     --! @}
         
     --! @defgroup cnt counters
     --! @{
-    signal BurstCountPres_D:            std_logic_vector (7 downto 0) := (others => '0');
-    signal BurstCountNext_D:            std_logic_vector (7 downto 0) := (others => '0');
+    signal BurstCountPres_D:            std_logic_vector (PICSIZE_BIN-1 downto 0) := (others => '0');
+    signal BurstCountNext_D:            std_logic_vector (PICSIZE_BIN-1 downto 0) := (others => '0');
     signal IdleCountPres_D:             std_logic_vector (31 downto 0) := (others => '0');
     signal IdleCountNext_D:             std_logic_vector (31 downto 0) := (others => '0');
-    signal BurstStreamCountPres_D:      std_logic_vector (7 downto 0) := (others => '0');
-    signal BurstStreamCountNext_D:      std_logic_vector (7 downto 0) := (others => '0');
+    signal BurstStreamCountPres_D:      std_logic_vector (PICSIZE_BIN-1 downto 0) := (others => '0');
+    signal BurstStreamCountNext_D:      std_logic_vector (PICSIZE_BIN-1 downto 0) := (others => '0');
     --! @}
     
     --! @brief Burst stream type
-    type stream_T                       is array (255 downto 0) of std_logic_vector (15 downto 0);
+    type stream_T                       is array (PICSIZE_DEC-1 downto 0) of std_logic_vector (15 downto 0);
     --! @brief Burst stream 
     signal BurstStream_D:               stream_T;
 begin
+    --! Concurrent assignment
+    IM0_SO <= '0';
+
     --! @brief This process synchronises input data with the clock and buffers it 
     syncData: process(Reset_NRI, Clk_CI)
     begin
@@ -321,7 +329,7 @@ begin
             if(RegBeginBurstTransferPres_S = '1')then
                 if((Write_PP_S = '1') and (unsigned(BurstStreamCountPres_D) < unsigned(RegBurstCountPres_D)))then
                     BurstStream_D(to_integer(unsigned(BurstStreamCountPres_D))) <= WriteData_PP_D;
-                    BurstStreamCountNext_D <= std_logic_vector(unsigned(BurstStreamCountPres_D) + to_unsigned(1, 8));
+                    BurstStreamCountNext_D <= std_logic_vector(unsigned(BurstStreamCountPres_D) + to_unsigned(1, PICSIZE_BIN-1));
                 else
                     BurstStreamCountNext_D <= BurstStreamCountPres_D;
                 end if;
@@ -391,7 +399,7 @@ begin
                 WaitReq_SO <= '0';
                 StateNext_D <= StateLcdReset;
                 IdleCountNext_D <= std_logic_vector(to_unsigned(500000000, 32));
-                BurstCountNext_D <= BurstCountPres_D;
+                BurstCountNext_D <= (others => '0');
 
                 DB_DIO <= (others => '0');     
                 Rd_NSO <= '1';   
@@ -399,10 +407,7 @@ begin
                 Cs_NSO <= '1';               
                 DC_NSO <= '1';
                 LcdReset_NRO <= '1';                
-                IM0_SO <= '0';
-                
-                LcdReset_NRO <= '0';
-                
+                                
                 RegAddressNext_D <= (others => '0');
                 RegRxDataNext_D <= (others => '0');
                 RegByteEnableNext_D <= (others => '0');
@@ -420,7 +425,6 @@ begin
                 Cs_NSO <= '1';               
                 DC_NSO <= '1';
                 LcdReset_NRO <= '0';                
-                IM0_SO <= '0';
                 WaitReq_SO <= '1';
                 BurstCountNext_D <= BurstCountPres_D;
                 
@@ -442,8 +446,8 @@ begin
                 end if;
                 
             when StateResetIntRegData =>
-                BurstCountNext_D <= std_logic_vector(to_unsigned(0, 8));
-                IdleCountNext_D <= std_logic_vector(to_unsigned(0, 32));
+                BurstCountNext_D <= (others => '0');
+                IdleCountNext_D <= (others => '0');
                 RegAddressNext_D <= (others => '1');
                 RegBeginBurstTransferNext_S <= '0';
                 RegBurstCountNext_D <= (others => '0');
@@ -465,8 +469,12 @@ begin
                 Cs_NSO <= '1';               
                 DC_NSO <= '1';
                 LcdReset_NRO <= '1';                
-                IM0_SO <= '0';
-                
+
+                RegAddressNext_D <= RegAddressPres_D;
+                RegRxDataNext_D <= RegRxDataPres_D;
+                RegByteEnableNext_D <= RegByteEnablePres_D;
+                RegBeginBurstTransferNext_S <= RegBeginBurstTransferPres_S;
+                RegBurstCountNext_D <= RegBurstCountPres_D;
                 RegDataNext_D <= RegDataPres_D;
                 RegWriteDataNext_D <= RegWriteDataPres_D;
                 RegWriteCmdNext_D <= RegWriteCmdPres_D; 
@@ -477,13 +485,13 @@ begin
                     RegBurstCountNext_D <= BurstCount_P_D;
                     RegRxDataNext_D <= WriteData_P_D;
 
-                    -- if(BeginBurstTransfer_P_S = '1')then
-                        -- RegByteEnable_D <= (others => '1');
-                        -- BurstCountNext_D <= BurstCount_P_D;
-                    -- else
+                    if(BeginBurstTransfer_P_S = '1')then
+                        RegByteEnableNext_D <= (others => '1');
+                        BurstCountNext_D <= BurstCount_P_D;
+                    else
                         BurstCountNext_D <= (others => '0');
                         RegByteEnableNext_D <= ByteEnable_P_D;
-                    -- end if;
+                    end if;
                     
                     StateNext_D <= StateEvalData;
                 else
@@ -502,7 +510,6 @@ begin
                 Cs_NSO <= '1';               
                 DC_NSO <= '1';
                 LcdReset_NRO <= '1';                
-                IM0_SO <= '0';
                 
                 RegAddressNext_D <= RegAddressPres_D;
                 RegRxDataNext_D <= RegRxDataPres_D;
@@ -536,7 +543,6 @@ begin
                 Cs_NSO <= '1';               
                 LcdReset_NRO <= '1';                
                 DC_NSO <= '0';
-                IM0_SO <= '0';
                 DB_DIO <= (others => '0');
                 
                 BurstCountNext_D <= BurstCountPres_D;
@@ -568,7 +574,6 @@ begin
                 Wr_NSO <= '0';              
                 Cs_NSO <= '0';               
                 LcdReset_NRO <= '1';                
-                IM0_SO <= '0';
                 
                 DB_DIO <= RegDataPres_D and BitEnable_D;
                 
@@ -641,7 +646,6 @@ begin
                 Rd_NSO <= '1';
                 Cs_NSO <= '0';
                 Wr_NSO <= '1';
-                IM0_SO <= '0';
                 
                 if(to_integer(unsigned(IdleCountPres_D)) > 0)then
                     IdleCountNext_D <= std_logic_vector(unsigned(IdleCountPres_D) - to_unsigned(1, 32));
@@ -649,13 +653,13 @@ begin
                 
                     StateNext_D <= StateTx;
                 elsif(to_integer(unsigned(BurstCountPres_D)) > 0)then
-                    BurstCountNext_D <= std_logic_vector(unsigned(BurstCountPres_D) - to_unsigned(1, 8));                    
+                    BurstCountNext_D <= std_logic_vector(unsigned(BurstCountPres_D) - to_unsigned(1, PICSIZE_BIN-1));                    
                     IdleCountNext_D <= (others => '0');
                     
                     StateNext_D <= StateNextBurstItem;
 
                 else    
-                    BurstCountNext_D <= std_logic_vector(to_unsigned(0, 8));                    
+                    BurstCountNext_D <= (others => '0');                    
                     IdleCountNext_D <= (others => '0');
                     StateNext_D <= StateResetIntRegData;
                 end if;
@@ -663,14 +667,12 @@ begin
             when others =>
                 --! this state should not occur
                 WaitReq_SO <= '0';
-                StateNext_D <= StateLcdReset;
                 DB_DIO <= (others => '0');     
                 Rd_NSO <= '1';   
                 Wr_NSO <= '1';              
                 Cs_NSO <= '1';               
                 DC_NSO <= '1';
                 LcdReset_NRO <= '1';                
-                IM0_SO <= '0';
                 
                 RegAddressNext_D <= (others => '0');
                 RegRxDataNext_D <= (others => '0');
@@ -683,7 +685,6 @@ begin
                 
                 BurstCountNext_D <= (others => '0');
                 IdleCountNext_D <= (others => '0');
-                LcdReset_NRO <= '0';
                 
                 StateNext_D <= StateReset;
         end case;

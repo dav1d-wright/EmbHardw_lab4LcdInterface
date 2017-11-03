@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>02.11.2017 21:38:46</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1509655126286</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>03.11.2017 16:51:31</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1509724291336</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>D:\syncplicity\z003nc3v\Documents\MSE\1Sem_HS17_18\TSM_EmbHardw\w4\exercises\lab4LcdInterface\software\lab4LcdInterface_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>..\..\systemFile.sopcinfo</SopcDesignFile>
@@ -905,56 +905,62 @@
                 <attributes>memory</attributes>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>LCD</slaveDescriptor>
+                <slaveDescriptor>DMA</slaveDescriptor>
                 <addressRange>0x02000000 - 0x0201FFFF</addressRange>
                 <addressSpan>131072</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
+                <slaveDescriptor>LCD</slaveDescriptor>
+                <addressRange>0x02020000 - 0x0203FFFF</addressRange>
+                <addressSpan>131072</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
                 <slaveDescriptor>TCIM</slaveDescriptor>
-                <addressRange>0x02020000 - 0x02020FFF</addressRange>
+                <addressRange>0x02040000 - 0x02040FFF</addressRange>
                 <addressSpan>4096</addressSpan>
                 <attributes>memory</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>TCDM</slaveDescriptor>
-                <addressRange>0x02021000 - 0x02021FFF</addressRange>
+                <addressRange>0x02041000 - 0x02041FFF</addressRange>
                 <addressSpan>4096</addressSpan>
                 <attributes>memory</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>performance_counter_0</slaveDescriptor>
-                <addressRange>0x02023000 - 0x0202307F</addressRange>
+                <addressRange>0x02043000 - 0x0204307F</addressRange>
                 <addressSpan>128</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>timer_0</slaveDescriptor>
-                <addressRange>0x02023080 - 0x0202309F</addressRange>
+                <addressRange>0x02043080 - 0x0204309F</addressRange>
                 <addressSpan>32</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>altpll_signalTap</slaveDescriptor>
-                <addressRange>0x020230A0 - 0x020230AF</addressRange>
+                <addressRange>0x020430A0 - 0x020430AF</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>altpll_0</slaveDescriptor>
-                <addressRange>0x020230B0 - 0x020230BF</addressRange>
+                <addressRange>0x020430B0 - 0x020430BF</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>sysid</slaveDescriptor>
-                <addressRange>0x020230C8 - 0x020230CF</addressRange>
+                <addressRange>0x020430C8 - 0x020430CF</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>jtag_uart</slaveDescriptor>
-                <addressRange>0x020230D0 - 0x020230D7</addressRange>
+                <addressRange>0x020430D0 - 0x020430D7</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>
